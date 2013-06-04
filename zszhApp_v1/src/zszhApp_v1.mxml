@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:local="*" xmlns:ns="zszh_away3d.*" backgroundAlpha="0">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import flash.net.URLLoader;
+			import flash.net.URLRequest;
+			import flash.xml.XMLDocument;
+			
+			function Show3DModel():void
+			{
+				//MainView.AddMesh("../embeds/t2.3ds");
+				
+				LoadXml("zszh_scene01.xml");
+			}
+			
+			private function LoadXml(str:String):void
+			{
+				var xml:XML=new XML;
+				var urlRequest:URLRequest=new URLRequest(str);
+				var urlLoader:URLLoader=new URLLoader(urlRequest);
+				urlLoader.addEventListener(Event.COMPLETE,xmlLoaded);
+				function xmlLoaded(e:Event):void
+				{
+					xml=XML(urlLoader.data);
+					for (var pname:String in  xml.Mesh)
+					{
+						var str:String = xml.Mesh[pname].Data;
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Panel width="100%" height="100%" backgroundColor="#000000" title="AWAY3D" backgroundAlpha="0">
+		<ns:UIRenderEngine id="MainView" width="100%" height="100%" />
+		<s:Button name="Show3DModel" width="100" height="20" click="Show3DModel()" />
+	</s:Panel>
+</s:Application>
