@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		.contentStyle{
+			backgroundColor: #ff0000;
+			skin: ClassReference("zszh_Products.Skin_NavigatorContent");
+		}
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Label;
+			import mx.core.DragSource;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			import mx.managers.DragManager;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.IndexChangeEvent;
+			
+			
+			protected function myList_initializeHandler(event:FlexEvent):void
+			{
+				myList.addEventListener(ItemClickEvent.ITEM_CLICK, sparkList_itemClickHandler);
+			}
+			
+			private function sparkList_itemClickHandler(event:ItemClickEvent):void
+			{
+				//event.currentTarget.startDrag();
+				trace(event.item);
+				trace(event.index);
+				//var dragInitiator:UIComponent=UIComponent(event.currentTarget);
+				trace(event.currentTarget.name)
+				//var ds:DragSource = new DragSource();
+				//ds.addData(dragInitiator, "myRule");
+				//var e:MouseEvent=new MouseEvent("");
+				//DragManager.doDrag(dragInitiator, ds,e);
+				event.currentTarget.startDrag();
+			}
+			
+			protected function myList_mouseDownHandler(event:MouseEvent):void
+			{
+				/*var dragInitiator:UIComponent=UIComponent(event.currentTarget.selectedItem);
+				var ds:DragSource = new DragSource();
+				ds.addData(dragInitiator, "myRule");
+				DragManager.doDrag(dragInitiator, ds,event);*/
+			}
+			
+		]]>
+	</fx:Script>
+	<s:SkinnableContainer backgroundColor="#182229" width="100%" height="100%"> 
+		
+		<s:List id="myList" left="5" right="5" top="5" bottom="5" contentBackgroundColor="#182229" borderVisible="false" 
+				itemRenderer="zszh_Products.ItemRender_Products" initialize="myList_initializeHandler(event)" mouseDown="myList_mouseDownHandler(event)"
+				height="100%" verticalScrollPolicy="off">
+			<s:layout>
+				<s:TileLayout orientation="rows" requestedColumnCount="3"/>
+			</s:layout>
+			
+			<s:ArrayCollection>
+				<fx:Object labelText="L型房间" imgSource="zszh_res/basic/wall/room_1.png"/>
+				<fx:Object labelText="大房间" imgSource="zszh_res/basic/wall/room_big.png"/>
+				<fx:Object labelText="小房间" imgSource="zszh_res/basic/wall/room_small.png"/>
+				<fx:Object labelText="横墙" imgSource="zszh_res/basic/wall/wall_h_divider.png"/>
+				<fx:Object labelText="竖墙" imgSource="zszh_res/basic/wall/wall_v_divider.png"/>
+
+			</s:ArrayCollection>
+		</s:List>
+		
+	</s:SkinnableContainer>
+	
+</s:NavigatorContent>

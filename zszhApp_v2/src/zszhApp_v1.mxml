@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:local="*" xmlns:ns="zszh_WorkSpace3D.*"
+			   backgroundAlpha="0" xmlns:ns1="zszh_Products.*" xmlns:ns2="zszh_WorkSpace2D.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Style>
+		
+		global {
+			modalTransparencyBlur: 0;/* 模糊度*/
+			modalTransparency: 0.5; /* 透明度*/
+			modalTransparencyDuration: 0;/* 过渡时间*/
+		}
+		
+		.customAccordionHeadStyles {
+			skin: ClassReference("zszh_Products.Skin_AccordionHead");
+		}
+		
+		.customFontStyles{
+			font-size:18px;
+			font-style: normal;
+			font-weight: bold;	
+			fontFamily:宋体;
+		}
+		.customTextInput{
+			font-size:16px;
+			font-style: normal;
+			font-weight: bold;
+			font-family:"Myriad Pro";
+			
+			corner-radius:10;
+			borderStyle: solid;
+			borderSkin: ClassReference("zszh_Products.Skin_TextInput");
+		}
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import mx.events.DragEvent;
+			import mx.managers.PopUpManager;
+			
+			import zszh_MainMenu.Menu1;
+			
+			private var _menu1:Menu1=new Menu1;
+			
+			protected function button1_mouseMoveHandler(event:MouseEvent):void
+			{
+				trace("mouse over MainMenu01");
+				
+				PopUpManager.removePopUp(_menu1);
+				PopUpManager.addPopUp(_menu1,this,false);
+				var x1:int=event.target.x+event.target.width/2 -_menu1.width/2;
+				var y1:int=event.target.y+event.target.height-5;
+				_menu1.move(x1,y1);
+			}
+			
+			protected function button1_mouseOutHandler(event:MouseEvent):void
+			{
+				trace("mouse out MainMenu01");
+				if(!_menu1._bMouseOver)
+					PopUpManager.removePopUp(_menu1);
+			}
+			//-------------主菜单--end-------------------
+			
+			import mx.controls.Button;
+			import zszh_WorkSpace2D.Room_Small2D;
+			import zszh_Products.Navigator_BasicWall;
+			function Show3DModel():void
+			{
+				if(WorkSpace3D.visible)
+				{
+					WorkSpace3D.visible=false;
+					WS2D_MainContainer.visible=true;
+				}
+				else
+				{
+					WorkSpace3D.visible=true;
+					WS2D_MainContainer.visible=false;
+				}
+			}
+			function ShowWorkSpace2D():void
+			{
+				WorkSpace3D.visible=false;
+				WS2D_MainContainer.visible=true;
+			}
+			
+			function ShowWorkSpace3D():void
+			{
+				//need get data form WS2D_MainContainer
+				
+				//WS2D_MainContainer.WorkSpace2D.getSceneData();
+				//WorkSpace3D.setSceneData();
+				//
+				for(var i:int=0;i<WS2D_MainContainer.WorkSpace2D.numChildren;i++)
+				{
+					var d:UIComponent=WS2D_MainContainer.WorkSpace2D.getChildAt(i) as UIComponent;
+					if(d.className=="Room_Small2D")
+					{
+						(d as Room_Small2D)
+					}
+				}
+					
+				WorkSpace3D.visible=true;
+				WS2D_MainContainer.visible=false;
+			}
+			
+			
+			[Embed(source="embeds/Products/icon_AccHeader1d.png")]
+			private var StarIcon:Class
+			
+			private function init():void {
+				var idx:uint;
+				var len:uint = ProductsAccordion.numChildren;
+				var btn:mx.controls.Button;
+				for (idx=0; idx<len; idx++) {
+					btn = ProductsAccordion.getHeaderAt(idx);
+					btn.useHandCursor = true;
+					btn.buttonMode = true;
+					btn.setStyle("Icon", StarIcon);
+					
+					btn.setStyle("selectedUpIcon", StarIcon);
+					btn.setStyle("selectedOverIcon", StarIcon);
+					btn.setStyle("selectedDownIcon", StarIcon);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!--主菜单/-->
+	<s:SkinnableContainer depth="10" backgroundColor="#ffffff" id="LogoContainer" height="81" width="100%">
+		
+		<s:Image id="Logo" source="@Embed('embeds/MainMenu/logo.png')"/>
+		
+		<s:Button buttonMode="true" name="MainMenu01" label="首页" x="500" width="86" height="36" rollOver="button1_mouseMoveHandler(event)" rollOut="button1_mouseOutHandler(event)" click="Show3DModel()" skinClass="MainMenuBtSkin"  verticalCenter="12" />
+		
+		<s:Button buttonMode="true" name="MainMenu02" label="文件" x="600" width="86" height="36" rollOver="button1_mouseMoveHandler(event)" click="Show3DModel()" skinClass="MainMenuBtSkin"  verticalCenter="12" />
+		
+		<s:Button buttonMode="true" name="MainMenu03" label="输出" x="700" width="86" height="36" rollOver="button1_mouseMoveHandler(event)" click="Show3DModel()" skinClass="MainMenuBtSkin"  verticalCenter="12" />
+		
+		<s:Button buttonMode="true" name="MainMenu04" label="清单" x="800" width="86" height="36" rollOver="button1_mouseMoveHandler(event)" click="Show3DModel()" skinClass="MainMenuBtSkin"  verticalCenter="12" />
+		
+		<s:Button buttonMode="true" name="MainMenu05" label="帮助" x="900" width="86" height="36" rollOver="button1_mouseMoveHandler(event)" click="Show3DModel()" skinClass="MainMenuBtSkin"  verticalCenter="12" />
+		
+	</s:SkinnableContainer>
+	
+	
+	<s:SkinnableContainer depth="9" y="81" width="100%" height="100%" backgroundColor="#000000" id="WorkSpace" backgroundAlpha="0" >
+		
+		<!--左侧物品栏/-->
+		<s:SkinnableContainer depth="8" width="310" height="100%" backgroundColor="#000000" id="Objects" backgroundAlpha="0">
+			
+			<s:SkinnableContainer backgroundColor="#1abc9c" width="310" height="75" >
+				<s:Label text="Search" x="10" verticalCenter="5" styleName="customFontStyles" />
+				<!--mx:TextInput x="85" width="160" height="32" verticalCenter="5" styleName="customTextInput" /-->
+				<s:ComboBox x="75" width="170" verticalCenter="5" styleName="customTextInput" />
+				<s:Image  buttonMode="true" x="262" source="@Embed('embeds/MainMenu/icon_search.png')" verticalCenter="5"/>
+			</s:SkinnableContainer>
+			
+		<mx:Accordion id="ProductsAccordion" y="75" width="310" height="100%" headerStyleName="customAccordionHeadStyles" creationComplete="init()">
+				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
+				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
+				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
+				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>	
+				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
+				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
+		</mx:Accordion>
+			
+		</s:SkinnableContainer>
+		
+		<!--工作区/-->
+		<s:SkinnableContainer depth="7" x="310" width="100%" height="100%" backgroundColor="#000000" id="AWAY3D" backgroundAlpha="0">
+		
+			<ns:WorkSpace3D id="WorkSpace3D" width="100%" height="100%" visible="false"/>
+			
+			<ns2:WS2D_MainContainer  id="WS2D_MainContainer" backgroundColor="0x2f3243" width="100%" height="100%" visible="true"/>
+			
+			<s:SkinnableContainer backgroundColor="#000000" id="toolBarContainer" backgroundAlpha="0"  right="100" top="-2" > 
+				
+				<s:Image source="@Embed('embeds/ToolBar/toolBar_Bg.png')" />
+				<s:Button name="btToolBarShow2D" x="60" label="2D" width="40" height="40" click="ShowWorkSpace2D()" verticalCenter="-6" />
+				<s:Button name="btToolBarShow3D" x="120" label="3D" width="40" height="40" click="ShowWorkSpace3D()" verticalCenter="-6" />
+				
+			</s:SkinnableContainer>
+
+		</s:SkinnableContainer>
+		
+	</s:SkinnableContainer>
+	
+</s:Application>
