@@ -1,4 +1,4 @@
-package zszh_away3d
+package zszh_WorkSpace3D
 {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -22,6 +22,7 @@ package zszh_away3d
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.PointLight;
 	import away3d.loaders.Loader3D;
+	
 	import away3d.loaders.misc.AssetLoaderContext;
 	import away3d.loaders.parsers.AWD2Parser;
 	import away3d.loaders.parsers.Parsers;
@@ -56,7 +57,7 @@ package zszh_away3d
 		private var _pointLight:PointLight;
 		private var lightPicker:StaticLightPicker;
 		
-
+		
 		//plane
 		var _plane:Mesh;
 		var _houseObject:ObjectContainer3D;
@@ -64,6 +65,20 @@ package zszh_away3d
 		public function WorkSpace3D()
 		{
 			super();   
+		}
+		
+		public function ClearRoom():void
+		{
+			//采用递减的方式
+			for(var i:int=_houseObject.numChildren-1;i>=0;i--)
+				_houseObject.removeChildAt(i);
+		}
+		public function BuildRoom(pos1:Array,roomName:String):void
+		{
+			var room:Room_3D=new Room_3D(pos1);
+			room.name=roomName;
+			room.BuiltRoom();
+			_houseObject.addChild(room);
 		}
 		override protected function createChildren():void
 		{
@@ -77,7 +92,7 @@ package zszh_away3d
 			addChild(_view3d);
 			_view3d.addEventListener(Event.ADDED_TO_STAGE,update);
 			addEventListener(Event.ENTER_FRAME,OnFrameEnter);
-
+			
 			//setup light 
 			directionalLight = new DirectionalLight(0, -1, 0);
 			directionalLight.castsShadows = false;
@@ -122,7 +137,7 @@ package zszh_away3d
 			
 			addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN,MOUSE_MDOWN_view3d);
 			addEventListener(MouseEvent.MIDDLE_MOUSE_UP,MOUSE_MUP_view3d);
-
+			
 			
 			addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_view3d);
 			
@@ -142,52 +157,45 @@ package zszh_away3d
 			var p0:Point=new Point(-400,400);
 			var p1:Point=new Point(400,400);
 			var p2:Point=new Point(400,-400);
-			var p31:Point=new Point(0,-400);
-			var p3:Point=new Point(0,-300);
+			//var p31:Point=new Point(0,-400);
+			//var p3:Point=new Point(0,-300);
 			var p4:Point=new Point(-400,-300);
 			var p:Array=new Array();
 			p.push(p0);
 			p.push(p1);
 			p.push(p2);
-			p.push(p31);
-			p.push(p3);
+			//p.push(p31);
+			//p.push(p3);
 			p.push(p4);
 			
-			var d:WS3D_Room=new WS3D_Room(p);
+			var d:Room_3D=new Room_3D(p);
 			d.BuiltRoom();
+			
+			
 			_houseObject.addChild(d);
-			
-
-
-			
-			
 			_view3d.scene.addChild(_houseObject);
-
-			
-
-			
 			_view3d.scene.addChild(new Trident(50));
 			
 			
-
+			
 			//
-		/*	Parsers.enableAllBundled();
+			/*	Parsers.enableAllBundled();
 			AssetLibrary.enableParser(AWD2Parser);
 			
 			//kickoff asset loading
 			var _loader:Loader3D= new Loader3D();
-
+			
 			_loader.load(new URLRequest("../embeds/myModel5.awd"));
 			for (var i:int = 0; _loader.numChildren; i++)
 			{
-				var mesh:Mesh = Mesh(_loader.getChildAt(i));
-				mesh.scale(20);
-				mesh.material.lightPicker=lightPicker;
+			var mesh:Mesh = Mesh(_loader.getChildAt(i));
+			mesh.scale(20);
+			mesh.material.lightPicker=lightPicker;
 			}
 			_view3d.scene.addChild(_loader);*/
-
+			
 		}
-
+		
 		private function onObjectMouseDown( event:MouseEvent3D ):void {
 			event.target.showBounds=true;
 		}
@@ -273,13 +281,13 @@ package zszh_away3d
 			{
 				var dx:int = ev.localX -_MMDownPos.x;
 				var dz:int = ev.localY -_MMDownPos.y;
-			
+				
 				_view3d.camera.x=_MMDownCameraPos.x-dx*5;
 				_view3d.camera.z=_MMDownCameraPos.y+dz*5;
 				
 			}
-			
-			//左键 旋转 
+				
+				//左键 旋转 
 			else if(_bMDown_view3d)
 			{
 				
@@ -290,7 +298,7 @@ package zszh_away3d
 				dx = ev.localY -_MDownPos.y;//x轴转动
 				
 				var angx:int=dx/31.4;
-
+				
 				for(var i:int=0;i<_view3d.scene.numChildren;i++)
 				{
 					_view3d.scene.getChildAt(i).rotate(new Vector3D(0,1,0),-angy);

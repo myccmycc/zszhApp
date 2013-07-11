@@ -5,123 +5,159 @@ package zszh_WorkSpace2D
 	
 	import mx.controls.Alert;
 	import mx.core.DragSource;
+	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.events.DragEvent;
 	import mx.events.FlexEvent;
+	import mx.events.ResizeEvent;
+	import mx.managers.CursorManager;
 	import mx.managers.DragManager;
 	
 	import spark.components.Image;
 	
+	
 	public class WorkSpace2D extends UIComponent
 	{
-		public var _grid:WorkSpace2D_Grid;
+		public var _grid:Grid;
 		public var _room2DArr:Array;
 		public var _modelsArr:Array;
-		
 		
 		public function WorkSpace2D()
 		{
 			super();
-			this.addEventListener(MouseEvent.MOUSE_OUT,MouseOut);
-			this.addEventListener(DragEvent.DRAG_ENTER,DragEnter2D);
-			this.addEventListener(DragEvent.DRAG_OVER,DragOver2D);
-			this.addEventListener(DragEvent.DRAG_DROP,DragDrop2D);
 			this.addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 		}
-		private function OnCreation_Complete(e:FlexEvent):void
+		public function ShowCenter():void
 		{
-			_grid=new WorkSpace2D_Grid();
-			addChild(_grid);
-			_grid.addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_grid);
-			_grid.addEventListener(MouseEvent.MOUSE_DOWN,MOUSE_DOWN_grid);
-			_grid.addEventListener(MouseEvent.MOUSE_UP,MOUSE_UP_grid);
-			_grid.addEventListener(FlexEvent.CREATION_COMPLETE,showGrid);
-		}
-
+			_grid.scaleX=0.5;
+			_grid.scaleY=0.5;
 			
-		private function showGrid(e:FlexEvent):void
-		{
-			
-			if(_grid)
-			{
-				_grid.width=unscaledWidth*2;
-				_grid.height=unscaledHeight*2;
-				_grid.drawGird(unscaledWidth*2/2,unscaledWidth*2/2);
-			}
+			_grid.x=-(_grid.width*_grid.scaleX)/2+this.unscaledWidth/2;
+			_grid.y=-(_grid.height*_grid.scaleY)/2+this.unscaledHeight/2;
 		}
 		
-		private function MOUSE_WHEEL_grid(ev:MouseEvent) : void
+		private function OnCreation_Complete(e:FlexEvent):void
 		{
-			if(ev.delta<0)
+			_grid=new Grid();	
+			_room2DArr=new Array;
+			_modelsArr=new Array;
+			
+			_grid.scaleX=0.1;
+			_grid.scaleY=0.1;
+			
+			_grid.x=-(_grid.width*_grid.scaleX)/2+this.unscaledWidth/2;
+			_grid.y=-(_grid.height*_grid.scaleY)/2+this.unscaledHeight/2;
+			
+			addChild(_grid);
+			addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_grid);
+			
+
+			
+			_grid.addEventListener(DragEvent.DRAG_ENTER,DragEnter2D);
+			_grid.addEventListener(DragEvent.DRAG_OVER,DragOver2D);
+			_grid.addEventListener(DragEvent.DRAG_DROP,DragDrop2D);
+		}
+
+		private function MOUSE_WHEEL_grid(e:MouseEvent) : void
+		{
+			if(e.delta>0)
 			{
-				this.scaleX+=0.1
-				this.scaleY+=0.1
-				trace("画布宽度："+_grid.width);
-				trace("宽度："+this.unscaledWidth);
+				if(_grid.scaleX<1.0)
+				{
+					_grid.scaleX+=0.1
+					_grid.scaleY+=0.1
+					
+
+					_grid.x=mouseX-e.localX*(_grid.scaleX);
+					_grid.y=mouseY-e.localY*(_grid.scaleY);
+					
+					trace("e.localX:"+e.localX);
+					trace("_grid.mouseX:"+_grid.mouseX);
+				
+					/*trace("画布宽度："+_grid.width);
+					trace("画布缩放："+_grid.scaleX);
+					trace("workspace2d宽度："+this.width);
+					trace("workspace2d unscaledWidth宽度："+this.unscaledWidth);
+					trace("workspace2d缩放："+this.scaleX);*/
+				}
 			}
 			else
 			{
-				//if(this.scaleX>1)
+				if(_grid.scaleX>0.2)
 				{
-					this.scaleX-=0.1
-					this.scaleY-=0.1
-					trace("画布宽度："+_grid.width);
-					trace("宽度："+this.unscaledWidth);
+					_grid.scaleX-=0.1
+					_grid.scaleY-=0.1
+						
+					_grid.x=mouseX-e.localX*(_grid.scaleX);
+					_grid.y=mouseY-e.localY*(_grid.scaleY);
+					
+					trace("e.localX:"+e.localX);
+					trace("_grid.mouseX:"+_grid.mouseX);
+					
+					/*trace("画布宽度："+_grid.width);
+					trace("画布缩放："+_grid.scaleX);
+					trace("workspace2d宽度："+this.width);
+					trace("workspace2d unscaledWidth宽度："+this.unscaledWidth);
+					trace("workspace2d缩放："+this.scaleX);*/
 				}
 			}				
 		}
-		private function MOUSE_DOWN_grid(ev:MouseEvent) : void
-		{
-			this.buttonMode=true;
-			this.startDrag(false);
-		}
-		private function MOUSE_UP_grid(ev:MouseEvent) : void
-		{
-			this.buttonMode=false;
-			this.stopDrag();
-		}
+
 		
-		var room_small:Room_Small2D;
+		
+		private var room_number:int=0;
+		private var current_object:Object;
+		
+		//D&D
 		private function DragEnter2D(event:DragEvent):void
 		{
 			trace("DragEnter2D event.target.name:"+event.target.name);
 			trace("DragEnter2D event.dragInitiator.name:"+event.dragInitiator.name);
 			
+			var className:String=String(event.dragSource.dataForFormat("className"));
+			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
+			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
 			
-			var messages:String=String(event.dragSource.dataForFormat("className"));
-			trace("WorkSpace2D::DragEnter2D：className="+messages); 
+			trace("WorkSpace2D::DragEnter2D：className="+className); 
+			trace("WorkSpace2D::DragEnter2D：resourcePath="+resourcePath); 
+			trace("WorkSpace2D::DragEnter2D：objectName="+objectName); 
 			
-			if(messages=="Room_Small2D")
+			current_object=null;
+			
+			if(className=="Room_2D")
 			{
-				room_small=new Room_Small2D();
-				trace("className:"+room_small.className);
-				room_small.x=event.localX;
-				room_small.y=event.localY;
-				addChild(room_small);
-				room_small.startDrag(false);
+				var room:Room_2D=new Room_2D();
+				room.x=event.localX;
+				room.y=event.localY;
+				room.name=room.className+room_number;
+				room_number++;
+				_grid.addChild(room);
+				_room2DArr.push(room);
+				current_object=room as Object;
 			}
-			
+			else if(className=="model_bed")
+			{
+				var model:Model=new Model(resourcePath,objectName);
+				model.x=event.localX;
+				model.y=event.localY;
+				model.name=model.className+room_number;
+				room_number++;
+				_grid.addChild(model);
+				_modelsArr.push(model);
+				current_object=model as Object;
+			}
 			DragManager.acceptDragDrop(event.target as UIComponent);
 		}
 		private function DragOver2D(event:DragEvent):void
 		{
-			//DragManager.acceptDragDrop(event.target as UIComponent);
+			if(current_object)
+			{
+				current_object.x=event.localX;
+				current_object.y=event.localY;
+			}
 		}
 		private function DragDrop2D(event:DragEvent):void
 		{
-			/*var dragObject:UIComponent=UIComponent(event.dragInitiator);
-			dragObject.x = (event.currentTarget).mouseX;
-			dragObject.y = (event.currentTarget).mouseY;
-			if(dragObject.parent!=event.currentTarget){
-			AWAY3D.addElement(dragObject);
-			}*/
-			
-			room_small.stopDrag();
-		}
-	
-		private function MouseOut(event:MouseEvent):void
-		{
-			
 		}
 	}
 }

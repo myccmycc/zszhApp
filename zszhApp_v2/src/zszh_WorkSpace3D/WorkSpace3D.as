@@ -7,6 +7,7 @@ package zszh_WorkSpace3D
 	import flash.net.URLRequest;
 	
 	import mx.core.UIComponent;
+	import mx.events.FlexEvent;
 	
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
@@ -39,42 +40,45 @@ package zszh_WorkSpace3D
 		private var _view3d:View3D;
 		//debug 
 		private var _debug:AwayStats;
-		
-		//plane textures
-		[Embed(source="/../embeds/floor_diffuse.jpg")]
-		public static var FloorDiffuse:Class;
-		[Embed(source="/../embeds/floor_specular.jpg")]
-		public static var FloorSpecular:Class;
-		[Embed(source="/../embeds/floor_normal.jpg")]
-		public static var FloorNormals:Class;
-		
-		//material objects
-		private var planeMaterial:TextureMultiPassMaterial;
-		
-		//light objects
-		private var directionalLight:DirectionalLight;
-		private var _pointLight:PointLight;
-		private var lightPicker:StaticLightPicker;
-		
-
-		//plane
-		var _plane:Mesh;
-		var _houseObject:ObjectContainer3D;
+		//rooms
+		private var _roomContainer3D:ObjectContainer3D;
+		//models
+		private var _modelsContainer3D:ObjectContainer3D;
 		
 		public function WorkSpace3D()
 		{
 			super();   
+			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 		}
 		
-		public function BuildRoom(pos1:Array)
+
+		public function ClearRoom():void
+		{
+			for(var i:int=_roomContainer3D.numChildren-1;i>=0;i--)
+				_roomContainer3D.removeChildAt(i);
+			
+		}
+		public function BuildRoom(pos1:Vector.<Number>,roomName:String):void
 		{
 			var room:Room_3D=new Room_3D(pos1);
+			room.name=roomName;
 			room.BuiltRoom();
-			_houseObject.addChild(room);
+			_roomContainer3D.addChild(room);
 		}
-		override protected function createChildren():void
+		
+		public function ClearModels():void
 		{
-			super.createChildren();
+			for(var i:int=_modelsContainer3D.numChildren-1;i>=0;i--)
+				_modelsContainer3D.removeChildAt(i);
+		}
+		
+		public function AddModels(modelLoader:Loader3D):void
+		{
+			_modelsContainer3D.addChild(modelLoader);
+		}
+		
+		private function OnCreation_Complete(e:FlexEvent):void
+		{
 			if(!_view3d)
 			{
 				_view3d=new View3D();
@@ -84,33 +88,7 @@ package zszh_WorkSpace3D
 			addChild(_view3d);
 			_view3d.addEventListener(Event.ADDED_TO_STAGE,update);
 			addEventListener(Event.ENTER_FRAME,OnFrameEnter);
-
-			//setup light 
-			directionalLight = new DirectionalLight(0, -1, 0);
-			directionalLight.castsShadows = false;
-			directionalLight.color = 0xeedddd;
-			directionalLight.diffuse = .5;
-			directionalLight.ambient = .5;
-			directionalLight.specular = 0;
-			directionalLight.ambientColor = 0x808090;
-			_view3d.scene.addChild(directionalLight);
 			
-			_pointLight=new PointLight();
-			_pointLight.castsShadows=false;
-			_pointLight.color=0xff0000;
-			_pointLight.position=new Vector3D(0,500,0);
-			_view3d.scene.addChild(_pointLight);
-			
-			lightPicker = new StaticLightPicker([_pointLight]);
-			
-			//setup material
-			planeMaterial = new TextureMultiPassMaterial(Cast.bitmapTexture(FloorDiffuse));
-			planeMaterial.specularMap = Cast.bitmapTexture(FloorSpecular);
-			planeMaterial.normalMap = Cast.bitmapTexture(FloorNormals);
-			planeMaterial.lightPicker = lightPicker;
-			planeMaterial.repeat = true;
-			planeMaterial.mipmap = false;
-			planeMaterial.specular = 10;
 			
 			//setup debuh info
 			_debug=new AwayStats(_view3d);
@@ -129,67 +107,21 @@ package zszh_WorkSpace3D
 			
 			addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN,MOUSE_MDOWN_view3d);
 			addEventListener(MouseEvent.MIDDLE_MOUSE_UP,MOUSE_MUP_view3d);
-
+			
 			
 			addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_view3d);
 			
+			
+			
 			//setup the scene
-			var wire:WireframeCube=new WireframeCube(400,400,400);
-			wire.position=new Vector3D(0,0,0);
+			_roomContainer3D = new ObjectContainer3D();
+			_modelsContainer3D= new ObjectContainer3D();
 			
-			_view3d.scene.addChild(wire);
-			
-			
-			
-			
-			
-			_houseObject = new ObjectContainer3D();
-			
-			
-			var p0:Point=new Point(-400,400);
-			var p1:Point=new Point(400,400);
-			var p2:Point=new Point(400,-400);
-			var p31:Point=new Point(0,-400);
-			var p3:Point=new Point(0,-300);
-			var p4:Point=new Point(-400,-300);
-			var p:Array=new Array();
-			p.push(p0);
-			p.push(p1);
-			p.push(p2);
-			p.push(p31);
-			p.push(p3);
-			p.push(p4);
-			
-			var d:Room_3D=new Room_3D(p);
-			d.BuiltRoom();
-			
-			
-			_houseObject.addChild(d);
-			_view3d.scene.addChild(_houseObject);
+			_view3d.scene.addChild(_roomContainer3D);
+			_view3d.scene.addChild(_modelsContainer3D);
 			_view3d.scene.addChild(new Trident(50));
+
 			
-			
-
-			//
-		/*	Parsers.enableAllBundled();
-			AssetLibrary.enableParser(AWD2Parser);
-			
-			//kickoff asset loading
-			var _loader:Loader3D= new Loader3D();
-
-			_loader.load(new URLRequest("../embeds/myModel5.awd"));
-			for (var i:int = 0; _loader.numChildren; i++)
-			{
-				var mesh:Mesh = Mesh(_loader.getChildAt(i));
-				mesh.scale(20);
-				mesh.material.lightPicker=lightPicker;
-			}
-			_view3d.scene.addChild(_loader);*/
-
-		}
-
-		private function onObjectMouseDown( event:MouseEvent3D ):void {
-			event.target.showBounds=true;
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
@@ -200,8 +132,11 @@ package zszh_WorkSpace3D
 		
 		private function update(e:* = null):void
 		{
-			_view3d.width = unscaledWidth;
-			_view3d.height = unscaledHeight ;
+			if(_view3d)
+			{
+				_view3d.width = unscaledWidth;
+				_view3d.height = unscaledHeight ;
+			}
 		}
 		
 		private function OnFrameEnter(e:Event):void
@@ -209,16 +144,14 @@ package zszh_WorkSpace3D
 			if(_view3d.stage3DProxy)
 			{
 				_view3d.render();
-				
-				
-				
-				//var ang:Number=Math.atan(y/x);
-				
-				//trace(ang);
-				//_plane.rotationY=ang;
 			}
 		}
 		
+		
+		
+		private function onObjectMouseDown( event:MouseEvent3D ):void {
+			event.target.showBounds=true;
+		}
 		/**
 		 * _view3d listener for mouse interaction
 		 */

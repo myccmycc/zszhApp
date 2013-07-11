@@ -45,7 +45,15 @@
 			
 			import zszh_MainMenu.Menu1;
 			
+			import zszh_WorkSpace2D.Model;
+			
+			import zszh_WorkSpace3D.Room_3D;
+			
 			private var _menu1:Menu1=new Menu1;
+			
+			[Embed(source="../embeds/mouse01.png")]
+			public var imageCursor:Class;
+			
 			
 			protected function button1_mouseMoveHandler(event:MouseEvent):void
 			{
@@ -67,7 +75,7 @@
 			//-------------主菜单--end-------------------
 			
 			import mx.controls.Button;
-			import zszh_WorkSpace2D.Room_Small2D;
+			import zszh_WorkSpace2D.Room_2D;
 			import zszh_Products.Navigator_BasicWall;
 			function Show3DModel():void
 			{
@@ -82,25 +90,46 @@
 					WS2D_MainContainer.visible=false;
 				}
 			}
-			function ShowWorkSpace2D():void
+			private function ShowWorkSpace2D():void
 			{
 				WorkSpace3D.visible=false;
 				WS2D_MainContainer.visible=true;
 			}
-			
-			function ShowWorkSpace3D():void
+			private function ShowWorkSpace2DCenter():void 
 			{
-				//need get data form WS2D_MainContainer
+				WS2D_MainContainer.WorkSpace2D.ShowCenter();
+			}
+			
+			private function ShowWorkSpace3D():void
+			{
+				WorkSpace3D.ClearRoom();
 				
-				//WS2D_MainContainer.WorkSpace2D.getSceneData();
-				//WorkSpace3D.setSceneData();
-				//
-				for(var i:int=0;i<WS2D_MainContainer.WorkSpace2D.numChildren;i++)
+				for(var i:int=0;i<WS2D_MainContainer.WorkSpace2D._room2DArr.length;i++)
 				{
-					var d:UIComponent=WS2D_MainContainer.WorkSpace2D.getChildAt(i) as UIComponent;
-					if(d.className=="Room_Small2D")
+					var room2d:UIComponent=WS2D_MainContainer.WorkSpace2D._room2DArr[i] as UIComponent;					
+					if(room2d.className=="Room_2D")
 					{
-						(d as Room_Small2D)
+						var pos:Array=new Array;
+						var vec:Vector.<Number>= (room2d as Room_2D)._vertexVec1;
+						/*for(var j:int=0;j<vec.length;j+=2)
+						{
+							var p:Point=new Point;
+							p.x=room2d.x+vec[j]-WS2D_MainContainer.WorkSpace2D._grid._gridWidth/2;
+							p.y=room2d.y+vec[j+1]-WS2D_MainContainer.WorkSpace2D._grid._gridHeight/2;
+							pos.push(p);
+						}*/
+						WorkSpace3D.BuildRoom(vec,room2d.name);				    
+					}
+				}
+				
+				WorkSpace3D.ClearModels();
+				for(var i:int=0;i<WS2D_MainContainer.WorkSpace2D._modelsArr.length;i++)
+				{
+					var modelBed:UIComponent=WS2D_MainContainer.WorkSpace2D._modelsArr[i] as UIComponent;					
+					if(modelBed.className=="Model")
+					{
+						var mbed:Model = modelBed as Model;
+						WorkSpace3D.AddModels(mbed._loaderModel);		    
 					}
 				}
 					
@@ -161,14 +190,14 @@
 				<s:Image  buttonMode="true" x="262" source="@Embed('embeds/MainMenu/icon_search.png')" verticalCenter="5"/>
 			</s:SkinnableContainer>
 			
-		<mx:Accordion id="ProductsAccordion" y="75" width="310" height="100%" headerStyleName="customAccordionHeadStyles" creationComplete="init()">
+			<mx:Accordion id="ProductsAccordion" y="75" width="310" height="100%" headerStyleName="customAccordionHeadStyles" creationComplete="init()">
 				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
 				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
 				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
 				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>	
 				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
 				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
-		</mx:Accordion>
+			</mx:Accordion>
 			
 		</s:SkinnableContainer>
 		
@@ -179,11 +208,12 @@
 			
 			<ns2:WS2D_MainContainer  id="WS2D_MainContainer" backgroundColor="0x2f3243" width="100%" height="100%" visible="true"/>
 			
-			<s:SkinnableContainer backgroundColor="#000000" id="toolBarContainer" backgroundAlpha="0"  right="100" top="-2" > 
+			<s:SkinnableContainer  id="toolBarContainer" backgroundAlpha="0"  right="100" top="-2" backgroundColor="#000000" > 
 				
 				<s:Image source="@Embed('embeds/ToolBar/toolBar_Bg.png')" />
 				<s:Button name="btToolBarShow2D" x="60" label="2D" width="40" height="40" click="ShowWorkSpace2D()" verticalCenter="-6" />
 				<s:Button name="btToolBarShow3D" x="120" label="3D" width="40" height="40" click="ShowWorkSpace3D()" verticalCenter="-6" />
+				<s:Button name="btToolBarShow3D" x="180" label="Center" width="60" height="40" click="ShowWorkSpace2DCenter()" verticalCenter="-6" />
 				
 			</s:SkinnableContainer>
 

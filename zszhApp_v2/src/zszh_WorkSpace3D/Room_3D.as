@@ -47,58 +47,55 @@ package zszh_WorkSpace3D
 		private var lightPicker:StaticLightPicker;
 		
 		//vertexs data
-		var _pos1Array:Array;//inside
-		var _pos2Array:Array;//outside
+		private var _pos1Vec:Vector.<Number>;//inside
+		private var _pos2Vec:Vector.<Number>;//outside
+		
 		var _wallHeight:int;
 		
-		public function Room_3D(_pos1:Array)
+		public function Room_3D(_pos1:Vector.<Number>)
 		{
 			super();
-			if(!_pos1 || _pos1.length<3 )
-				return;
-			_pos1Array=_pos1;
+			
+			_pos1Vec=_pos1;
 			
 			//compute the pos2 according pos1
 			//Qi  ＝  Pi  ＋  （Vi － Vi+1）* d / sina
 			
-			_pos2Array=new Array();
+			_pos2Vec=new Vector.<Number>;
 			
-			for(var i:int=0;i<_pos1Array.length;i++)
+			var pos1Len:int=_pos1Vec.length;
+			for(var i:int=0;i<pos1Len;i+=2)
 			{
-				var pos1:Point=_pos1Array[i];
-				var pos2:Point=_pos1Array[(i+1)%_pos1Array.length];
-				var pos3:Point=_pos1Array[(i+2)%_pos1Array.length];
-				
+				var pos1:Point=new Point(_pos1Vec[i],_pos1Vec[i+1]);
+				var pos2:Point=new Point(_pos1Vec[(i+2)%pos1Len],_pos1Vec[(i+3)%pos1Len]);
+				var pos3:Point=new Point(_pos1Vec[(i+4)%pos1Len],_pos1Vec[(i+5)%pos1Len]);
+		
+				//单位向量 vec1，vexc2
 				var vec1:Point=new Point(pos2.x-pos1.x,pos2.y-pos1.y);
-				vec1.x=vec1.x/Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
-				vec1.y=vec1.y/Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
+				var disVec1:Number=Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
+				vec1.x=vec1.x/disVec1;
+				vec1.y=vec1.y/disVec1;
+				
 				var vec2:Point=new Point(pos3.x-pos2.x,pos3.y-pos2.y);
-				vec2.x=vec2.x/Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				vec2.y=vec2.y/Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
+				var disVec2:Number=Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
+				vec2.x=vec2.x/disVec2;
+				vec2.y=vec2.y/disVec2;
 				
-				var n:Number=vec1.x*vec2.x+vec1.y*vec2.y;
-				var m:Number=Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y)*Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
+				//求角度   AXB=|A|.|B|.SIN(ang);
+				var AB:Number=Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y)*Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
+				var sina:Number=(vec1.x*vec2.y-vec1.y*vec2.x)/AB;
 				
-				var ang:Number=Math.acos(n/m);
+				//求_pos2Vec
+				_pos2Vec[i]=pos2.x+(vec2.x-vec1.x)*20/sina;
+				_pos2Vec[i+1]=pos2.y+(vec2.y-vec1.y)*20/sina;
 				
-				var p:Point=new Point(0,0);
-				var d:Number=Math.sin(ang);
-				
-				//sin ang
-				var sina:Number=(vec1.x*vec2.y-vec1.y*vec2.x)/m;
-				p.x=pos2.x+(vec2.x-vec1.x)*20/sina;
-				p.y=pos2.y+(vec2.y-vec1.y)*20/sina;
-				
-				trace("ClassRoom:ang="+ang);
-				trace("ClassRoom:p="+p);
-				
-				_pos2Array[i]=p;
+				trace("_pos2Vec="+_pos2Vec[i] + _pos2Vec[i+1]);
 			}
 			
 			_wallHeight=270;
 			
 			//initMaterial
-			_wallMaterial = new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
+			/*_wallMaterial = new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
 			_floorMaterial= new TextureMaterial(Cast.bitmapTexture(FloorDiffuse));
 			
 			_pointLight=new PointLight();
@@ -122,24 +119,23 @@ package zszh_WorkSpace3D
 			lightPicker = new StaticLightPicker([_pointLight,directionalLight]);
 			
 			_wallMaterial.lightPicker=lightPicker;
-			_floorMaterial.lightPicker=lightPicker;
+			_floorMaterial.lightPicker=lightPicker;*/
 		}
 		
 		
 		public function BuiltRoom()
 		{
 			//draw wall inside
-			if(_pos1Array.length>2 )
+			//if(_pos2Vec.length>2 )
 			{
 				var tupmaterial :ColorMaterial = new ColorMaterial(0xffffff, 1);
-				tupmaterial.lightPicker=lightPicker;
 				
-				BuiltRoomWall(_pos1Array,tupmaterial);
-				BuiltRoomWall(_pos2Array,tupmaterial);
-				BuiltRoomFloor(_pos1Array,_floorMaterial);
+				BuiltRoomWall(_pos1Vec,tupmaterial,270);
+				BuiltRoomWall(_pos2Vec,tupmaterial,270);
+				BuiltRoomFloor(_pos1Vec,tupmaterial);
 			}
 			
-			if(_pos2Array.length>2 )
+			/*if(_pos2Array.length>2 )
 			{
 				var gem:Geometry=new Geometry();
 				
@@ -237,74 +233,73 @@ package zszh_WorkSpace3D
 				var mesh :Mesh = new Mesh(gem,tupmaterial);
 				
 				addChild(mesh);
-			}
-			
-			
-			
-
+			}*/
 		}
 		
 		//ok
-		private function BuiltRoomWall(posArr:Array,material:ColorMaterial)
-		{
-			for(var i:int=0;i<posArr.length;i++)
-			{
-				var p0:Point=posArr[i];
-				var p1:Point=posArr[(i+1)%posArr.length];
-				
-				var x:Number= p1.x-p0.x;
-				var y:Number= p1.y-p0.y;
-				var w:Number=Math.sqrt(x*x +y*y);
-				
-				var _plane:Mesh = new Mesh(new PlaneGeometry(w, _wallHeight,1,1,false,false), material);
-				
-				addChild(_plane);
-				
-				//position
-				_plane.position=new Vector3D((p0.x+p1.x)/2,_wallHeight/2,(p0.y+p1.y)/2);
-				
-				
-				//angle for rotation
-				var vec1:Point=new Point(y,-x);//normal vector
-				
-				var vec2:Point=new Point(0,-1);
-				
-				var n:Number=vec1.x*vec2.x+vec1.y*vec2.y;
-				var m:Number=Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y)*Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				
-				var ang:Number=Math.acos(n/m)*MathConsts.RADIANS_TO_DEGREES;
-				
-				
-				var dc:Number=vec2.x*vec1.y-vec2.y*vec1.x;
-				if(dc<=0)
-					_plane.rotationY=ang;
-				else _plane.rotationY=-ang;
-				
-				
-				_plane.mouseEnabled=true;
-				_plane.addEventListener(MouseEvent3D.MOUSE_DOWN,onObjectMouseDown);
-			
-			}
-		}
-
-		// ok
-		private function BuiltRoomFloor(posArr:Array,material:MaterialBase,uvScale:int=100)
+		private function BuiltRoomWall(posVec:Vector.<Number>,material:MaterialBase,wallHeight:int,uvScale:int=100,floorZ:int=0):void
 		{
 			var gem:Geometry=new Geometry();
-			for(var i:int=0;i<posArr.length-2;i++)
+			var posLen:int=posVec.length;
+			
+			for(var i:int=0;i<posLen;i+=2)
 			{
 				var subGeom : SubGeometry = new SubGeometry;
 				
 				var vertex : Vector.<Number> = new Vector.<Number>;
 				var index : Vector.<uint> = new Vector.<uint>;
 				var uv : Vector.<Number> = new Vector.<Number>;
-				vertex.push(posArr[0].x,0, posArr[0].y,
-					posArr[i+1].x,0, posArr[i+1].y,
-					posArr[i+2].x,0, posArr[i+2].y);
+				
+				//p0  pi pi+1 顺时针方向 三角形
+				vertex.push(posVec[i],wallHeight, posVec[i+1],
+					posVec[(i+2)%posLen],wallHeight, posVec[(i+3)%posLen],
+					posVec[(i+2)%posLen],floorZ, posVec[(i+3)%posLen],
+					posVec[i],floorZ, posVec[i+1]);
+				
+				index.push(0,1,2,0,2,3);
+				
+				//uv 还是有点问题
+				uv.push(posVec[i]/uvScale, posVec[i+1]/uvScale,
+					posVec[(i+2)%posLen]/uvScale, posVec[(i+3)%posLen]/uvScale,
+					posVec[(i+2)%posLen]/uvScale, posVec[(i+3)%posLen]/uvScale);
+				
+				subGeom.updateVertexData(vertex);
+				subGeom.updateIndexData(index);
+				subGeom.updateUVData(uv);
+				gem.addSubGeometry(subGeom);
+			}
+			
+			material.repeat=true;
+			addChild(new Mesh(gem,material));	
+			//_plane.mouseEnabled=true;
+			//_plane.addEventListener(MouseEvent3D.MOUSE_DOWN,onObjectMouseDown);
+			
+		}
+
+		// ok
+		private function BuiltRoomFloor(posVec:Vector.<Number>,material:MaterialBase,uvScale:int=100,floorZ:int=0):void
+		{
+			var gem:Geometry=new Geometry();
+			var posLen:int=posVec.length;
+			
+			for(var i:int=0;i<posLen-4;i+=2)
+			{
+				var subGeom : SubGeometry = new SubGeometry;
+				
+				var vertex : Vector.<Number> = new Vector.<Number>;
+				var index : Vector.<uint> = new Vector.<uint>;
+				var uv : Vector.<Number> = new Vector.<Number>;
+				
+				//p0  pi pi+1
+				vertex.push(posVec[0],floorZ, posVec[1],
+					posVec[i+2],floorZ, posVec[i+3],
+					posVec[i+4],floorZ, posVec[i+5]);
+				
 				index.push(0, 1, 2);
-				uv.push(posArr[0].x/uvScale, posArr[0].y/uvScale,
-					posArr[i+1].x/uvScale, posArr[i+1].y/uvScale,
-					posArr[i+2].x/uvScale, posArr[i+2].y/uvScale);
+				
+				uv.push(posVec[0]/uvScale, posVec[1]/uvScale,
+					posVec[i+2]/uvScale, posVec[i+3]/uvScale,
+					posVec[i+4]/uvScale, posVec[i+5]/uvScale);
 				
 				subGeom.updateVertexData(vertex);
 				subGeom.updateIndexData(index);
@@ -315,8 +310,6 @@ package zszh_WorkSpace3D
 			material.repeat=true;
 			addChild(new Mesh(gem,material));	
 		}
-		
-		
 		
 		private function onObjectMouseDown( event:MouseEvent3D ):void {
 			event.target.showBounds=true;
