@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" width="830" height="660">
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			private function StartApp():void {
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	 
+	<fx:Style>
+		
+		.WelcomeTabs {
+			
+			tabWidth:217;
+			tabHeight:46;
+			fontFamily:微软雅黑;
+			
+			paddingTop:0;
+			
+			paddingLeft:0;
+			
+			horizontalGap:3;
+			
+			fontSize:18;
+			
+			fontWeight:normal;
+			
+			up-skin:ClassReference("zszh_welcome.Skin_WelcomeTab");
+			
+			down-skin:ClassReference("zszh_welcome.Skin_WelcomeTab");
+			
+			over-skin:ClassReference("zszh_welcome.Skin_WelcomeTab");
+			
+			disabled-skin:ClassReference("zszh_welcome.Skin_WelcomeTab");
+			
+			selected-up-skin:ClassReference("zszh_welcome.Skin_WelcomeTabSelected");
+			
+			selected-down-skin:ClassReference("zszh_welcome.Skin_WelcomeTabSelected");
+			
+			selected-over-skin:ClassReference("zszh_welcome.Skin_WelcomeTabSelected");
+			
+			selected-disabled-skin:ClassReference("zszh_welcome.Skin_WelcomeTabSelected");
+			
+			
+		}
+	</fx:Style>
+	<mx:TabNavigator width="100%" height="100%" tabStyleName="WelcomeTabs" backgroundColor="0x2980d7" >
+		
+		<s:NavigatorContent label="Welcome" width="100%" height="100%" backgroundColor="0xffffff" >
+			<s:Button label="Start" width="218" height="76" horizontalCenter="0" bottom="20" fontFamily="微软雅黑" fontSize="30" click="StartApp()" />
+			<s:SkinnableContainer backgroundColor="0xf2f0ec" width="100%" height="252" bottom="145" >
+				<s:Button label="我的文档" width="188" height="254"  x="100"  fontFamily="微软雅黑" fontSize="20" />
+				<s:Button label="新的设计" width="188" height="254"  x="300"   fontFamily="微软雅黑" fontSize="20" />
+				<s:Button label="房型引擎" width="188" height="254"  x="500"  fontFamily="微软雅黑" fontSize="20" />
+			</s:SkinnableContainer>
+		</s:NavigatorContent>
+		
+		<s:NavigatorContent label="模板欣赏" width="100%" height="100%" backgroundColor="0xffffff" >
+			<s:Button label="Start" width="218" height="76" horizontalCenter="0" bottom="20" fontFamily="微软雅黑" fontSize="30" click="StartApp()" />
+		</s:NavigatorContent>
+		
+	</mx:TabNavigator>
+	
+</s:SkinnableContainer>

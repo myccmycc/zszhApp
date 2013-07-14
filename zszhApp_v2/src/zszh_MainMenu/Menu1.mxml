@@ -37,16 +37,16 @@
 		<s:Image bottom="0" horizontalCenter="0" source="@Embed('embeds/MainMenu/menu_bgTop.png')"/>
 	</s:SkinnableContainer>
 	
-	<s:SkinnableContainer  id="Logo2Container"  skinClass="zszh_MainMenu.MenuSkin" top="17" width="212" height="100%">
+	<s:SkinnableContainer  id="Logo2Container"  skinClass="zszh_MainMenu.Skin_Menu" top="17" width="212" height="100%">
 		<s:Group top="10" bottom="10" horizontalCenter="0">
 			<s:layout>
 				<s:VerticalLayout/>
 			</s:layout>
-			<s:Button label="--新手入门" width="205" height="44" skinClass="zszh_MainMenu.MenuBtSkin" icon="@Embed('embeds/MainMenu/icon_menu51.png')" iconPlacement="left"/>
-			<s:Button label="--视频教程" width="205" height="44" skinClass="zszh_MainMenu.MenuBtSkin" icon="@Embed('embeds/MainMenu/icon_menu51.png')" />
-			<s:Button label="--在线问答" width="205" height="44" skinClass="zszh_MainMenu.MenuBtSkin" icon="@Embed('embeds/MainMenu/icon_menu51.png')" />
-			<s:Button label="--意见反馈" width="205" height="44" skinClass="zszh_MainMenu.MenuBtSkin" icon="@Embed('embeds/MainMenu/icon_menu51.png')" />
-			<s:Button label="--产品计划" width="205" height="44" skinClass="zszh_MainMenu.MenuBtSkin" icon="@Embed('embeds/MainMenu/icon_menu51.png')" />
+			<s:Button label="--新手入门" width="205" height="44" skinClass="zszh_MainMenu.Skin_MenuBt" icon="@Embed('embeds/MainMenu/icon_menu51.png')" iconPlacement="left"/>
+			<s:Button label="--视频教程" width="205" height="44" skinClass="zszh_MainMenu.Skin_MenuBt" icon="@Embed('embeds/MainMenu/icon_menu51.png')" />
+			<s:Button label="--在线问答" width="205" height="44" skinClass="zszh_MainMenu.Skin_MenuBt" icon="@Embed('embeds/MainMenu/icon_menu51.png')" />
+			<s:Button label="--意见反馈" width="205" height="44" skinClass="zszh_MainMenu.Skin_MenuBt" icon="@Embed('embeds/MainMenu/icon_menu51.png')" />
+			<s:Button label="--产品计划" width="205" height="44" skinClass="zszh_MainMenu.Skin_MenuBt" icon="@Embed('embeds/MainMenu/icon_menu51.png')" />
 		</s:Group>
 	
 	</s:SkinnableContainer>

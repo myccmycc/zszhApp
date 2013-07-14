@@ -26,6 +26,7 @@ package zszh_WorkSpace2D
 		private var _resourcePath:String;
 		private var _modelName:String;
 		
+		private var _selected:Boolean;
 		//models
 		public var _loaderModel:Loader3D;
 		
@@ -36,6 +37,16 @@ package zszh_WorkSpace2D
 			_modelName=modelName;
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 		}
+		
+		public function SetSelected(b:Boolean):void
+		{
+			_selected=b;
+		}
+		public function GetSelected():Boolean
+		{
+			return _selected;
+		}
+		
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
 			_topImageLoader = new Loader();

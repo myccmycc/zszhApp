@@ -19,13 +19,22 @@ package zszh_WorkSpace2D
 	public class WorkSpace2D extends UIComponent
 	{
 		public var _grid:Grid;
-		public var _room2DArr:Array;
-		public var _modelsArr:Array;
+		public var _room2DVec:Vector.<Room_2D>;
+		public var _modelsVec:Vector.<Model>;
 		
 		public function WorkSpace2D()
 		{
 			super();
 			this.addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
+		}
+		
+		public function SetAllNoSelected():void
+		{
+			for(var i:int=0;i<_room2DVec.length;i++)
+				_room2DVec[i].SetSelected(false);
+			
+			for(i=0;i<_modelsVec.length;i++)
+				_modelsVec[i].SetSelected(false);
 		}
 		public function ShowCenter():void
 		{
@@ -39,8 +48,9 @@ package zszh_WorkSpace2D
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
 			_grid=new Grid();	
-			_room2DArr=new Array;
-			_modelsArr=new Array;
+			
+			_room2DVec=new Vector.<Room_2D>();
+			_modelsVec=new Vector.<Model>();
 			
 			_grid.scaleX=0.1;
 			_grid.scaleY=0.1;
@@ -132,7 +142,7 @@ package zszh_WorkSpace2D
 				room.name=room.className+room_number;
 				room_number++;
 				_grid.addChild(room);
-				_room2DArr.push(room);
+				_room2DVec.push(room);
 				current_object=room as Object;
 			}
 			else if(className=="model_bed")
@@ -143,7 +153,7 @@ package zszh_WorkSpace2D
 				model.name=model.className+room_number;
 				room_number++;
 				_grid.addChild(model);
-				_modelsArr.push(model);
+				_modelsVec.push(model);
 				current_object=model as Object;
 			}
 			DragManager.acceptDragDrop(event.target as UIComponent);

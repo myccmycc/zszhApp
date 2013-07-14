@@ -19,26 +19,17 @@ package zszh_WorkSpace2D
 	
 	public class Room_2D extends UIComponent
 	{
-		public var _vertexVec1:Vector.<Number>;
-		public var _vertexVec2:Vector.<Number>;
-		public var _vertexVec3:Vector.<Number>;
-		
+		public  var _vertexVec1:Vector.<Number>;
 		public var _indiceVec:Vector.<int>;
-		public var _uvVec:Vector.<Number>;
 		
-		public var _floorTex:String="zszh_res/basic/wall/TextureFloor.jpg";
+		private  var _vertexVec2:Vector.<Number>;
+		private  var _vertexVec3:Vector.<Number>;
+	
 		
-		public var _floorTexLoader:Loader;
-		public var _floorBitmap:Bitmap;
-		public var _floorSprite:Sprite;
-		
-		public var _wallArray:Array;
-		public var _wallColor:uint ; //墙颜色
-		
-		private var _wallCornerArray:Array;
-		
-		
-		
+		private var _selected:Boolean;
+		private var _floor:Room_2DFloor;
+		private var _wallVec:Vector.<Room_2DWall>;		
+		private var _wallCornerVec:Vector.<Room_2DCorner>;
 		private var _roomType:int;//0小,1大,2L
 		
 		public function Room_2D()
@@ -46,73 +37,35 @@ package zszh_WorkSpace2D
 			super();
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 			_roomType=0;
+			_selected=false;
 		}
 		
-		//public function Room_2D(roomType:int)
+		public function SetAllNoSelected():void
+		{
+			for(var i:int=0;i<_wallVec.length;i++)
+				_wallVec[i].SetSelected(false);
+			
+			//for(i=0;i<_wallCornerVec.length;i++)
+				//_wallCornerVec[i].SetSelected(false);
+		}
 		
-
+		public function SetSelected(b:Boolean):void
+		{
+			_selected=b;
+			UpdateFloorWallCorner();
+		}
+		public function GetSelected():Boolean
+		{
+			return _selected;
+		}
+		
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
-			InitData();
 			
-			//floor
-			_floorSprite=new Sprite();
-			_floorSprite.buttonMode=true;
-			_floorSprite.addEventListener(MouseEvent.MOUSE_DOWN,FloorMouseDown);
-			_floorSprite.addEventListener(MouseEvent.MOUSE_MOVE,FloorMouseMove);
-			_floorSprite.addEventListener(MouseEvent.MOUSE_UP,FloorMouseUp);
-			addChild(_floorSprite);
-			
-			_floorTexLoader = new Loader();
-			_floorTexLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onComplete);
-			_floorTexLoader.load(new URLRequest(_floorTex));
-			
-			function onComplete(e:Event):void
-			{
-				_floorBitmap = Bitmap(_floorTexLoader.content);
-				DrawRoomFloor();
-			}
-			
-			//walls
-			_wallArray=new Array();
-			_wallColor= 0xff0000; 
-			for(var i:int=0;i<_vertexVec1.length;i+=2)
-			{
-				var wall:Room_Wall2D=new Room_Wall2D();
-				wall._sprite.name="wall"+i;
-				wall._sprite.addEventListener(MouseEvent.MOUSE_DOWN,WallMouseDown);
-				wall._sprite.addEventListener(MouseEvent.MOUSE_OVER,WallMouseOVER);
-				wall._sprite.addEventListener(MouseEvent.MOUSE_OUT,WallMouseOut);
-				
-				addChild(wall._sprite);
-				_wallArray.push(wall);
-			}
-			
-			DrawRoomWall();
-			
-			//wall corners 
-			_wallCornerArray=new Array();
-			
-			for(i=0;i<_vertexVec1.length;i+=2)
-			{
-				var wallCorner:Sprite=new Sprite();
-				wallCorner.name="wallCorner"+i;
-				wallCorner.addEventListener(MouseEvent.MOUSE_DOWN,CornerMouseDown);
-				wallCorner.addEventListener(MouseEvent.MOUSE_OVER,CornerMouseOVER);
-				wallCorner.addEventListener(MouseEvent.MOUSE_OUT,CornerMouseOut);
-				addChild(wallCorner);
-				_wallCornerArray.push(wallCorner);
-			}
-			DrawRoomWallCorner();
-		}
-		
-		private function InitData():void
-		{
 			_vertexVec1=new Vector.<Number>();
 			_vertexVec2=new Vector.<Number>();
 			_vertexVec3=new Vector.<Number>();
 			_indiceVec =new Vector.<int>();
-			_uvVec     =new Vector.<Number>();
 			
 			if(_roomType==0)
 			{
@@ -120,12 +73,41 @@ package zszh_WorkSpace2D
 				_indiceVec.push(0,1,2,0,2,3);
 			}
 			
-			for(var i:int=0;i<_vertexVec1.length;i+=2)
+			UpdateData();
+			
+			//floor
+			_floor=new Room_2DFloor();
+			addChild(_floor);
+			
+			//walls
+			_wallVec=new Vector.<Room_2DWall>;	
+			var len:int=_vertexVec1.length;
+			for(var i:int=0;i<len;i+=2)
 			{
-				_uvVec.push(_vertexVec1[i]/200,_vertexVec1[i+1]/200);
+				var wall:Room_2DWall=new Room_2DWall();
+				wall.name="wall"+i;
+				addChild(wall);
+				_wallVec.push(wall);
+				wall.Draw(_vertexVec2[i],_vertexVec2[i+1],_vertexVec2[(i+2)%len],_vertexVec2[(i+3)%len],_vertexVec3[i],_vertexVec3[i+1],_vertexVec3[(i+2)%len],_vertexVec3[(i+3)%len]);
 			}
 			
+			//wall corners 
+			_wallCornerVec=new Vector.<Room_2DCorner>;
+			
 			for(i=0;i<_vertexVec1.length;i+=2)
+			{
+				var wallCorner:Room_2DCorner=new Room_2DCorner();
+				wallCorner.name="wallCorner"+i;
+				wallCorner.addEventListener(MouseEvent.MOUSE_DOWN,CornerMouseDown);
+				
+				addChild(wallCorner);
+				_wallCornerVec.push(wallCorner);
+			}
+		}
+		
+		private function UpdateData():void
+		{
+			for(var i:int=0;i<_vertexVec1.length;i+=2)
 			{
 				var pos1:Point=new Point(_vertexVec1[i],_vertexVec1[i+1]);
 				var pos2:Point=new Point(_vertexVec1[(i+2)%_vertexVec1.length],_vertexVec1[(i+3)%_vertexVec1.length]);
@@ -166,159 +148,20 @@ package zszh_WorkSpace2D
 			}
 		}
 		
-		private function DrawRoomFloor():void
+		private function UpdateFloorWallCorner():void
 		{
-			_floorSprite.graphics.clear();
-				
-			_floorSprite.graphics.lineStyle(0, 0, 0);
-				
-			_floorSprite.graphics.beginFill(0xFF0000);
-				
-				
-			if(_floorBitmap)
-				_floorSprite.graphics.beginBitmapFill(_floorBitmap.bitmapData);
-				
-			//update uv
-			_uvVec=new Vector.<Number>(); 
-			for(var i:int=0;i<_vertexVec1.length;i+=2)
-			{
-				_uvVec.push(_vertexVec1[i]/200,_vertexVec1[i+1]/200);
-			}
-				
-			_floorSprite.graphics.drawTriangles(_vertexVec1,_indiceVec,_uvVec);
-				
-			_floorSprite.graphics.endFill();	
-		}
-
-		private function DrawRoomWall():void
-		{
-			for(var i:int=0;i<_vertexVec1.length;i+=2)
-			{
-				var pos1:Point=new Point(_vertexVec1[i],_vertexVec1[i+1]);
-				var pos2:Point=new Point(_vertexVec1[(i+2)%_vertexVec1.length],_vertexVec1[(i+3)%_vertexVec1.length]);
-				var pos3:Point=new Point(_vertexVec1[(i+4)%_vertexVec1.length],_vertexVec1[(i+5)%_vertexVec1.length]);
-				
-				var vec1:Point=new Point(pos2.x-pos1.x,pos2.y-pos1.y);
-				vec1.x=vec1.x/Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
-				vec1.y=vec1.y/Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
-				var vec2:Point=new Point(pos3.x-pos2.x,pos3.y-pos2.y);
-				vec2.x=vec2.x/Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				vec2.y=vec2.y/Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				
-				var n:Number=vec1.x*vec2.x+vec1.y*vec2.y;
-				var m:Number=Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y)*Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				
-				var ang:Number=Math.acos(n/m);
-				
-				var p:Point=new Point(0,0);
-				var d:Number=Math.sin(ang);
-				
-				//sin ang
-				var sina:Number=(vec1.x*vec2.y-vec1.y*vec2.x)/m;
-				
-				p.x=pos2.x-(vec2.x-vec1.x)*10/sina;
-				p.y=pos2.y-(vec2.y-vec1.y)*10/sina;
-				
-				_vertexVec2[i]=p.x;
-				_vertexVec2[i+1]=p.y;
-				
-				p.x=pos2.x+(vec2.x-vec1.x)*10/sina;
-				p.y=pos2.y+(vec2.y-vec1.y)*10/sina;
-				
-				_vertexVec3[i]=p.x;
-				_vertexVec3[i+1]=p.y;
-				
-			}
+			//floor
+			_floor.Draw();
 			
-			for(i=0;i<_vertexVec2.length;i+=2)
-			{	
-				var s:Sprite=_wallArray[i/2]._sprite;
-				s.graphics.clear();
-				s.graphics.lineStyle(3,0xff0000);
-				s.graphics.beginFill(_wallColor,0.5);
-				
-				s.graphics.moveTo(_vertexVec2[i],_vertexVec2[i+1]);
-				s.graphics.lineTo(_vertexVec2[(i+2)%_vertexVec2.length],_vertexVec2[(i+3)%_vertexVec2.length]);
-				s.graphics.lineTo(_vertexVec3[(i+2)%_vertexVec3.length],_vertexVec3[(i+3)%_vertexVec3.length]);
-				s.graphics.lineTo(_vertexVec3[i],_vertexVec3[i+1]);
-				
-				s.graphics.endFill();
-			}
-		}
-		
-		private function DrawRoomWallCorner():void
-		{
-			for(var i:int=0;i<_vertexVec1.length;i+=2)
+			//walls and corners
+			var len:int=_vertexVec1.length;
+			for(var i:int=0;i<len;i+=2)
 			{
-				var pos1:Point=new Point(_vertexVec1[i],_vertexVec1[i+1]);
-				var pos2:Point=new Point(_vertexVec1[(i+2)%_vertexVec1.length],_vertexVec1[(i+3)%_vertexVec1.length]);
-				var pos3:Point=new Point(_vertexVec1[(i+4)%_vertexVec1.length],_vertexVec1[(i+5)%_vertexVec1.length]);
-				
-				var vec1:Point=new Point(pos2.x-pos1.x,pos2.y-pos1.y);
-				vec1.x=vec1.x/Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
-				vec1.y=vec1.y/Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
-				var vec2:Point=new Point(pos3.x-pos2.x,pos3.y-pos2.y);
-				vec2.x=vec2.x/Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				vec2.y=vec2.y/Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				
-				var n:Number=vec1.x*vec2.x+vec1.y*vec2.y;
-				var m:Number=Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y)*Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				
-				var ang:Number=Math.acos(n/m);
-				
-				var p:Point=new Point(0,0);
-				var d:Number=Math.sin(ang);
-				
-				//sin ang
-				var sina:Number=(vec1.x*vec2.y-vec1.y*vec2.x)/m;
-				
-				p.x=pos2.x-(vec2.x-vec1.x)*10/sina;
-				p.y=pos2.y-(vec2.y-vec1.y)*10/sina;
-				
-				_vertexVec2[i]=p.x;
-				_vertexVec2[i+1]=p.y;
-				
-				p.x=pos2.x+(vec2.x-vec1.x)*10/sina;
-				p.y=pos2.y+(vec2.y-vec1.y)*10/sina;
-				
-				_vertexVec3[i]=p.x;
-				_vertexVec3[i+1]=p.y;
-				
-			}
-			
-			for(i=0;i<_vertexVec1.length;i+=2)
-			{	
-				var s:Sprite=_wallCornerArray[i/2];
-				s.graphics.clear();
-				s.graphics.lineStyle(1,0x000000);
-				s.graphics.beginFill(0xffffff,1);
-				s.graphics.drawCircle(_vertexVec1[i],_vertexVec1[i+1],10);
-				s.graphics.endFill();
+				_wallVec[i/2].Draw(_vertexVec2[i],_vertexVec2[i+1],_vertexVec2[(i+2)%len],_vertexVec2[(i+3)%len],_vertexVec3[i],_vertexVec3[i+1],_vertexVec3[(i+2)%len],_vertexVec3[(i+3)%len]);
+				_wallCornerVec[i/2].Draw(_vertexVec1[i],_vertexVec1[i+1]);
 			}
 		}
-	
 		
-		//--------------floor mouse event----------------------------------------
-		private function FloorMouseDown(e:MouseEvent):void
-		{
-			this.startDrag();
-			_wallColor=0x00ff00;
-			DrawRoomWall();
-			e.stopPropagation();
-		}
-		
-		private function FloorMouseMove(e:MouseEvent):void
-		{
-		}
-		
-		private function FloorMouseUp(e:MouseEvent):void
-		{
-			this.stopDrag();
-			_wallColor=0xff0000;
-			DrawRoomWall();
-			e.stopPropagation();
-		}
-
 		
 		//----------------wall mouse event ---------------------------------------
 		private var startPoint:Point=new Point;
@@ -358,6 +201,7 @@ package zszh_WorkSpace2D
 		
 		private function WallMouseUp(e:MouseEvent):void
 		{
+			trace(e.currentTarget.name);
 			bStart=false;
 			CursorManager.removeAllCursors();
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE,WallMouseMove);
@@ -370,10 +214,6 @@ package zszh_WorkSpace2D
 			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
 			var i:int=Number(wallNumber);
 			MoveWall(i);
-			DrawRoomFloor();
-			DrawRoomWall();
-			DrawRoomWallCorner();
-			
 			startPoint.x=this.stage.mouseX;
 			startPoint.y=this.stage.mouseY;
 		}
@@ -509,15 +349,6 @@ package zszh_WorkSpace2D
 		
 		
 		//---------------corner mouse event---------------------------------------------
-		private function CornerMouseOVER(e:MouseEvent):void
-		{
-			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
-		}
-		private function CornerMouseOut(e:MouseEvent):void
-		{
-			CursorManager.removeAllCursors();
-		}
-		
 		private var cornerName:String;
 		private var cornerNumber:String;
 		private function CornerMouseDown(e:MouseEvent):void
@@ -525,7 +356,7 @@ package zszh_WorkSpace2D
 			//jl.hu for test
 			var df:WS2D_PopupMenuEvent=new WS2D_PopupMenuEvent(WS2D_PopupMenuEvent.HIDE_PopupMenu);
 			df._text="wocao";
-			dispatchEvent(df);
+			_wallVec[0].dispatchEvent(df);
 			
 			trace("-------------------CornerMouseDown--------------------");
 			
@@ -560,9 +391,6 @@ package zszh_WorkSpace2D
 			
 			var i:int=Number(cornerNumber);
 			MoveCorner(i);
-			DrawRoomFloor();
-			DrawRoomWall();
-			DrawRoomWallCorner();
 			
 			startPoint.x=this.stage.mouseX;
 			startPoint.y=this.stage.mouseY;

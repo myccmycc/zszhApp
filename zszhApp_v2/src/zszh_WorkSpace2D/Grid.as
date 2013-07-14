@@ -7,10 +7,11 @@ package zszh_WorkSpace2D
 	import mx.events.FlexEvent;
 	import mx.managers.CursorManager;
 	
+	
 	public class Grid extends UIComponent
 	{
 		public var _lineColor:uint = 0x3d4051; //网格线颜色
-		public var _gridFillColor:uint = 0x00ff00; //网格背景色 0x2f3243
+		public var _gridFillColor:uint = 0x2f3243; //网格背景色 0x2f3243
 		
 		
 		public var _lineThickness:Number = 1; //网格线粗细
@@ -88,6 +89,8 @@ package zszh_WorkSpace2D
 		{
 			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
 			startDrag(false);
+			
+			(this.parent as WorkSpace2D).SetAllNoSelected();
 		}
 		private function MOUSE_UP_grid(ev:MouseEvent) : void
 		{

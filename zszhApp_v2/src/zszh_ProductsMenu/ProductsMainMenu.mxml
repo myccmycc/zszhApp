@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
+					  xmlns:ns="zszh_ProductsMenu.*"
+					  initialize="skinnablecontainer1_initializeHandler(event)">
+	
+	<fx:Declarations>
+		<s:Move id="effect11" target="{Button1}"  yTo="0"/>
+		<s:Move id="effect12" target="{Button2}"  yTo="250"/>
+		<s:Move id="effect13" target="{Button3}"  yTo="300"/>
+		<s:Move id="effect14" target="{Button4}"  yTo="350"/>
+		<s:Move id="effect15" target="{Button5}"  yTo="400"/>
+		<s:Move id="effect16" target="{Button6}"  yTo="450"/>
+		<s:Move id="effect17" target="{Button7}"  yTo="500"/>
+		
+		<s:Move id="effect21" target="{Button1}"  yTo="0"/>
+		<s:Move id="effect22" target="{Button2}"  yTo="50"/>
+		<s:Move id="effect23" target="{Button3}"  yTo="450"/>
+		<s:Move id="effect24" target="{Button4}"  yTo="500"/>
+		<s:Move id="effect25" target="{Button5}"  yTo="550"/>
+		<s:Move id="effect26" target="{Button6}"  yTo="600"/>
+		<s:Move id="effect27" target="{Button7}"  yTo="650"/>
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			[Embed(source="embeds/Products/1.png")]
+			public var Button1_down:Class;
+			[Embed(source="embeds/Products/2.png")]
+			public var Button2_down:Class;
+			[Embed(source="embeds/Products/3.png")]
+			public var Button3_down:Class;
+			[Embed(source="embeds/Products/4.png")]
+			public var Button4_down:Class;
+			[Embed(source="embeds/Products/5.png")]
+			public var Button5_down:Class;
+			[Embed(source="embeds/Products/6.png")]
+			public var Button6_down:Class;
+			[Embed(source="embeds/Products/7.png")]
+			public var Button7_down:Class;
+			
+			[Embed(source="embeds/Products/1_.png")]
+			public var Button1_over:Class;
+			[Embed(source="embeds/Products/2_.png")]
+			public var Button2_over:Class;
+			[Embed(source="embeds/Products/3_.png")]
+			public var Button3_over:Class;
+			[Embed(source="embeds/Products/4_.png")]
+			public var Button4_over:Class;
+			[Embed(source="embeds/Products/5_.png")]
+			public var Button5_over:Class;
+			[Embed(source="embeds/Products/6_.png")]
+			public var Button6_over:Class;
+			[Embed(source="embeds/Products/7_.png")]
+			public var Button7_over:Class;
+			
+			public var TextArray:Array;
+			
+			protected function skinnablecontainer1_initializeHandler(event:FlexEvent):void
+			{
+				for(var i:int=1;i<8;i++)
+					this["Button"+i].setStyle("icon",this["Button"+i+"_down"]);
+				TextArray=new Array;
+				TextArray["Button1"]="基本构造";
+				TextArray["Button2"]="空间";
+				TextArray["Button3"]="家具";
+				TextArray["Button4"]="建材";
+				TextArray["Button5"]="装饰";
+				TextArray["Button6"]="植物";
+				TextArray["Button7"]="我的收藏";
+				
+				hideAllSubBt();
+			}
+			
+			private function hideAllSubBt():void
+			{
+				for(var i:int=1;i<5;i++)
+					this["Button1"+i].visible=false;
+				
+				for(i=1;i<9;i++)
+					this["Button2"+i].visible=false;
+			}
+			
+			protected function button_mouseOverHandler(event:MouseEvent):void
+			{
+				var bname:String=event.target.name;
+				this[bname].setStyle("icon",this[bname+"_over"]);
+				Text.x=this[bname].x+this[bname].width+5;
+				Text.y=this[bname].y+this[bname].height/2-Text.height/2;
+				Text.text=TextArray[bname];
+				
+			}
+			
+			protected function Button_mouseOutHandler(event:MouseEvent):void
+			{
+				var bname:String=event.target.name;
+				this[bname].setStyle("icon",this[bname+"_down"]);
+				Text.text="";
+			}
+			
+			protected function Button_mouseDownHandler(event:MouseEvent):void
+			{
+				var bname:String=event.target.name;
+				if(bname=="Button1")
+				{
+					hideAllSubBt();
+					effect11.play();
+					effect12.play();
+					effect13.play();
+					effect14.play();
+					effect15.play();
+					effect16.play();
+					effect17.play();
+					
+					for(var i:int=1;i<5;i++)
+						this["Button1"+i].visible=true;
+				}
+				
+				if(bname=="Button2")
+				{
+					hideAllSubBt();
+					effect21.play();
+					effect22.play();
+					effect23.play();
+					effect24.play();
+					effect25.play();
+					effect26.play();
+					effect27.play();
+					
+					for(var i:int=1;i<9;i++)
+						this["Button2"+i].visible=true;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:SkinnableContainer top="0" height="100%">
+		<ns:Products x="63" height="100%" />
+	</s:SkinnableContainer>
+	
+	<s:SkinnableContainer top="100">
+		
+	
+		<s:Label id="Text" backgroundAlpha="0" color="0xffffff" fontFamily="微软雅黑" fontWeight="normal" fontSize="14"/>
+	
+		<!-- Button1 Button11 Button12 Button13 Button4 -->
+		<s:Button  y="50" id="Button11" name="Button11" label="墙" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="100" id="Button12" name="Button12" label="门" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="150" id="Button13" name="Button13" label="窗" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="200" id="Button14" name="Button14" label="梯" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+	
+	
+	
+		<s:Button  y="100" id="Button21" name="Button11" label="客厅" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="150" id="Button22" name="Button12" label="餐厅" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="200" id="Button23" name="Button13" label="厨房" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="250" id="Button24" name="Button14" label="卧室" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="300" id="Button25" name="Button15" label="厕所" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="350" id="Button26" name="Button16" label="书房" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="400" id="Button27" name="Button17" label="儿童" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="450" id="Button28" name="Button18" label="门厅" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+	
+	
+		<s:Button  y="0"   id="Button1" name="Button1" width="63" height="42"  skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true" 
+			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
+	
+
+	
+		<s:Button y="50"   id="Button2" name="Button2" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
+	
+
+	
+	
+		<s:Button y="100" id="Button3" name="Button3" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
+	
+		<s:Button y="150" id="Button4" name="Button4" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
+	
+		<s:Button y="200" id="Button5" name="Button5" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
+	
+		<s:Button y="250" id="Button6" name="Button6" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
+	
+		<s:Button y="300" id="Button7" name="Button7" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
+	</s:SkinnableContainer>
+	
+	
+</s:SkinnableContainer>
