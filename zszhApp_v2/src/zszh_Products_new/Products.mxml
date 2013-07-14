@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					xmlns:s="library://ns.adobe.com/flex/spark" 
-					xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+					xmlns:mx="library://ns.adobe.com/flex/mx" width="313" height="700">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -10,7 +10,7 @@
 		@namespace mx "library://ns.adobe.com/flex/mx";
 		.contentStyle{
 			backgroundColor: #ff0000;
-			skin: ClassReference("zszh_Products.Skin_NavigatorContent");
+			skin: ClassReference("zszh_Products_old.Skin_NavigatorContent");
 		}
 	</fx:Style>
 	
@@ -56,16 +56,30 @@
 			
 		]]>
 	</fx:Script>
-	<s:SkinnableContainer backgroundColor="#182229" width="100%" height="100%"> 
+	
+	<s:SkinnableContainer id="Search" top="1" backgroundColor="#1abc9c" width="100%" height="75" >
+		<s:Label text="Search" x="10" verticalCenter="5" styleName="customFontStyles" />
+		<!--mx:TextInput x="85" width="160" height="32" verticalCenter="5" styleName="customTextInput" /-->
+		<s:ComboBox x="75" width="170" verticalCenter="5" styleName="customTextInput" />
+		<s:Image  buttonMode="true" x="262" source="@Embed('embeds/MainMenu/icon_search.png')" verticalCenter="5"/>
+	</s:SkinnableContainer>
+	
+	<s:SkinnableContainer id="ProductsShow" backgroundColor="#00cd99" y="75" width="100%" height="100%" > 
 		
-		<s:List id="myList" left="5" right="5" top="5" bottom="5" contentBackgroundColor="#182229" borderVisible="false" 
-				itemRenderer="zszh_Products.ItemRender_Products" initialize="myList_initializeHandler(event)" mouseDown="myList_mouseDownHandler(event)"
+		<s:SkinnableContainer backgroundColor="#10181e" top="1" left="1" right="1" bottom="1">
+			<s:ComboBox x="5" width="100" top="5" height="30" styleName="customTextInput" />
+			<s:ComboBox x="106" width="100" top="5" height="30" styleName="customTextInput" />
+			<s:ComboBox x="207" width="100" top="5" height="30" styleName="customTextInput" />
+		
+				
+			<s:List id="myList" top="40" contentBackgroundColor="#10181e" borderVisible="false" horizontalCenter="0" 
+				itemRenderer="zszh_Products_old.ItemRender_Products" initialize="myList_initializeHandler(event)" mouseDown="myList_mouseDownHandler(event)"
 				height="100%" verticalScrollPolicy="off">
-			<s:layout>
+				<s:layout>
 				<s:TileLayout orientation="rows" requestedColumnCount="3"/>
-			</s:layout>
+				</s:layout>
 			
-			<s:ArrayCollection>
+				<s:ArrayCollection>
 				<fx:Object labelText="L型房间" imgSource="zszh_res/basic/wall/room_1.png" className="Room_2D" resourcePath=""/>
 				<fx:Object labelText="大房间" 	 imgSource="zszh_res/basic/wall/room_big.png" className="Room_2D" resourcePath=""/>
 				<fx:Object labelText="小房间"  imgSource="zszh_res/basic/wall/room_small.png" className="Room_2D" resourcePath=""/>
@@ -73,8 +87,10 @@
 				<fx:Object labelText="竖墙"   imgSource="zszh_res/basic/wall/wall_v_divider.png" className="model_bed" resourcePath=""/>
 				<fx:Object labelText="床00001" imgSource="zszh_res/models/beds/bed00001/bed00001_preview.png" className="model_bed" resourcePath="zszh_res/models/beds/bed00001/" objectName="bed00001"/>
 
-			</s:ArrayCollection>
-		</s:List>
+				</s:ArrayCollection>
+			</s:List>
+			
+		</s:SkinnableContainer>
 		
 	</s:SkinnableContainer>
 	

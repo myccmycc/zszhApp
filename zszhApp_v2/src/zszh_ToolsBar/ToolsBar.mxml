@@ -1,13 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
-					  xmlns:mx="library://ns.adobe.com/flex/mx" width="642" height="46">
+					  xmlns:mx="library://ns.adobe.com/flex/mx" width="642" height="46" initialize="skinnablecontainer_initializeHandler(event)">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:Image source="@Embed('embeds/ToolBar/toolBar_Bg.png')"  />
-	<s:Button name="btToolBarShow2D" x="60" label="2D" width="40" height="40" click="ShowWorkSpace2D()" verticalCenter="-6" />
-	<s:Button name="btToolBarShow3D" x="120" label="3D" width="40" height="40" click="ShowWorkSpace3D()" verticalCenter="-6" />
-	<s:Button name="btToolBarShow3D" x="180" label="Center" width="60" height="40" click="ShowWorkSpace2DCenter()" verticalCenter="-6" />
+	<fx:Script>
+	<![CDATA[
+		import mx.core.UIComponent;
+		import mx.events.FlexEvent;
+		
+		import zszh_WorkSpace2D.Model;
+		import zszh_WorkSpace2D.Room_2D;
+		[Embed(source="embeds/ToolsBar/toolbar_1.png")]
+		public var Button1_down:Class;
+		[Embed(source="embeds/ToolsBar/toolbar_2.png")]
+		public var Button2_down:Class;
+		[Embed(source="embeds/ToolsBar/toolbar_3.png")]
+		public var Button3_down:Class;
+		[Embed(source="embeds/ToolsBar/toolbar_4.png")]
+		public var Button4_down:Class;
+		[Embed(source="embeds/ToolsBar/toolbar_5.png")]
+		public var Button5_down:Class;
+		[Embed(source="embeds/ToolsBar/toolbar_6.png")]
+		public var Button6_down:Class;
+		[Embed(source="embeds/ToolsBar/toolbar_7.png")]
+		public var Button7_down:Class;
+		[Embed(source="embeds/ToolsBar/toolbar_8.png")]
+		public var Button8_down:Class;
+		[Embed(source="embeds/ToolsBar/toolbar_9.png")]
+		public var Button9_down:Class;
+		[Embed(source="embeds/ToolsBar/toolbar_10.png")]
+		public var Button10_down:Class;
+		[Embed(source="embeds/ToolsBar/toolbar_11.png")]
+		public var Button11_down:Class;
+
+		protected function skinnablecontainer_initializeHandler(event:FlexEvent):void
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		
+		protected function ShowWorkspace2D(event:MouseEvent):void
+		{
+			parentApplication.WorkSpace3D.visible=false;
+			parentApplication.WorkSpace2D.visible=true;
+		}
+		
+		protected function ShowWorkspace3D(event:MouseEvent):void
+		{
+			parentApplication.WorkSpace3D.ClearRoom();
+			
+			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._room2DVec.length;i++)
+			{
+				var room2d:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._room2DVec[i] as UIComponent;					
+				if(room2d.className=="Room_2D")
+				{
+					var pos:Array=new Array;
+					var vec:Vector.<Number>= (room2d as Room_2D)._vertexVec1;
+					/*for(var j:int=0;j<vec.length;j+=2)
+					{
+					var p:Point=new Point;
+					p.x=room2d.x+vec[j]-WS2D_MainContainer.WorkSpace2D._grid._gridWidth/2;
+					p.y=room2d.y+vec[j+1]-WS2D_MainContainer.WorkSpace2D._grid._gridHeight/2;
+					pos.push(p);
+					}*/
+					parentApplication.WorkSpace3D.BuildRoom(vec,room2d.name);				    
+				}
+			}
+			
+			parentApplication.WorkSpace3D.ClearModels();
+			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._modelsVec.length;i++)
+			{
+				var modelBed:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._modelsVec[i] as UIComponent;					
+				if(modelBed.className=="Model")
+				{
+					var mbed:Model = modelBed as Model;
+					parentApplication.WorkSpace3D.AddModels(mbed._loaderModel);		    
+				}
+			}
+			
+			parentApplication.WorkSpace3D.visible=true;
+			parentApplication.WorkSpace2D.visible=false;
+			
+		}
+		
+		protected function ShowCenter(event:MouseEvent):void
+		{
+			parentApplication.WorkSpace2D.WorkSpace2D.ShowCenter();
+		}
+		
+	]]>
+	</fx:Script>
 	
+	<s:Image source="@Embed('embeds/ToolsBar/toolBar_Bg.png')"  />
+	<s:Button id="Button1" name="Button1" x="35" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button1_down}" buttonMode="true" />
+	<s:Button id="Button2" name="Button2" x="70" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button2_down}" buttonMode="true" />
+	
+	<s:Button id="Button3" name="Button3" x="125" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button3_down}" buttonMode="true" />
+	<s:Button id="Button4" name="Button4" x="170" verticalCenter="0" width="30" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button4_down}" buttonMode="true" />
+	<s:Button id="Button5" name="Button5" x="220" verticalCenter="0" width="30" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button5_down}" buttonMode="true" />
+	
+	<s:Button id="Button6" name="Button6" x="275" verticalCenter="0" width="30" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button6_down}" click="ShowWorkspace2D(event)" buttonMode="true" />
+	<s:Button id="Button7" name="Button7" x="315" verticalCenter="0" width="30" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button7_down}" click="ShowWorkspace3D(event)" buttonMode="true" />
+
+	<s:Button id="Button8" name="Button8" x="380" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button8_down}" buttonMode="true" />
+	<s:Button id="Button9" name="Button9" x="495" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button9_down}" buttonMode="true" />
+	
+	<s:Button id="Button10" name="Button10" x="545" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button10_down}" click="ShowCenter(event)" buttonMode="true" />
+	<s:Button id="Button11" name="Button11" x="585" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button11_down}" buttonMode="true" />
+
+
 </s:SkinnableContainer>

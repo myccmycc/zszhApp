@@ -2,7 +2,7 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:local="*" xmlns:ns="zszh_WorkSpace3D.*" addedEffect="{fadein}"
-			   backgroundAlpha="0" xmlns:ns1="zszh_Products.*" xmlns:ns2="zszh_WorkSpace2D.*"  xmlns:ns3="zszh_ProductsMenu.*" preloader="zszh_Loading" initialize="application1_initializeHandler(event)">
+			   backgroundAlpha="0" xmlns:ns5="zszh_Products_old.*" xmlns:ns2="zszh_WorkSpace2D.*"  xmlns:ns6="zszh_Products_new.*" preloader="zszh_Loading" initialize="application1_initializeHandler(event)" xmlns:ns4="zszh_ToolsBar.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 		<s:Fade id="fadein" alphaFrom="0" alphaTo="1" duration="1000"/>
@@ -18,7 +18,7 @@
 		}
 		
 		.customAccordionHeadStyles {
-			skin: ClassReference("zszh_Products.Skin_AccordionHead");
+			skin: ClassReference("zszh_Products_old.Skin_AccordionHead");
 		}
 		
 		.customFontStyles{
@@ -35,7 +35,7 @@
 			
 			corner-radius:10;
 			borderStyle: solid;
-			borderSkin: ClassReference("zszh_Products.Skin_TextInput");
+			borderSkin: ClassReference("zszh_Products_old.Skin_TextInput");
 		}
 	</fx:Style>
 	
@@ -92,7 +92,7 @@
 			
 			import mx.controls.Button;
 			import zszh_WorkSpace2D.Room_2D;
-			import zszh_Products.Navigator_BasicWall;
+			import zszh_Products_old.Navigator_BasicWall;
 			function Show3DModel():void
 			{
 				if(WorkSpace3D.visible)
@@ -232,16 +232,9 @@
 			
 			<ns2:WS2D_MainContainer  id="WorkSpace2D" backgroundColor="0x2f3243" width="100%" height="100%" visible="true"/>
 			
-			<s:SkinnableContainer  id="toolBarContainer"  top="0" horizontalCenter="0"  backgroundAlpha="0" > 
-				
-				<s:Image source="@Embed('embeds/ToolBar/toolBar_Bg.png')"  />
-				<s:Button name="btToolBarShow2D" x="60" label="2D" width="40" height="40" click="ShowWorkSpace2D()" verticalCenter="-6" />
-				<s:Button name="btToolBarShow3D" x="120" label="3D" width="40" height="40" click="ShowWorkSpace3D()" verticalCenter="-6" />
-				<s:Button name="btToolBarShow3D" x="180" label="Center" width="60" height="40" click="ShowWorkSpace2DCenter()" verticalCenter="-6" />
-				
-			</s:SkinnableContainer>
+			<ns4:ToolsBar id="ToolsBar" top="1" horizontalCenter="0"/>
 			
-			<ns3:ProductsMainMenu id="ProductsMenuMain"  backgroundAlpha="0" top="0" height="100%"/>
+			<ns6:ProductsMainMenu id="ProductsMenuMain"  backgroundAlpha="0" top="0" height="100%"/>
 
 		</s:SkinnableContainer>
 		

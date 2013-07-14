@@ -2,7 +2,7 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
 					  xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
-					  xmlns:ns="zszh_ProductsMenu.*"
+					  xmlns:ns="zszh_Products_new.*"
 					  initialize="skinnablecontainer1_initializeHandler(event)">
 	
 	<fx:Declarations>
@@ -21,6 +21,9 @@
 		<s:Move id="effect25" target="{Button5}"  yTo="550"/>
 		<s:Move id="effect26" target="{Button6}"  yTo="600"/>
 		<s:Move id="effect27" target="{Button7}"  yTo="650"/>
+		
+		<s:Resize id="resize1" target="{Button1s}" heightTo="150"/>
+		<s:Resize id="resize1_" target="{Button1s}" heightTo="0"/>
 		
 	</fx:Declarations>
 	
@@ -77,10 +80,10 @@
 			
 			private function hideAllSubBt():void
 			{
-				for(var i:int=1;i<5;i++)
-					this["Button1"+i].visible=false;
+				/*for(var i:int=1;i<5;i++)
+					this["Button1"+i].visible=false;*/
 				
-				for(i=1;i<9;i++)
+				for(var i:int=1;i<9;i++)
 					this["Button2"+i].visible=false;
 			}
 			
@@ -114,9 +117,9 @@
 					effect15.play();
 					effect16.play();
 					effect17.play();
-					
-					for(var i:int=1;i<5;i++)
-						this["Button1"+i].visible=true;
+					resize1.play();
+					//for(var i:int=1;i<5;i++)
+						//this["Button1"+i].visible=true;
 				}
 				
 				if(bname=="Button2")
@@ -129,9 +132,10 @@
 					effect25.play();
 					effect26.play();
 					effect27.play();
+					resize1_.play();
 					
-					for(var i:int=1;i<9;i++)
-						this["Button2"+i].visible=true;
+					//for(var i:int=1;i<9;i++)
+						//this["Button2"+i].visible=true;
 				}
 			}
 			
@@ -139,56 +143,59 @@
 	</fx:Script>
 	
 	<s:SkinnableContainer top="0" height="100%">
-		<ns:Products x="63" height="100%" />
+		<ns:Products x="63" height="100%" visible="false" />
 	</s:SkinnableContainer>
 	
-	<s:SkinnableContainer top="100">
+	<s:SkinnableContainer top="60" width="63" backgroundColor="0xff0000">
 		
 	
 		<s:Label id="Text" backgroundAlpha="0" color="0xffffff" fontFamily="微软雅黑" fontWeight="normal" fontSize="14"/>
 	
-		<!-- Button1 Button11 Button12 Button13 Button4 -->
-		<s:Button  y="50" id="Button11" name="Button11" label="墙" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="100" id="Button12" name="Button12" label="门" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="150" id="Button13" name="Button13" label="窗" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="200" id="Button14" name="Button14" label="梯" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
+		<!-- Button11 Button12 Button13 Button4 -->
+		<s:SkinnableContainer id="Button1s" height="0" width="100" backgroundColor="0xff00ff" y="{Button1.x+Button1.height}">
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+		<s:Button   id="Button11" name="Button11" label="墙" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button   id="Button12" name="Button12" label="门" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button   id="Button13" name="Button13" label="窗" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button   id="Button14" name="Button14" label="梯" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		</s:SkinnableContainer>
+	
+		<s:Button  y="100" id="Button21" name="Button11" label="客厅" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="150" id="Button22" name="Button12" label="餐厅" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="200" id="Button23" name="Button13" label="厨房" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="250" id="Button24" name="Button14" label="卧室" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="300" id="Button25" name="Button15" label="厕所" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="350" id="Button26" name="Button16" label="书房" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="400" id="Button27" name="Button17" label="儿童" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  y="450" id="Button28" name="Button18" label="门厅" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
 	
 	
-	
-		<s:Button  y="100" id="Button21" name="Button11" label="客厅" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="150" id="Button22" name="Button12" label="餐厅" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="200" id="Button23" name="Button13" label="厨房" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="250" id="Button24" name="Button14" label="卧室" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="300" id="Button25" name="Button15" label="厕所" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="350" id="Button26" name="Button16" label="书房" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="400" id="Button27" name="Button17" label="儿童" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="450" id="Button28" name="Button18" label="门厅" width="63" height="49" skinClass="zszh_ProductsMenu.Skin_ProductsBt"  buttonMode="true" />
-	
-	
-		<s:Button  y="0"   id="Button1" name="Button1" width="63" height="42"  skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true" 
+		<s:Button  y="0"   id="Button1" name="Button1" width="63" height="42"  skinClass="zszh_Products_new.Skin_ProductsMenuBt"  buttonMode="true" 
 			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
 	
 
 	
-		<s:Button y="50"   id="Button2" name="Button2" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+		<s:Button y="50"   id="Button2" name="Button2" width="63" height="42" skinClass="zszh_Products_new.Skin_ProductsMenuBt"  buttonMode="true"
 			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
 	
 
 	
 	
-		<s:Button y="100" id="Button3" name="Button3" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+		<s:Button y="100" id="Button3" name="Button3" width="63" height="42" skinClass="zszh_Products_new.Skin_ProductsMenuBt"  buttonMode="true"
 			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
 	
-		<s:Button y="150" id="Button4" name="Button4" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+		<s:Button y="150" id="Button4" name="Button4" width="63" height="42" skinClass="zszh_Products_new.Skin_ProductsMenuBt"  buttonMode="true"
 			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
 	
-		<s:Button y="200" id="Button5" name="Button5" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+		<s:Button y="200" id="Button5" name="Button5" width="63" height="42" skinClass="zszh_Products_new.Skin_ProductsMenuBt"  buttonMode="true"
 			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
 	
-		<s:Button y="250" id="Button6" name="Button6" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+		<s:Button y="250" id="Button6" name="Button6" width="63" height="42" skinClass="zszh_Products_new.Skin_ProductsMenuBt"  buttonMode="true"
 			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
 	
-		<s:Button y="300" id="Button7" name="Button7" width="63" height="42" skinClass="zszh_ProductsMenu.Skin_ProductsMenuBt"  buttonMode="true"
+		<s:Button y="300" id="Button7" name="Button7" width="63" height="42" skinClass="zszh_Products_new.Skin_ProductsMenuBt"  buttonMode="true"
 			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
 	</s:SkinnableContainer>
 	
