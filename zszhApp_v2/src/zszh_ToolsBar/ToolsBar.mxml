@@ -43,12 +43,14 @@
 		
 		protected function ShowWorkspace2D(event:MouseEvent):void
 		{
+			parentApplication.WorkspaceBack.visible=true;
 			parentApplication.WorkSpace3D.visible=false;
 			parentApplication.WorkSpace2D.visible=true;
 		}
 		
 		protected function ShowWorkspace3D(event:MouseEvent):void
 		{
+			parentApplication.WorkspaceBack.visible=false;
 			parentApplication.WorkSpace3D.ClearRoom();
 			
 			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._room2DVec.length;i++)

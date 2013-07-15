@@ -17,11 +17,11 @@ package zszh_WorkSpace2D
 	
 	import zszh_Events.WS2D_PopupMenuEvent;
 	
-	import zszh_WorkSpace2D.WS2D_PopupWindow;
+	import zszh_WorkSpace2D.WS2D_PopupWall;
 	
 	public class Room_2DWall extends Sprite
 	{
-		private var _popupWindowMenu:WS2D_PopupWindow;
+		private var _popupWindowMenu:WS2D_PopupWall;
 		private var _lineColor:uint;
 		private var _wallColor:uint;
 		private var _wallColorSelected:uint;
@@ -33,7 +33,7 @@ package zszh_WorkSpace2D
 		public function Room_2DWall()
 		{
 			super();
-			_popupWindowMenu=new WS2D_PopupWindow();
+			_popupWindowMenu=new WS2D_PopupWall();
 			_lineColor=0xffffff;
 			_wallColor=0x7c7e89;
 			_wallColorSelected=0xff6666;
@@ -51,6 +51,7 @@ package zszh_WorkSpace2D
 		{
 			_selected=b;
 			UpdateDraw(_selected);
+			PopUpManager.removePopUp(_popupWindowMenu);
 		}
 		public function GetSelected():Boolean
 		{
@@ -118,13 +119,16 @@ package zszh_WorkSpace2D
 		private function WallCLICK(e:MouseEvent):void
 		{
 			var room_2d:Room_2D=(this.parent as Room_2D);
-			if(room_2d.GetSelected())
-			{
-				room_2d.SetAllNoSelected();
-			}
+			room_2d.SetSelected(true);
+			room_2d.SetAllNoSelected();
+
 			SetSelected(true);
 			PopUpManager.addPopUp(_popupWindowMenu,this,false);
-			PopUpManager.centerPopUp(_popupWindowMenu);
+		
+			var pt:Point = new Point(e.localX, e.localY);
+			pt = e.target.localToGlobal(pt);
+			_popupWindowMenu.move(pt.x,pt.y);
+			//PopUpManager.centerPopUp(_popupWindowMenu);
 			e.stopPropagation();
 			
 		}

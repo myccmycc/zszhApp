@@ -2,10 +2,11 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:local="*" xmlns:ns="zszh_WorkSpace3D.*" addedEffect="{fadein}"
-			   backgroundAlpha="0" xmlns:ns5="zszh_Products_old.*" xmlns:ns2="zszh_WorkSpace2D.*"  xmlns:ns6="zszh_Products_new.*" preloader="zszh_Loading" initialize="application1_initializeHandler(event)" xmlns:ns4="zszh_ToolsBar.*">
+			   backgroundAlpha="0" xmlns:ns5="zszh_Products_old.*" xmlns:ns2="zszh_WorkSpace2D.*"  xmlns:ns6="zszh_Products_new.*" preloader="zszh_Loading" initialize="application1_initializeHandler(event)" xmlns:ns4="zszh_ToolsBar.*" resize="application_resizeHandler(event)">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 		<s:Fade id="fadein" alphaFrom="0" alphaTo="1" duration="1000"/>
+		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0" duration="1000"/>
 	</fx:Declarations>
 	
 	<fx:Style>
@@ -45,6 +46,7 @@
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
 			import mx.events.IndexChangedEvent;
+			import mx.events.ResizeEvent;
 			import mx.managers.PopUpManager;
 			
 			import zszh_MainMenu.Menu1;
@@ -56,8 +58,7 @@
 			
 			import zszh_welcome.Welcome_PopupWindow;
 			
-			
-
+	
 			
 			[Embed(source="../embeds/mouse01.png")]
 			public var imageCursor:Class;
@@ -89,69 +90,6 @@
 			}
 		
 			//-------------主菜单--end-------------------
-			
-			import mx.controls.Button;
-			import zszh_WorkSpace2D.Room_2D;
-			import zszh_Products_old.Navigator_BasicWall;
-			function Show3DModel():void
-			{
-				if(WorkSpace3D.visible)
-				{
-					WorkSpace3D.visible=false;
-					WorkSpace2D.visible=true;
-				}
-				else
-				{
-					WorkSpace3D.visible=true;
-					WorkSpace2D.visible=false;
-				}
-			}
-			private function ShowWorkSpace2D():void
-			{
-				WorkSpace3D.visible=false;
-				WorkSpace2D.visible=true;
-			}
-			private function ShowWorkSpace2DCenter():void 
-			{
-				WorkSpace2D.WorkSpace2D.ShowCenter();
-			}
-			
-			private function ShowWorkSpace3D():void
-			{
-				WorkSpace3D.ClearRoom();
-				
-				for(var i:int=0;i<WorkSpace2D.WorkSpace2D._room2DVec.length;i++)
-				{
-					var room2d:UIComponent=WorkSpace2D.WorkSpace2D._room2DVec[i] as UIComponent;					
-					if(room2d.className=="Room_2D")
-					{
-						var pos:Array=new Array;
-						var vec:Vector.<Number>= (room2d as Room_2D)._vertexVec1;
-						/*for(var j:int=0;j<vec.length;j+=2)
-						{
-							var p:Point=new Point;
-							p.x=room2d.x+vec[j]-WS2D_MainContainer.WorkSpace2D._grid._gridWidth/2;
-							p.y=room2d.y+vec[j+1]-WS2D_MainContainer.WorkSpace2D._grid._gridHeight/2;
-							pos.push(p);
-						}*/
-						WorkSpace3D.BuildRoom(vec,room2d.name);				    
-					}
-				}
-				
-				WorkSpace3D.ClearModels();
-				for(var i:int=0;i<WorkSpace2D.WorkSpace2D._modelsVec.length;i++)
-				{
-					var modelBed:UIComponent=WorkSpace2D.WorkSpace2D._modelsVec[i] as UIComponent;					
-					if(modelBed.className=="Model")
-					{
-						var mbed:Model = modelBed as Model;
-						WorkSpace3D.AddModels(mbed._loaderModel);		    
-					}
-				}
-					
-				WorkSpace3D.visible=true;
-				WorkSpace2D.visible=false;
-			}
 			
 			
 			[Embed(source="embeds/Products/icon_AccHeader1d.png")]
@@ -185,13 +123,32 @@
 				welcomeWindow.move(x1,y1);
 			}
 			
+			protected function application_resizeHandler(event:ResizeEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(welcomeWindow)
+				{
+					var x1:int=(this.width-welcomeWindow.width)/2;
+					var y1:int=(this.height-welcomeWindow.height)/2;
+					welcomeWindow.move(x1,y1);
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<!--主菜单/-->
 	<s:SkinnableContainer depth="10"  backgroundColor="#ffffff" id="LogoContainer" height="59" width="100%">
+		<s:Group width="100%" height="100%" > 
+			<s:Rect width="100%" height="100%"> 
+				<s:fill> 
+					<s:BitmapFill source="@Embed('embeds/MainMenu/logo_back.jpg')" fillMode="repeat"/>   
+				</s:fill> 
+			</s:Rect> 
+		</s:Group> 
+		
 		<s:Image id="Logo" source="@Embed('embeds/MainMenu/logo.png')"/>
-		<s:SkinnableContainer id="MainMenu" verticalCenter="0" right="100" backgroundColor="#ffffff">
+		<s:SkinnableContainer id="MainMenu" verticalCenter="0" right="100" backgroundAlpha="0">
 		<s:Button buttonMode="true" id="MainMenu01" label="首页" x="0"   width="86" height="30" rollOver="button1_mouseMoveHandler(event)" rollOut="button1_mouseOutHandler(event)"  skinClass="zszh_MainMenu.Skin_MainMenuBt"  />
 		<s:Button buttonMode="true" id="MainMenu02" label="文件" x="100" width="86" height="30" rollOver="button1_mouseMoveHandler(event)"  skinClass="zszh_MainMenu.Skin_MainMenuBt"/>		
 		<s:Button buttonMode="true" id="MainMenu03" label="输出" x="200" width="86" height="30" rollOver="button1_mouseMoveHandler(event)"  skinClass="zszh_MainMenu.Skin_MainMenuBt"/>		
@@ -202,6 +159,8 @@
 	
 	
 	<s:SkinnableContainer id="WorkSpace" depth="9" y="59" width="100%" height="100%" backgroundColor="#000000"  backgroundAlpha="0" >
+		
+		
 		
 		<!--左侧物品栏/-->
 		<!--s:SkinnableContainer id="Objects" depth="8" width="310" height="100%" backgroundColor="#000000"  backgroundAlpha="0">
@@ -224,19 +183,25 @@
 		</s:SkinnableContainer-->
 		
 		<!--工作区/-->
-		<s:SkinnableContainer id="WorkSpaceContainer" depth="7" x="0" width="100%" height="100%" backgroundColor="#000000"  backgroundAlpha="0">
+		<s:SkinnableContainer id="WorkSpaceContainer"   depth="7" x="0" width="100%" height="100%" backgroundColor="#000000"  backgroundAlpha="0">
 		
-		
-			
 			<ns:WorkSpace3D id="WorkSpace3D" width="100%" height="100%" visible="false"/>
 			
-			<ns2:WS2D_MainContainer  id="WorkSpace2D" backgroundColor="0x2f3243" width="100%" height="100%" visible="true"/>
+			<ns2:WS2D_MainContainer  id="WorkSpace2D" backgroundAlpha="0"  backgroundColor="0x2f3243" width="100%" height="100%" visible="true"/>
 			
 			<ns4:ToolsBar id="ToolsBar" top="1" horizontalCenter="0"/>
 			
 			<ns6:ProductsMainMenu id="ProductsMenuMain"  backgroundAlpha="0" top="0" height="100%"/>
 
 		</s:SkinnableContainer>
+		
+		<s:Group id="WorkspaceBack" width="100%" height="100%" showEffect="{fadein}" hideEffect="{fadeout}" > 
+			<s:Rect width="100%" height="100%"> 
+				<s:fill> 
+					<s:BitmapFill source="@Embed('embeds/app_back.jpg')" fillMode="repeat"/>   
+				</s:fill> 
+			</s:Rect> 
+		</s:Group> 
 		
 	</s:SkinnableContainer>
 	

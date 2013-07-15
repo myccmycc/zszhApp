@@ -48,17 +48,6 @@
 			<s:SolidColor color="#d85512" />
 		</s:fill>
 	</s:Rect>
-	
-	<!-- highlight on top -->
-	<s:Rect radiusX="1" radiusY="1" top="2" right="2" left="2" 
-			height="50%">
-		<s:fill>
-			<s:LinearGradient rotation="90">
-				<s:GradientEntry color="0xFFFFFF" alpha=".5"/>
-				<s:GradientEntry color="0xFFFFFF" alpha=".1"/>
-			</s:LinearGradient>
-		</s:fill>
-	</s:Rect>
     
     <!-- layer 8: text -->
     <!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->

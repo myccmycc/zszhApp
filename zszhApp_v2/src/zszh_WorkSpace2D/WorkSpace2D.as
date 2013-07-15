@@ -26,6 +26,7 @@ package zszh_WorkSpace2D
 		{
 			super();
 			this.addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
+			this.addEventListener(ResizeEvent.RESIZE,OnResize);
 		}
 		
 		public function SetAllNoSelected():void
@@ -45,6 +46,14 @@ package zszh_WorkSpace2D
 			_grid.y=-(_grid.height*_grid.scaleY)/2+this.unscaledHeight/2;
 		}
 		
+		private function OnResize(e:ResizeEvent):void
+		{
+			if(_grid)
+			{
+				_grid.x=-(_grid.width*_grid.scaleX)/2+this.unscaledWidth/2;
+				_grid.y=-(_grid.height*_grid.scaleY)/2+this.unscaledHeight/2;
+			}
+		}
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
 			_grid=new Grid();	
@@ -52,69 +61,19 @@ package zszh_WorkSpace2D
 			_room2DVec=new Vector.<Room_2D>();
 			_modelsVec=new Vector.<Model>();
 			
-			_grid.scaleX=0.1;
-			_grid.scaleY=0.1;
+			_grid.scaleX=0.5;
+			_grid.scaleY=0.5;
 			
 			_grid.x=-(_grid.width*_grid.scaleX)/2+this.unscaledWidth/2;
 			_grid.y=-(_grid.height*_grid.scaleY)/2+this.unscaledHeight/2;
 			
 			addChild(_grid);
-			addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_grid);
-			
 
-			
 			_grid.addEventListener(DragEvent.DRAG_ENTER,DragEnter2D);
 			_grid.addEventListener(DragEvent.DRAG_OVER,DragOver2D);
 			_grid.addEventListener(DragEvent.DRAG_DROP,DragDrop2D);
 		}
 
-		private function MOUSE_WHEEL_grid(e:MouseEvent) : void
-		{
-			if(e.delta>0)
-			{
-				if(_grid.scaleX<1.0)
-				{
-					_grid.scaleX+=0.1
-					_grid.scaleY+=0.1
-					
-
-					_grid.x=mouseX-e.localX*(_grid.scaleX);
-					_grid.y=mouseY-e.localY*(_grid.scaleY);
-					
-					trace("e.localX:"+e.localX);
-					trace("_grid.mouseX:"+_grid.mouseX);
-				
-					/*trace("画布宽度："+_grid.width);
-					trace("画布缩放："+_grid.scaleX);
-					trace("workspace2d宽度："+this.width);
-					trace("workspace2d unscaledWidth宽度："+this.unscaledWidth);
-					trace("workspace2d缩放："+this.scaleX);*/
-				}
-			}
-			else
-			{
-				if(_grid.scaleX>0.2)
-				{
-					_grid.scaleX-=0.1
-					_grid.scaleY-=0.1
-						
-					_grid.x=mouseX-e.localX*(_grid.scaleX);
-					_grid.y=mouseY-e.localY*(_grid.scaleY);
-					
-					trace("e.localX:"+e.localX);
-					trace("_grid.mouseX:"+_grid.mouseX);
-					
-					/*trace("画布宽度："+_grid.width);
-					trace("画布缩放："+_grid.scaleX);
-					trace("workspace2d宽度："+this.width);
-					trace("workspace2d unscaledWidth宽度："+this.unscaledWidth);
-					trace("workspace2d缩放："+this.scaleX);*/
-				}
-			}				
-		}
-
-		
-		
 		private var room_number:int=0;
 		private var current_object:Object;
 		

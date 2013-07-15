@@ -11,7 +11,7 @@ package zszh_WorkSpace2D
 	public class Grid extends UIComponent
 	{
 		public var _lineColor:uint = 0x3d4051; //网格线颜色
-		public var _gridFillColor:uint = 0x2f3243; //网格背景色 0x2f3243
+		public var _gridFillColor:uint = 0xff0000; //网格背景色 0x303344
 		
 		
 		public var _lineThickness:Number = 1; //网格线粗细
@@ -33,6 +33,9 @@ package zszh_WorkSpace2D
 			addEventListener(MouseEvent.MOUSE_MOVE,MOUSE_MOVE_grid);
 			addEventListener(MouseEvent.MOUSE_UP,MOUSE_UP_grid);
 			addEventListener(MouseEvent.MOUSE_OUT,MOUSE_OUT_grid);
+			
+			addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_grid);
+			
 			drawGird();
 		}
 		
@@ -40,7 +43,7 @@ package zszh_WorkSpace2D
 		{
 			this.graphics.clear();
 			//填充背景色
-			this.graphics.beginFill(_gridFillColor,1);
+			this.graphics.beginFill(_gridFillColor,0);
 			this.graphics.drawRect(0,0,_gridWidth,_gridHeight);
 			this.graphics.endFill();
 			this.graphics.lineStyle(_lineThickness,_lineColor,1);
@@ -106,6 +109,53 @@ package zszh_WorkSpace2D
 		private function MOUSE_MOVE_grid(e:MouseEvent) : void
 		{
 		}
+		
+		
+		//放大缩小
+		private function MOUSE_WHEEL_grid(e:MouseEvent) : void
+		{
+			if(e.delta>0)
+			{
+				if(scaleX<1.0)
+				{
+					scaleX+=0.1
+					scaleY+=0.1
+					x=mouseX-e.localX*(scaleX);
+					y=mouseY-e.localY*(scaleY);
+					
+					trace("e.localX:"+e.localX);
+					trace("_grid.mouseX:"+mouseX);
+					
+					/*trace("画布宽度："+_grid.width);
+					trace("画布缩放："+_grid.scaleX);
+					trace("workspace2d宽度："+this.width);
+					trace("workspace2d unscaledWidth宽度："+this.unscaledWidth);
+					trace("workspace2d缩放："+this.scaleX);*/
+				}
+			}
+			else
+			{
+				if(scaleX>0.2)
+				{
+					scaleX-=0.1
+					scaleY-=0.1
+					
+					x=mouseX-e.localX*(scaleX);
+					y=mouseY-e.localY*(scaleY);
+					
+					trace("e.localX:"+e.localX);
+					trace("_grid.mouseX:"+mouseX);
+					
+					/*trace("画布宽度："+_grid.width);
+					trace("画布缩放："+_grid.scaleX);
+					trace("workspace2d宽度："+this.width);
+					trace("workspace2d unscaledWidth宽度："+this.unscaledWidth);
+					trace("workspace2d缩放："+this.scaleX);*/
+				}
+			}				
+		}
+		
+		
 	
 	}
 }

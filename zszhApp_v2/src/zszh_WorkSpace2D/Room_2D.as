@@ -51,6 +51,7 @@ package zszh_WorkSpace2D
 		
 		public function SetSelected(b:Boolean):void
 		{
+			SetAllNoSelected();
 			_selected=b;
 			UpdateFloorWallCorner();
 		}

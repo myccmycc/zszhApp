@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Script>
+		<![CDATA[
+			private function ShowScale():void {
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Button name="myButton1" x="-100" y="-50"  label="拆除" width="80" height="25" click="ShowScale()" />
+	
+	<s:Button name="myButton2" x="-120" y="-10"  label="拆分墙" width="80" height="25" click="ShowScale()" />
+	
+	<s:Button name="myButton3" x="20" y="-50"  label="墙去段" width="80" height="25" click="ShowScale()" />
+	
+	<s:Button name="myButton4" x="40" y="-10"  label="装门窗" width="80" height="25" click="ShowScale()" />
+	
+	<s:Button name="myButton5" x="-40"  y="30"  label="属性" width="80" height="25" click="ShowScale()" />
+	
+</s:SkinnableContainer>
