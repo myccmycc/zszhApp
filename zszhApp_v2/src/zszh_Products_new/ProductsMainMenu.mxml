@@ -151,8 +151,8 @@
 	
 		<s:Label id="Text" backgroundAlpha="0" color="0xffffff" fontFamily="微软雅黑" fontWeight="normal" fontSize="14"/>
 	
-		<!-- Button11 Button12 Button13 Button4 -->
-		<s:SkinnableContainer id="Button1s" height="0" width="100" backgroundColor="0xff00ff" y="{Button1.x+Button1.height}">
+		<!-- Button11 Button12 Button13 Button14 -->
+		<s:SkinnableContainer id="Button1s" height="{Button2.x-Button1.x-Button1.height}" width="100" backgroundColor="0xff00ff" y="{Button1.x+Button1.height}">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
@@ -162,26 +162,106 @@
 		<s:Button   id="Button14" name="Button14" label="梯" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
 		</s:SkinnableContainer>
 	
-		<s:Button  y="100" id="Button21" name="Button11" label="客厅" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="150" id="Button22" name="Button12" label="餐厅" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="200" id="Button23" name="Button13" label="厨房" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="250" id="Button24" name="Button14" label="卧室" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="300" id="Button25" name="Button15" label="厕所" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="350" id="Button26" name="Button16" label="书房" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="400" id="Button27" name="Button17" label="儿童" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  y="450" id="Button28" name="Button18" label="门厅" width="63" height="49" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<!-- Button21 Button22 Button23 Button24 -->
+		<s:SkinnableContainer id="Button2s" height="{Button3.x-Button2.x-Button2.height}" width="100" backgroundColor="0xff00ff" y="{Button2.x+Button2.height}">
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+		<s:Button  id="Button21" name="Button21" label="客厅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button22" name="Button22" label="餐厅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button23" name="Button23" label="厨房" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button24" name="Button24" label="卧室" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button25" name="Button25" label="厕所" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button26" name="Button26" label="书房" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button27" name="Button27" label="儿童" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button28" name="Button28" label="门厅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		</s:SkinnableContainer>
+		
+		<!-- Button31 Button32 Button33 Button34 -->
+		<s:SkinnableContainer id="Button3s" height="0" width="100" backgroundColor="0xff00ff" y="{Button3.x+Button3.height}">
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+		<s:Button  id="Button31" name="Button31" label="床"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button32" name="Button32" label="柜"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button33" name="Button33" label="沙发" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button34" name="Button34" label="桌" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button35" name="Button35" label="椅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button36" name="Button36" label="箱" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button37" name="Button37" label="几类" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button38" name="Button38" label="镜子" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		</s:SkinnableContainer>
+		
+		
+			<!-- Button41 Button42 Button43 Button44 -->
+		<s:SkinnableContainer id="Button4s" height="0" width="100" backgroundColor="0xff00ff" y="{Button4.x+Button4.height}">
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+		<s:Button  id="Button41" name="Button41" label="4床"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button42" name="Button42" label="4柜"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button43" name="Button43" label="4沙发" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button44" name="Button44" label="4桌" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button45" name="Button45" label="椅4" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button46" name="Button46" label="箱4" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button47" name="Button47" label="几类4" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button48" name="Button48" label="镜子4" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		</s:SkinnableContainer>
+		
+		
+			<!-- Button51 Button52 Button53 Button54 -->
+		<s:SkinnableContainer id="Button5s" height="0" width="100" backgroundColor="0xff00ff" y="{Button5.x+Button5.height}">
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+		<s:Button  id="Button51" name="Button51" label="床5"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button52" name="Button52" label="柜5"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button53" name="Button53" label="沙发5" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button54" name="Button54" label="桌5" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button55" name="Button55" label="椅5" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button56" name="Button56" label="箱5" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button57" name="Button57" label="几类5" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button58" name="Button58" label="镜子5" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		</s:SkinnableContainer>
+		
+		
+			<!-- Button61 Button62 Button63 Button64 -->
+		<s:SkinnableContainer id="Button6s" height="0" width="100" backgroundColor="0xff00ff" y="{Button6.x+Button6.height}">
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+		<s:Button  id="Button61" name="Button61" label="床6"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button62" name="Button62" label="柜6"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button63" name="Button63" label="沙发" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button64" name="Button64" label="桌" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button65" name="Button65" label="椅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button66" name="Button66" label="箱" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button67" name="Button67" label="几类" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button68" name="Button68" label="镜子" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		</s:SkinnableContainer>
+		
+		
+			<!-- Button71 Button72 Button73 Button74 -->
+		<s:SkinnableContainer id="Button7s" height="0" width="100" backgroundColor="0xff00ff" y="{Button7.x+Button7.height}">
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+		<s:Button  id="Button71" name="Button71" label="床7"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button72" name="Button72" label="柜7"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button73" name="Button73" label="沙发" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button74" name="Button74" label="桌" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button75" name="Button75" label="椅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button76" name="Button76" label="箱" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button77" name="Button77" label="几类" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button78" name="Button78" label="镜子" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		</s:SkinnableContainer>
 	
 	
 		<s:Button  y="0"   id="Button1" name="Button1" width="63" height="42"  skinClass="zszh_Products_new.Skin_ProductsMenuBt"  buttonMode="true" 
 			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
 	
-
-	
 		<s:Button y="50"   id="Button2" name="Button2" width="63" height="42" skinClass="zszh_Products_new.Skin_ProductsMenuBt"  buttonMode="true"
 			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
-	
-
-	
 	
 		<s:Button y="100" id="Button3" name="Button3" width="63" height="42" skinClass="zszh_Products_new.Skin_ProductsMenuBt"  buttonMode="true"
 			  mouseOver="button_mouseOverHandler(event)" mouseOut="Button_mouseOutHandler(event)" mouseDown="Button_mouseDownHandler(event)"/>
