@@ -37,7 +37,7 @@ package zszh_WorkSpace2D
 			super();
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 			_roomType=0;
-			_selected=false;
+			_selected=ture;
 		}
 		
 		public function SetAllNoSelected():void
@@ -89,7 +89,7 @@ package zszh_WorkSpace2D
 				wall.name="wall"+i;
 				addChild(wall);
 				_wallVec.push(wall);
-				wall.Draw(_vertexVec2[i],_vertexVec2[i+1],_vertexVec2[(i+2)%len],_vertexVec2[(i+3)%len],_vertexVec3[i],_vertexVec3[i+1],_vertexVec3[(i+2)%len],_vertexVec3[(i+3)%len]);
+				wall.UpdateVertex(_vertexVec2[i],_vertexVec2[i+1],_vertexVec2[(i+2)%len],_vertexVec2[(i+3)%len],_vertexVec3[i],_vertexVec3[i+1],_vertexVec3[(i+2)%len],_vertexVec3[(i+3)%len]);
 			}
 			
 			//wall corners 
@@ -164,189 +164,7 @@ package zszh_WorkSpace2D
 		}
 		
 		
-		//----------------wall mouse event ---------------------------------------
-		private var startPoint:Point=new Point;
-		private var bStart:Boolean=false;
-		
-		private var wallName:String;
-		private var wallNumber:String;
-
-		private function WallMouseOVER(e:MouseEvent):void
-		{
-			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
-		}
-		private function WallMouseOut(e:MouseEvent):void
-		{
-			CursorManager.removeAllCursors();
-		}
-
-		private function WallMouseDown(e:MouseEvent):void
-		{
-			trace("-------------------WallMouseDown--------------------");
-			
-			bStart=true;
-			startPoint.x=this.stage.mouseX;
-			startPoint.y=this.stage.mouseY;
 	
-			wallName=e.target.name;
-			wallNumber =wallName.slice(4,5);
-			trace("WallMouseDown::wallName:"+wallName);
-			trace("WallMouseDown::wallNumber:"+wallNumber);		
-			
-			trace("-------------------WallMouseDown----end----------------");
-			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
-			this.stage.addEventListener(MouseEvent.MOUSE_MOVE,WallMouseMove);
-			this.stage.addEventListener(MouseEvent.MOUSE_UP,WallMouseUp);
-			e.stopPropagation();
-		}
-		
-		private function WallMouseUp(e:MouseEvent):void
-		{
-			trace(e.currentTarget.name);
-			bStart=false;
-			CursorManager.removeAllCursors();
-			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE,WallMouseMove);
-			this.stage.removeEventListener(MouseEvent.MOUSE_UP,WallMouseUp);
-		}
-		private function WallMouseMove(e:MouseEvent):void
-		{
-			if(!bStart)
-				return;
-			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
-			var i:int=Number(wallNumber);
-			MoveWall(i);
-			startPoint.x=this.stage.mouseX;
-			startPoint.y=this.stage.mouseY;
-		}
-		
-		private function MoveWall(i:int):void
-		{
-			var vecLen:int=_vertexVec1.length;
-			
-			var P0:Point=new Point(_vertexVec1[(i+0)%vecLen],-_vertexVec1[(i+1)%vecLen]);
-			
-			var P1:Point=new Point(_vertexVec1[(i+2)%vecLen],-_vertexVec1[(i+3)%vecLen]);
-			
-			var P2:Point=new Point(_vertexVec1[(i+4)%vecLen],-_vertexVec1[(i+5)%vecLen]);
-			
-			var P3:Point=new Point(_vertexVec1[(i+6)%vecLen],-_vertexVec1[(i+7)%vecLen]);    
-			trace("P0123:"+P0+P1+P2+P3);
-			
-			
-			
-			
-			//1.求鼠标移动的向量
-			
-			var VMouseMove:Point=new Point((int)(this.stage.mouseX-startPoint.x),int(-this.stage.mouseY+startPoint.y));
-			trace("VMouseMove:"+VMouseMove);
-			
-			
-			//1.求移动的P1P2线段
-			
-			var VP1P2:Point=new Point(P2.x-P1.x,P2.y-P1.y);
-			
-			trace("VP1P2:"+VP1P2);
-			
-			//1.求P1P2线段逆时针方向法线向量
-			
-			var VP1P2_Normal:Point= new Point(-VP1P2.y,VP1P2.x);
-			
-			trace("VP1P2_Normal:"+VP1P2_Normal);
-			
-			
-			
-			//1求夹角，P1P2_Normal和 MouseMove。
-			
-			var d:Number=VP1P2_Normal.x*VMouseMove.x+VP1P2_Normal.y*VMouseMove.y;
-			
-			var d1:Number=Math.sqrt(VP1P2_Normal.x*VP1P2_Normal.x+VP1P2_Normal.y*VP1P2_Normal.y) * Math.sqrt(VMouseMove.x*VMouseMove.x+VMouseMove.y*VMouseMove.y);
-			
-			var VMouseMove_arg:Number= Math.acos(d/d1);
-			
-			
-			trace("mouse_move to normal arg:"+VMouseMove_arg);
-			
-			trace("mouse_move to normal ang:"+VMouseMove_arg*180/Math.PI);
-			
-			
-			
-			//2 P1P2 直线方程  Ax+By+c=0的表达式
-			
-			var A:Number=(P2.y-P1.y);
-			
-			var B:Number=(P1.x-P2.x);
-			
-			var C:Number = P2.x*P1.y-P1.x*P2.y;
-			
-			trace("ABC:"+A+B+C);
-			
-			//2求平移后的直线  |C1-C0|/sqrt（A*A+B*B）=DIS
-			
-			var aabb:Number=Math.sqrt(A*A+B*B);
-			
-			var dis:Number=Math.sqrt( VMouseMove .x*  VMouseMove .x+  VMouseMove .y*  VMouseMove .y)*Math.cos(VMouseMove_arg);
-			
-			
-			var s:Number=dis*aabb;
-			
-			var C2:Number=C+s;
-			trace("C2:"+C2);
-			
-			
-			
-			//求POP1，P3P2和  AX+BY+C2 两个交点
-			
-			
-			
-			var i1:Point=intersection(P0,P1,A,B,C2);
-			
-			var i2:Point=intersection(P3,P2,A,B,C2);
-			
-			
-			
-			trace("i1"+i1);
-			
-			trace("i2"+i2);
-			
-			if(i1.x!=Number.POSITIVE_INFINITY && i2.x!=Number.POSITIVE_INFINITY)
-			{
-				trace("i1g"+i1);
-				
-				trace("i2g"+i2);
-				
-				_vertexVec1[(i+2)%vecLen]=(int)(i1.x);
-				
-				_vertexVec1[(i+3)%vecLen]=(int)(-i1.y);
-				
-				_vertexVec1[(i+4)%vecLen]=(int)(i2.x);
-				
-				_vertexVec1[(i+5)%vecLen]=(int)(-i2.y);
-				
-			}
-		}
-		private static function intersection( a:Point, b:Point, A2:Number, B2:Number, C2:Number ):Point
-		{
-			var  A1:Number, B1:Number, C1:Number;
-			
-			A1 = b.y - a.y;
-			B1 = a.x - b.x;
-			C1 = b.x * a.y - a.x * b.y;
-
-			if (A1 * B2 == B1 * A2)    {
-				if ((A1 + B1) * C2==(A2 + B2) * C1 ) {
-					return new Point(Number.POSITIVE_INFINITY,0);
-				} else {
-					return new Point(Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY);
-				}
-			} 
-				
-			else {
-				var result:Point=new Point;
-				result.x = (B2 * C1 - B1 * C2) / (A2 * B1 - A1 * B2);
-				result.y = (A1 * C2 - A2 * C1) / (A2 * B1 - A1 * B2);
-				return result;
-			}
-		}
 		
 		
 		//---------------corner mouse event---------------------------------------------

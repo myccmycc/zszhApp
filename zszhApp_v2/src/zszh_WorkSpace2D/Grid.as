@@ -120,8 +120,8 @@ package zszh_WorkSpace2D
 				{
 					scaleX+=0.1
 					scaleY+=0.1
-					x=mouseX-e.localX*(scaleX);
-					y=mouseY-e.localY*(scaleY);
+					x=parent.mouseX-mouseX*(scaleX);
+					y=parent.mouseY-mouseY*(scaleY);
 					
 					trace("e.localX:"+e.localX);
 					trace("_grid.mouseX:"+mouseX);
@@ -140,8 +140,8 @@ package zszh_WorkSpace2D
 					scaleX-=0.1
 					scaleY-=0.1
 					
-					x=mouseX-e.localX*(scaleX);
-					y=mouseY-e.localY*(scaleY);
+					x=parent.mouseX-mouseX*(scaleX);
+					y=parent.mouseY-mouseY*(scaleY);
 					
 					trace("e.localX:"+e.localX);
 					trace("_grid.mouseX:"+mouseX);
