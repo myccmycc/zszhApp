@@ -71,8 +71,9 @@ package zszh_WorkSpace2D
 			if(_roomType==0)
 			{
 				_vertexVec1.push(-100,100,100,100,100,-100,-100,-100);
-				_indiceVec.push(0,1,2,0,2,3);
 			}
+			
+			_indiceVec.push(0,1,2,0,2,3);
 			
 			UpdateData();
 			
@@ -99,8 +100,7 @@ package zszh_WorkSpace2D
 			{
 				var wallCorner:Room_2DCorner=new Room_2DCorner();
 				wallCorner.name="wallCorner"+i;
-				wallCorner.addEventListener(MouseEvent.MOUSE_DOWN,CornerMouseDown);
-				
+			
 				addChild(wallCorner);
 				_wallCornerVec.push(wallCorner);
 			}
@@ -115,7 +115,6 @@ package zszh_WorkSpace2D
 				var pos3:Point=new Point(_vertexVec1[(i+4)%_vertexVec1.length],_vertexVec1[(i+5)%_vertexVec1.length]);
 				
 				var vec1:Point=new Point(pos2.x-pos1.x,pos2.y-pos1.y);
-				
 				vec1.x=vec1.x/Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
 				vec1.y=vec1.y/Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
 				
@@ -123,16 +122,9 @@ package zszh_WorkSpace2D
 				vec2.x=vec2.x/Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
 				vec2.y=vec2.y/Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
 				
-				var n:Number=vec1.x*vec2.x+vec1.y*vec2.y;
+				var n:Number=vec1.x*vec2.y-vec1.y*vec2.x;
 				var m:Number=Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y)*Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				
-				var ang:Number=Math.acos(n/m);
-				
-				var p:Point=new Point(0,0);
-				//var d:Number=Math.sin(ang);
-				
-				//sin ang
-				var sina:Number=(vec1.x*vec2.y-vec1.y*vec2.x)/m;
+				var sina:Number=n/m;
 				
 				p.x=pos2.x-(vec2.x-vec1.x)*10/sina;
 				p.y=pos2.y-(vec2.y-vec1.y)*10/sina;
@@ -146,6 +138,79 @@ package zszh_WorkSpace2D
 				_vertexVec3[i]=p.x;
 				_vertexVec3[i+1]=p.y;
 				
+				
+				//2 P1P2 直线方程  Ax+By+c=0的表达式
+			
+				var A:Number=(P2.y-P1.y);
+			
+				var B:Number=(P1.x-P2.x);
+			
+				var C:Number = P2.x*P1.y-P1.x*P2.y;
+			
+				trace("ABC:"+A+B+C);
+			
+				//2求平移后的直线  |C1-C0|/sqrt（A*A+B*B）=DIS
+			
+				var aabb:Number=Math.sqrt(A*A+B*B);
+			
+				var dis:Number=10;
+			
+			
+				var s:Number=dis*aabb;
+			
+				var C2:Number=C+s;
+				trace("C2:"+C2);
+				
+				
+				//2 P2P3 直线方程  Ax+By+c=0的表达式
+			
+				var A:Number=(P2.y-P1.y);
+			
+				var B:Number=(P1.x-P2.x);
+			
+				var C:Number = P2.x*P1.y-P1.x*P2.y;
+			
+				trace("ABC:"+A+B+C);
+			
+				//2求平移后的直线  |C1-C0|/sqrt（A*A+B*B）=DIS
+			
+				var aabb:Number=Math.sqrt(A*A+B*B);
+			
+				var dis:Number=10;
+			
+			
+				var s:Number=dis*aabb;
+			
+				var C2:Number=C+s;
+				trace("C2:"+C2);
+			
+			
+			
+				 //求P1P2和P2P3交点
+			
+			
+			
+					var i1:Point=intersection(A,B,C,A,B,C2);
+			
+				
+			}
+		}
+		
+		private static function intersection( A1:Number, B1:Number, C1:Number , A2:Number, B2:Number, C2:Number ):Point
+		{
+			if (A1 * B2 == B1 * A2)    {
+				if ((A1 + B1) * C2==(A2 + B2) * C1 ) {
+					return new Point(Number.POSITIVE_INFINITY,0);
+				} else {
+					return new Point(Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY);
+				}
+			} 
+				
+			else {
+				var result:Point=new Point;
+				result.x = (B2 * C1 - B1 * C2) / (A2 * B1 - A1 * B2);
+				result.y = (A1 * C2 - A2 * C1) / (A2 * B1 - A1 * B2);
+				return result;
 			}
 		}
 		
@@ -162,69 +227,6 @@ package zszh_WorkSpace2D
 				_wallCornerVec[i/2].Draw(_vertexVec1[i],_vertexVec1[i+1]);
 			}
 		}
-		
-		
-	
-		
-		
-		//---------------corner mouse event---------------------------------------------
-		private var cornerName:String;
-		private var cornerNumber:String;
-		private function CornerMouseDown(e:MouseEvent):void
-		{
-			//jl.hu for test
-			var df:WS2D_PopupMenuEvent=new WS2D_PopupMenuEvent(WS2D_PopupMenuEvent.HIDE_PopupMenu);
-			df._text="wocao";
-			_wallVec[0].dispatchEvent(df);
-			
-			trace("-------------------CornerMouseDown--------------------");
-			
-			bStart=true;
-			startPoint.x=this.stage.mouseX;
-			startPoint.y=this.stage.mouseY;
-			
-			cornerName=e.target.name;
-			cornerNumber =cornerName.slice(10,11);
-			trace("CornerMouseDown::cornerName:"+cornerName);
-			trace("CornerMouseDown::cornerNumber:"+cornerNumber);		
-			
-			trace("-------------------CornerMouseDown----end----------------");
-			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
-			this.stage.addEventListener(MouseEvent.MOUSE_MOVE,CornerMouseMove);
-			this.stage.addEventListener(MouseEvent.MOUSE_UP,CornerMouseUp);
-			e.stopPropagation();
-		}
-		
-		private function CornerMouseUp(e:MouseEvent):void
-		{
-			bStart=false;
-			CursorManager.removeAllCursors();
-			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE,CornerMouseMove);
-			this.stage.removeEventListener(MouseEvent.MOUSE_UP,CornerMouseUp);
-		}
-		private function CornerMouseMove(e:MouseEvent):void
-		{
-			if(!bStart)
-				return;
-			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
-			
-			var i:int=Number(cornerNumber);
-			MoveCorner(i);
-			
-			startPoint.x=this.stage.mouseX;
-			startPoint.y=this.stage.mouseY;
-		}
-		
-		private function MoveCorner(i:int):void
-		{
-			
-			var VMouseMove:Point=new Point((int)(this.stage.mouseX-startPoint.x),int(-this.stage.mouseY+startPoint.y));
-			trace("VMouseMove:"+VMouseMove);
-			_vertexVec1[i]+=VMouseMove.x;
-			_vertexVec1[i+1]-=VMouseMove.y;
-			
-		}
-		
 		
 	}
 }
