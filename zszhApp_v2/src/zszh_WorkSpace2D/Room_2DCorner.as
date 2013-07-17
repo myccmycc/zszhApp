@@ -3,6 +3,7 @@ package zszh_WorkSpace2D
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	
 	import mx.core.FlexGlobals;
 	import mx.managers.CursorManager;
@@ -44,15 +45,14 @@ package zszh_WorkSpace2D
 		
 		
 		//---------------corner mouse event---------------------------------------------
+		private var startPoint:Point=new Point;
+		private var bStart:Boolean=false;
+		
 		private var cornerName:String;
 		private var cornerNumber:String;
 		
 		private function CornerMouseDown(e:MouseEvent):void
 		{
-			//jl.hu for test
-			var df:WS2D_PopupMenuEvent=new WS2D_PopupMenuEvent(WS2D_PopupMenuEvent.HIDE_PopupMenu);
-			df._text="wocao";
-			_wallVec[0].dispatchEvent(df);
 			
 			trace("-------------------CornerMouseDown--------------------");
 			
@@ -94,11 +94,12 @@ package zszh_WorkSpace2D
 		
 		private function MoveCorner(i:int):void
 		{
-			
+			var thisRoom:Room_2D=(this.parent as Room_2D);
 			var VMouseMove:Point=new Point((int)(this.stage.mouseX-startPoint.x),int(-this.stage.mouseY+startPoint.y));
 			trace("VMouseMove:"+VMouseMove);
-			_vertexVec1[i]+=VMouseMove.x;
-			_vertexVec1[i+1]-=VMouseMove.y;
+			thisRoom._vertexVec1[i]+=VMouseMove.x;
+			thisRoom._vertexVec1[i+1]-=VMouseMove.y;
+			thisRoom.Update();
 			
 		}
 	}

@@ -38,11 +38,13 @@ package zszh_WorkSpace2D
 			_wallColor=0x7c7e89;
 			_wallColorSelected=0xff6666;
 			_wallPos=new Vector.<Number>;
-			_selected=ture;
+			_selected=true;
 			
 			addEventListener(MouseEvent.CLICK,WallCLICK);
 			addEventListener(MouseEvent.MOUSE_OVER,WallMouseOver);
 			addEventListener(MouseEvent.MOUSE_OUT,WallMouseOut);
+			
+			addEventListener(MouseEvent.MOUSE_DOWN,WallMouseDown);
 			
 			addEventListener(WS2D_PopupMenuEvent.HIDE_PopupMenu,HIDE_PopupMenu);
 		}
@@ -92,7 +94,7 @@ package zszh_WorkSpace2D
 		{
 			var room_2d:Room_2D=(this.parent as Room_2D);
 			if(!room_2d.GetSelected()&&!_selected)
-				UpdateDraw(true);
+				UpdateDraw();
 			
 			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor_Wall,2,-41,-14);
 			e.stopPropagation();
@@ -101,7 +103,7 @@ package zszh_WorkSpace2D
 		{
 			var room_2d:Room_2D=(this.parent as Room_2D);
 			if(!room_2d.GetSelected()&&!_selected)
-				UpdateDraw(false);
+				UpdateDraw();
 			CursorManager.removeAllCursors();
 			e.stopPropagation();
 		}
@@ -173,15 +175,17 @@ package zszh_WorkSpace2D
 		
 		private function MoveWall(i:int):void
 		{
-			var vecLen:int=_vertexVec1.length;
+			var thisRoom:Room_2D=(this.parent as Room_2D);
 			
-			var P0:Point=new Point(_vertexVec1[(i+0)%vecLen],-_vertexVec1[(i+1)%vecLen]);
+			var vecLen:int=thisRoom._vertexVec1.length;
 			
-			var P1:Point=new Point(_vertexVec1[(i+2)%vecLen],-_vertexVec1[(i+3)%vecLen]);
+			var P0:Point=new Point(thisRoom._vertexVec1[(i+0)%vecLen],-thisRoom._vertexVec1[(i+1)%vecLen]);
 			
-			var P2:Point=new Point(_vertexVec1[(i+4)%vecLen],-_vertexVec1[(i+5)%vecLen]);
+			var P1:Point=new Point(thisRoom._vertexVec1[(i+2)%vecLen],-thisRoom._vertexVec1[(i+3)%vecLen]);
 			
-			var P3:Point=new Point(_vertexVec1[(i+6)%vecLen],-_vertexVec1[(i+7)%vecLen]);    
+			var P2:Point=new Point(thisRoom._vertexVec1[(i+4)%vecLen],-thisRoom._vertexVec1[(i+5)%vecLen]);
+			
+			var P3:Point=new Point(thisRoom._vertexVec1[(i+6)%vecLen],-thisRoom._vertexVec1[(i+7)%vecLen]);    
 			trace("P0123:"+P0+P1+P2+P3);
 			
 			
@@ -266,15 +270,17 @@ package zszh_WorkSpace2D
 				
 				trace("i2g"+i2);
 				
-				_vertexVec1[(i+2)%vecLen]=(int)(i1.x);
+				thisRoom._vertexVec1[(i+2)%vecLen]=(int)(i1.x);
 				
-				_vertexVec1[(i+3)%vecLen]=(int)(-i1.y);
+				thisRoom._vertexVec1[(i+3)%vecLen]=(int)(-i1.y);
 				
-				_vertexVec1[(i+4)%vecLen]=(int)(i2.x);
+				thisRoom._vertexVec1[(i+4)%vecLen]=(int)(i2.x);
 				
-				_vertexVec1[(i+5)%vecLen]=(int)(-i2.y);
+				thisRoom._vertexVec1[(i+5)%vecLen]=(int)(-i2.y);
 				
 			}
+			
+			thisRoom.Update();
 		}
 		
 		
