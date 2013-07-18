@@ -165,7 +165,7 @@
 	</fx:Script>
 	
 	<s:SkinnableContainer top="0" height="100%">
-		<ns:Products id="Products" x="63" height="100%" visible="false" showEffect="{ProductShowEffect}" hideEffect="{ProductHideEffect}"/>
+		<ns:ProductsList id="Products" x="63" height="100%" visible="false" showEffect="{ProductShowEffect}" hideEffect="{ProductHideEffect}"/>
 	</s:SkinnableContainer>
 	
 	<s:SkinnableContainer top="60" width="63" backgroundColor="0xff0000">

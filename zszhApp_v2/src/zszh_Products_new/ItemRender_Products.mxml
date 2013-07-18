@@ -26,7 +26,9 @@
 				
 				var ds:DragSource = new DragSource();
 				ds.addData(dragInitiator, "myRule");//传递的数据
+				
 				ds.addData(data.className, "className");//传递的数据
+				ds.addData(data.classArgument,"classArgument");
 				ds.addData(data.resourcePath, "resourcePath");//传递的数据
 				ds.addData(data.objectName, "objectName");//传递的数据
 				

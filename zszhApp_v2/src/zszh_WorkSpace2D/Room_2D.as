@@ -19,13 +19,13 @@ package zszh_WorkSpace2D
 		private var _floor:Room_2DFloor;
 		private var _wallVec:Vector.<Room_2DWall>;		
 		private var _wallCornerVec:Vector.<Room_2DCorner>;
-		private var _roomType:int;//0小,1大,2L
+		private var _roomType:String;//0小,1大,2L,3room
 		
-		public function Room_2D()
+		public function Room_2D(roomType:String)
 		{
 			super();
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
-			_roomType=0;
+			_roomType=roomType;
 			_selected=true;
 		}
 		
@@ -63,12 +63,25 @@ package zszh_WorkSpace2D
 			_vertexVec3=new Vector.<Number>();
 			_indiceVec =new Vector.<int>();
 			
-			if(_roomType==0)
+			if(_roomType=="4")
 			{
 				_vertexVec1.push(-100,100,100,100,100,-100,-100,-100);
 			}
+			else if(_roomType=="1")
+			{
+				_vertexVec1.push(-200,200,200,200,200,-200,-200,-200);
+			}
 			
-			_indiceVec.push(0,1,2,0,2,3);
+			else if(_roomType=="2")
+			{
+				_vertexVec1.push(0,0, 200,0, 200,-200, -200,-200,  -200,200, 0,200);
+			}
+			
+			else if(_roomType=="3")
+			{
+				_vertexVec1.push(0,400, 500,400, 500,-300, 0,-300, 0,-500, -500,-500, -500,500, 0,500);
+			}
+			
 			
 			UpdateData();
 			
@@ -103,38 +116,17 @@ package zszh_WorkSpace2D
 		
 		private function UpdateData():void
 		{
+			for(var i:int=0;i<_vertexVec1.length;i++)
+			{
+				if(i+2<_vertexVec1.length)
+					_indiceVec.push(0,i+1,i+2);
+			}
+			
 			for(var i:int=0;i<_vertexVec1.length;i+=2)
 			{
 				var P1:Point=new Point(_vertexVec1[i],_vertexVec1[i+1]);
 				var P2:Point=new Point(_vertexVec1[(i+2)%_vertexVec1.length],_vertexVec1[(i+3)%_vertexVec1.length]);
-				var P3:Point=new Point(_vertexVec1[(i+4)%_vertexVec1.length],_vertexVec1[(i+5)%_vertexVec1.length]);
-				
-				/*var vec1:Point=new Point(pos2.x-pos1.x,pos2.y-pos1.y);
-				vec1.x=vec1.x/Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
-				vec1.y=vec1.y/Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
-				
-				var vec2:Point=new Point(pos3.x-pos2.x,pos3.y-pos2.y);
-				vec2.x=vec2.x/Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				vec2.y=vec2.y/Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				
-				
-				var n:Number=vec1.x*vec2.y-vec1.y*vec2.x;
-				var m:Number=Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y)*Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				var sina:Number=n/m;
-				
-				var p:Point=new Point;
-				p.x=pos2.x-(vec2.x-vec1.x)*10/sina;
-				p.y=pos2.y-(vec2.y-vec1.y)*10/sina;
-				
-				_vertexVec2[i]=p.x;
-				_vertexVec2[i+1]=p.y;
-				
-				p.x=pos2.x+(vec2.x-vec1.x)*10/sina;
-				p.y=pos2.y+(vec2.y-vec1.y)*10/sina;
-				
-				_vertexVec3[i]=p.x;
-				_vertexVec3[i+1]=p.y;*/
-				
+				var P3:Point=new Point(_vertexVec1[(i+4)%_vertexVec1.length],_vertexVec1[(i+5)%_vertexVec1.length]);	
 				
 				//2 P1P2 直线方程  Ax+By+c=0的表达式
 			

@@ -31,95 +31,32 @@ package zszh_WorkSpace3D
 		public static var FloorSpecular:Class;
 		[Embed(source="/../embeds/floor_normal.jpg")]
 		public static var FloorNormals:Class;
-		
-		
-			
+
 		[Embed(source="/../embeds/TextureFloor.jpg")]
 		public static var FloorDiffuse:Class;
+		
 		
 		//material objects
 		private var _wallMaterial:TextureMaterial;
 		private var _floorMaterial:TextureMaterial;
 		
-		
 		private var _pointLight:PointLight;
-		private var directionalLight:DirectionalLight;
-		private var lightPicker:StaticLightPicker;
+		private var _directionalLight:DirectionalLight;
+		private var _lightPicker:StaticLightPicker;
 		
 		//vertexs data
 		private var _pos1Vec:Vector.<Number>;//inside
 		private var _pos2Vec:Vector.<Number>;//outside
-		
-		var _wallHeight:int;
+		private var _wallHeight:int;
+		private var _wallWidth:int;
 		
 		public function Room_3D(_pos1:Vector.<Number>)
 		{
 			super();
-			
 			_pos1Vec=_pos1;
-			
-			//compute the pos2 according pos1
-			//Qi  ＝  Pi  ＋  （Vi － Vi+1）* d / sina
-			
 			_pos2Vec=new Vector.<Number>;
-			
-			var pos1Len:int=_pos1Vec.length;
-			for(var i:int=0;i<pos1Len;i+=2)
-			{
-				var pos1:Point=new Point(_pos1Vec[i],_pos1Vec[i+1]);
-				var pos2:Point=new Point(_pos1Vec[(i+2)%pos1Len],_pos1Vec[(i+3)%pos1Len]);
-				var pos3:Point=new Point(_pos1Vec[(i+4)%pos1Len],_pos1Vec[(i+5)%pos1Len]);
-		
-				//单位向量 vec1，vexc2
-				var vec1:Point=new Point(pos2.x-pos1.x,pos2.y-pos1.y);
-				var disVec1:Number=Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
-				vec1.x=vec1.x/disVec1;
-				vec1.y=vec1.y/disVec1;
-				
-				var vec2:Point=new Point(pos3.x-pos2.x,pos3.y-pos2.y);
-				var disVec2:Number=Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				vec2.x=vec2.x/disVec2;
-				vec2.y=vec2.y/disVec2;
-				
-				//求角度   AXB=|A|.|B|.SIN(ang);
-				var AB:Number=Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y)*Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-				var sina:Number=(vec1.x*vec2.y-vec1.y*vec2.x)/AB;
-				
-				//求_pos2Vec
-				_pos2Vec[i]=pos2.x+(vec2.x-vec1.x)*20/sina;
-				_pos2Vec[i+1]=pos2.y+(vec2.y-vec1.y)*20/sina;
-				
-				trace("_pos2Vec="+_pos2Vec[i] + _pos2Vec[i+1]);
-			}
-			
 			_wallHeight=270;
-			
-			//initMaterial
-			/*_wallMaterial = new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
-			_floorMaterial= new TextureMaterial(Cast.bitmapTexture(FloorDiffuse));
-			
-			_pointLight=new PointLight();
-			_pointLight.castsShadows=false;
-			_pointLight.color=0xffffff;
-			_pointLight.position=new Vector3D(0,270,0);
-			_pointLight.radius=5000;
-			addChild(_pointLight);
-			
-			directionalLight = new DirectionalLight(0, -1, 0);
-			directionalLight.castsShadows = false;
-			directionalLight.color = 0xffffff;
-			directionalLight.diffuse = .7;
-			directionalLight.ambient = .3;
-			directionalLight.specular = 0;
-			directionalLight.ambientColor = 0x808090;
-			addChild(directionalLight);
-			
-			
-			
-			lightPicker = new StaticLightPicker([_pointLight,directionalLight]);
-			
-			_wallMaterial.lightPicker=lightPicker;
-			_floorMaterial.lightPicker=lightPicker;*/
+			_wallWidth=20;
 		}
 		
 		
@@ -311,6 +248,113 @@ package zszh_WorkSpace3D
 			addChild(new Mesh(gem,material));	
 		}
 		
+		private function InitVertexData():void
+		{
+			var pos1Len:int=_pos1Vec.length;
+			for(var i:int=0;i<pos1Len;i+=2)
+			{
+				var P1:Point=new Point(_pos1Vec[i],_pos1Vec[i+1]);
+				var P2:Point=new Point(_pos1Vec[(i+2)%pos1Len],_pos1Vec[(i+3)%pos1Len]);
+				var P3:Point=new Point(_pos1Vec[(i+4)%pos1Len],_pos1Vec[(i+5)%pos1Len]);
+				
+				//2 P1P2 直线方程  Ax+By+c=0的表达式
+				
+				var A1:Number=(P2.y-P1.y);
+				
+				var B1:Number=(P1.x-P2.x);
+				
+				var C1:Number = P2.x*P1.y-P1.x*P2.y;
+				
+				trace("ABC:"+A1+B1+C1);
+				
+				//2求平移后的直线  |C1-C0|/sqrt（A*A+B*B）=DIS
+				
+				var aabb:Number=Math.sqrt(A1*A1+B1*B1);
+				
+				var dis:Number=10;
+				
+				
+				var s:Number=dis*aabb;
+				
+				var C1_1:Number=C1+s;
+				var C1_2:Number=C1-s;
+				trace("C1_1:"+C1_1);
+				trace("C1_2:"+C1_2);
+				
+				
+				//2 P2P3 直线方程  Ax+By+c=0的表达式
+				
+				var A2:Number=(P3.y-P2.y);
+				
+				var B2:Number=(P2.x-P3.x);
+				
+				var C2:Number = P3.x*P2.y-P2.x*P3.y;
+				
+				trace("ABC:"+A2+B2+C2);
+				
+				//2求平移后的直线  |C1-C0|/sqrt（A*A+B*B）=DIS
+				
+				var aabb:Number=Math.sqrt(A2*A2+B2*B2);
+				
+				var dis:Number=10;
+				
+				
+				var s:Number=dis*aabb;
+				
+				var C2_1:Number=C2+s;
+				var C2_2:Number=C2-s;
+				trace("C2_1:"+C2_1);
+				trace("C2_2:"+C2_2);
+				
+				
+				
+				//求P1P2平移线 和P2P3平移线 交点
+				var p:Point=intersection(A1,B1,C1_1,A2,B2,C2_1);
+				_vertexVec3[i]=p.x;
+				_vertexVec3[i+1]=p.y;
+				
+				var p:Point=intersection(A1,B1,C1_2,A2,B2,C2_2);
+				_vertexVec2[i]=p.x;
+				_vertexVec2[i+1]=p.y;
+				
+				//求_pos2Vec
+				_pos2Vec[i]=pos2.x+(vec2.x-vec1.x)*20/sina;
+				_pos2Vec[i+1]=pos2.y+(vec2.y-vec1.y)*20/sina;
+				
+				trace("_pos2Vec="+_pos2Vec[i] + _pos2Vec[i+1]);
+			}
+			
+		}
+		private function InitMaterials():void
+		{
+			
+			//initMaterial
+			/*_wallMaterial = new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
+			_floorMaterial= new TextureMaterial(Cast.bitmapTexture(FloorDiffuse));
+			
+			_pointLight=new PointLight();
+			_pointLight.castsShadows=false;
+			_pointLight.color=0xffffff;
+			_pointLight.position=new Vector3D(0,270,0);
+			_pointLight.radius=5000;
+			addChild(_pointLight);
+			
+			directionalLight = new DirectionalLight(0, -1, 0);
+			directionalLight.castsShadows = false;
+			directionalLight.color = 0xffffff;
+			directionalLight.diffuse = .7;
+			directionalLight.ambient = .3;
+			directionalLight.specular = 0;
+			directionalLight.ambientColor = 0x808090;
+			addChild(directionalLight);
+			
+			
+			
+			lightPicker = new StaticLightPicker([_pointLight,directionalLight]);
+			
+			_wallMaterial.lightPicker=lightPicker;
+			_floorMaterial.lightPicker=lightPicker;*/
+		}
 		private function onObjectMouseDown( event:MouseEvent3D ):void {
 			event.target.showBounds=true;
 		}

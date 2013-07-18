@@ -84,8 +84,10 @@ package zszh_WorkSpace2D
 			trace("DragEnter2D event.dragInitiator.name:"+event.dragInitiator.name);
 			
 			var className:String=String(event.dragSource.dataForFormat("className"));
+			var classArgument:String=String(event.dragSource.dataForFormat("classArgument"));
 			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
 			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
+			
 			
 			trace("WorkSpace2D::DragEnter2D：className="+className); 
 			trace("WorkSpace2D::DragEnter2D：resourcePath="+resourcePath); 
@@ -95,7 +97,7 @@ package zszh_WorkSpace2D
 			
 			if(className=="Room_2D")
 			{
-				var room:Room_2D=new Room_2D();
+				var room:Room_2D=new Room_2D(classArgument);
 				room.x=event.localX;
 				room.y=event.localY;
 				room.name=room.className+room_number;

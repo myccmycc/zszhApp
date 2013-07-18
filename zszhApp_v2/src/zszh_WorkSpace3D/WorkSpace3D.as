@@ -38,6 +38,10 @@ package zszh_WorkSpace3D
 	{
 		//engine variables
 		private var _view3d:View3D;
+		private var _directionLight:DirectionalLight;
+		private var _lightPicker:StaticLightPicker;
+		
+
 		//debug 
 		private var _debug:AwayStats;
 		//rooms
@@ -51,7 +55,7 @@ package zszh_WorkSpace3D
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 		}
 		
-
+		//--------punblic functions------------------------------------------
 		public function ClearRoom():void
 		{
 			for(var i:int=_roomContainer3D.numChildren-1;i>=0;i--)
@@ -77,6 +81,9 @@ package zszh_WorkSpace3D
 			_modelsContainer3D.addChild(modelLoader);
 		}
 		
+		
+		
+		//--------------init the workspace3d-------------------------
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
 			if(!_view3d)
@@ -99,6 +106,21 @@ package zszh_WorkSpace3D
 			_view3d.camera.y = 800;
 			_view3d.camera.lookAt(new Vector3D());
 			
+			//setup light
+			_directionLight = new DirectionalLight();
+			_directionLight.direction = _view3d.camera.forwardVector;
+			_directionLight.color = 0x00FFFF;
+			_directionLight.ambient = 0.1;
+			_directionLight.diffuse = 0.7;
+			
+			_view3d.scene.addChild(_directionLight);
+			
+			_lightPicker = new StaticLightPicker([_directionLight]);
+			
+			
+			
+			
+			
 			//setup camera controller
 			addEventListener(MouseEvent.MOUSE_DOWN,MOUSE_DOWN_view3d);
 			addEventListener(MouseEvent.MOUSE_MOVE,MOUSE_MOVE_view3d);
@@ -111,8 +133,6 @@ package zszh_WorkSpace3D
 			
 			addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_view3d);
 			
-			
-			
 			//setup the scene
 			_roomContainer3D = new ObjectContainer3D();
 			_modelsContainer3D= new ObjectContainer3D();
@@ -120,10 +140,14 @@ package zszh_WorkSpace3D
 			_view3d.scene.addChild(_roomContainer3D);
 			_view3d.scene.addChild(_modelsContainer3D);
 			_view3d.scene.addChild(new Trident(50));
-
 			
 		}
 		
+		
+		
+		
+		
+		//-----------------_view3d render-----------------------------------
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth,unscaledHeight);
@@ -144,11 +168,12 @@ package zszh_WorkSpace3D
 			if(_view3d.stage3DProxy)
 			{
 				_view3d.render();
+				_directionLight.direction = _view3d.camera.forwardVector;
 			}
 		}
 		
 		
-		
+		//-----------------mouse event---------------------------------------------
 		private function onObjectMouseDown( event:MouseEvent3D ):void {
 			event.target.showBounds=true;
 		}
