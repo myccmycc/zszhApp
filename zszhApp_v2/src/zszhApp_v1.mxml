@@ -52,7 +52,7 @@
 			import zszh_MainMenu.Menu1;
 			import zszh_MainMenu.Skin_MainMenuBt;
 			
-			import zszh_WorkSpace2D.Model;
+			import zszh_WorkSpace2D.Object2D_Model;
 			
 			import zszh_WorkSpace3D.Room_3D;
 			
@@ -65,6 +65,10 @@
 			
 			[Embed(source="../embeds/MouseOver_wall.png")]
 			public var imageCursor_Wall:Class;
+			
+			[Embed(source="../embeds/cursor_corner.png")]
+			public var Cursor_CornerClass:Class;
+			
 			
 			private var _menu1:Menu1=new Menu1;
 			protected function button1_mouseMoveHandler(event:MouseEvent):void
@@ -96,25 +100,14 @@
 			private var StarIcon:Class
 			
 			private function init():void {
-			/*	var idx:uint;
-				var len:uint = ProductsAccordion.numChildren;
-				var btn:mx.controls.Button;
-				for (idx=0; idx<len; idx++) {
-					btn = ProductsAccordion.getHeaderAt(idx);
-					btn.useHandCursor = true;
-					btn.buttonMode = true;
-					btn.setStyle("Icon", StarIcon);
-					
-					btn.setStyle("selectedUpIcon", StarIcon);
-					btn.setStyle("selectedOverIcon", StarIcon);
-					btn.setStyle("selectedDownIcon", StarIcon);
-				}*/
+				
+			
 			}
 			
 			//初始化完毕后 welcome 界面
 			var welcomeWindow:Welcome_PopupWindow;
 			protected function application1_initializeHandler(event:FlexEvent):void
-			{
+			{		
 				welcomeWindow=new Welcome_PopupWindow();
 				PopUpManager.addPopUp(welcomeWindow,this,true);
 				

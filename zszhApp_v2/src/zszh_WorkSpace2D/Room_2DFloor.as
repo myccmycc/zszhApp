@@ -55,7 +55,7 @@ package zszh_WorkSpace2D
 			
 			//update uv
 			_uvVec=new Vector.<Number>();
-			var room_2d:Room_2D=this.parent as Room_2D;
+			var room_2d:Object2D_Room=this.parent as Object2D_Room;
 			for(var i:int=0;i<room_2d._vertexVec1.length;i+=2)
 			{
 				_uvVec.push(room_2d._vertexVec1[i]/200,room_2d._vertexVec1[i+1]/200);
@@ -77,7 +77,7 @@ package zszh_WorkSpace2D
 		
 		private function FloorMouseDown(e:MouseEvent):void
 		{
-			var room_2d:Room_2D=(this.parent as Room_2D);
+			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			if(room_2d.GetSelected())
 			{
 				room_2d.startDrag();
@@ -87,7 +87,7 @@ package zszh_WorkSpace2D
 		
 		private function FloorMouseUp(e:MouseEvent):void
 		{
-			var room_2d:Room_2D=(this.parent as Room_2D);
+			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			if(room_2d.GetSelected())
 			{
 				room_2d.stopDrag();
@@ -96,7 +96,7 @@ package zszh_WorkSpace2D
 		}
 		private function FloorMouseClick(e:MouseEvent):void
 		{
-			var room_2d:Room_2D=(this.parent as Room_2D);
+			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			room_2d.SetSelected(true);
 		}
 	}

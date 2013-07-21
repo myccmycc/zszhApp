@@ -9,11 +9,11 @@ package zszh_WorkSpace2D
 	import mx.managers.CursorManager;
 	import mx.managers.PopUpManager;
 	
-	public class Room_2DCorner extends Sprite
+	public class Wall_2DCorner extends Sprite
 	{
 		private var _selected:Boolean;
 		
-		public function Room_2DCorner()
+		public function Wall_2DCorner()
 		{
 			super();
 			addEventListener(Event.ADDED_TO_STAGE,OnAddToStage);
@@ -108,12 +108,13 @@ package zszh_WorkSpace2D
 		
 		private function MoveCorner(i:int):void
 		{
-			var thisRoom:Object2D_Room=(this.parent as Object2D_Room);
+			var thisWall:Wall_2D=(this.parent as Wall_2D);
+			
 			var VMouseMove:Point=new Point((int)(this.stage.mouseX-startPoint.x),int(-this.stage.mouseY+startPoint.y));
 			trace("VMouseMove:"+VMouseMove);
-			thisRoom._vertexVec1[i]+=VMouseMove.x;
-			thisRoom._vertexVec1[i+1]-=VMouseMove.y;
-			thisRoom.Object2DUpdate();
+			thisWall._vertexVec1[i]+=VMouseMove.x;
+			thisWall._vertexVec1[i+1]-=VMouseMove.y;
+			thisWall.Update();
 			
 		}
 	}

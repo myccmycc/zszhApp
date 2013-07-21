@@ -59,9 +59,8 @@ package zszh_WorkSpace2D
 			this.graphics.moveTo(_gridWidth/2,0);
 			this.graphics.lineTo(_gridWidth/2,_gridHeight);
 		}
-		
-	
-		public function drawHorizontalLine(size:Number,w:Number,h:Number):void
+
+		private function drawHorizontalLine(size:Number,w:Number,h:Number):void
 			
 		{
 			var cellh:Number=h/size;
@@ -74,7 +73,7 @@ package zszh_WorkSpace2D
 			}
 		}
 		
-		public function drawVerticalLine(size:Number,w:Number,h:Number):void
+		private function drawVerticalLine(size:Number,w:Number,h:Number):void
 		{
 			var cellw:Number=w/size;
 			var bx:Number=0;
@@ -87,31 +86,35 @@ package zszh_WorkSpace2D
 		}
 
 		
+		
+		
 		//_grid D&D
+		private var _bMouseDown:Boolean=false;
 		private function MOUSE_DOWN_grid(ev:MouseEvent) : void
 		{
 			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
-			startDrag(false);
-			
-			(this.parent as WorkSpace2D).SetAllNoSelected();
+			_bMouseDown=true;
 		}
 		private function MOUSE_UP_grid(ev:MouseEvent) : void
 		{
 			CursorManager.removeAllCursors();
+			_bMouseDown=false;
 			stopDrag();
 		}
 		private function MOUSE_OUT_grid(event:MouseEvent):void
 		{
 			CursorManager.removeAllCursors();
+			_bMouseDown=false;
 			stopDrag();
 		}
 		
 		private function MOUSE_MOVE_grid(e:MouseEvent) : void
 		{
+			if(_bMouseDown)
+				this.startDrag();
 		}
 		
-		
-		//放大缩小
+		//放大缩小  not fixed
 		private function MOUSE_WHEEL_grid(e:MouseEvent) : void
 		{
 			if(e.delta>0)
@@ -158,7 +161,5 @@ package zszh_WorkSpace2D
 			}				
 		}
 		
-		
-	
 	}
 }

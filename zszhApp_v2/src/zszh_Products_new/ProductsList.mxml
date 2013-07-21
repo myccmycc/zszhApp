@@ -63,15 +63,14 @@
 		<s:ComboBox x="75" width="170" verticalCenter="5" styleName="customTextInput" />
 		<s:Image  buttonMode="true" x="262" source="@Embed('embeds/MainMenu/icon_search.png')" verticalCenter="5"/>
 	</s:SkinnableContainer>
-	
+
 	<s:SkinnableContainer id="ProductsShow" backgroundColor="#00cd99" y="75" width="100%" height="100%" > 
 		
 		<s:SkinnableContainer backgroundColor="#10181e" top="1" left="1" right="1" bottom="1">
 			<s:ComboBox x="5" width="100" top="5" height="30" styleName="customTextInput" />
 			<s:ComboBox x="106" width="100" top="5" height="30" styleName="customTextInput" />
 			<s:ComboBox x="207" width="100" top="5" height="30" styleName="customTextInput" />
-		
-				
+
 			<s:List id="myList" top="40" contentBackgroundColor="#10181e" borderVisible="false" horizontalCenter="0" 
 				itemRenderer="zszh_Products_new.ItemRender_Products" initialize="myList_initializeHandler(event)" mouseDown="myList_mouseDownHandler(event)"
 				height="100%" verticalScrollPolicy="off">
@@ -80,13 +79,15 @@
 				</s:layout>
 			
 				<s:ArrayCollection>
-				<fx:Object labelText="L型房间" imgSource="zszh_res/basic/wall/room_1.png" className="Room_2D" classArgument="2" resourcePath="room_1.png"/>
-				<fx:Object labelText="大房间" 	 imgSource="zszh_res/basic/wall/room_big.png" className="Room_2D" classArgument="1" resourcePath="room_big"/>
-				<fx:Object labelText="小房间"  imgSource="zszh_res/basic/wall/room_small.png" className="Room_2D" classArgument="4" resourcePath="room_small"/>
-				<fx:Object labelText="房型"   imgSource="zszh_res/basic/wall/wall_h_divider.png" className="Room_2D" classArgument="3" resourcePath="wall_h_divider"/>
+				<fx:Object labelText="L型房间" ImgThumbnail="zszh_res/basic/wall/room_1.png" className="Room_2D" classArgument="2" resourcePath=""/>
+				<fx:Object labelText="大房间" 	 ImgThumbnail="zszh_res/basic/wall/room_big.png" className="Room_2D" classArgument="1" resourcePath=""/>
+				<fx:Object labelText="小房间"  ImgThumbnail="zszh_res/basic/wall/room_small.png" className="Room_2D" classArgument="4" resourcePath=""/>
+				<fx:Object labelText="房型"   ImgThumbnail="zszh_res/basic/wall/wall_h_divider.png" className="Room_2D" classArgument="3" resourcePath=""/>
+				
+				<fx:Object labelText="横墙"   ImgThumbnail="zszh_res/basic/wall/wall_h_divider.png" className="Wall_2D" classArgument="1" resourcePath=""/>
+				<fx:Object labelText="竖墙"   ImgThumbnail="zszh_res/basic/wall/wall_v_divider.png" className="Wall_2D" classArgument="2" resourcePath=""/>
 					
-				<fx:Object labelText="竖墙"   imgSource="zszh_res/basic/wall/wall_v_divider.png" className="model_bed" resourcePath=""/>
-				<fx:Object labelText="床00001" imgSource="zszh_res/models/beds/bed00001/bed00001_preview.png" className="model_bed" resourcePath="zszh_res/models/beds/bed00001/" objectName="bed00001"/>
+				<fx:Object labelText="床00001" ImgThumbnail="zszh_res/models/beds/bed00001/bed00001_preview.png" className="model_bed" resourcePath="zszh_res/models/beds/bed00001/" objectName="bed00001"/>
 
 				</s:ArrayCollection>
 			</s:List>

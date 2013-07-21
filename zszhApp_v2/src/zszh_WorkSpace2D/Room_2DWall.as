@@ -17,11 +17,11 @@ package zszh_WorkSpace2D
 	
 	import zszh_Events.WS2D_PopupMenuEvent;
 	
-	import zszh_WorkSpace2D.WS2D_PopupWall;
+	import zszh_WorkSpace2D.PopupMenu_Wall2D;
 	
 	public class Room_2DWall extends Sprite
 	{
-		private var _popupWindowMenu:WS2D_PopupWall;
+		private var _popupWindowMenu:PopupMenu_Wall2D;
 		private var _lineColor:uint;
 		private var _wallColor:uint;
 		private var _wallColorSelected:uint;
@@ -33,7 +33,7 @@ package zszh_WorkSpace2D
 		public function Room_2DWall()
 		{
 			super();
-			_popupWindowMenu=new WS2D_PopupWall();
+			_popupWindowMenu=new PopupMenu_Wall2D();
 			_lineColor=0xffffff;
 			_wallColor=0x7c7e89;
 			_wallColorSelected=0xff6666;
@@ -92,7 +92,7 @@ package zszh_WorkSpace2D
 		
 		private function WallMouseOver(e:MouseEvent):void
 		{
-			var room_2d:Room_2D=(this.parent as Room_2D);
+			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			if(!room_2d.GetSelected()&&!_selected)
 				UpdateDraw();
 			
@@ -101,7 +101,7 @@ package zszh_WorkSpace2D
 		}
 		private function WallMouseOut(e:MouseEvent):void
 		{
-			var room_2d:Room_2D=(this.parent as Room_2D);
+			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			if(!room_2d.GetSelected()&&!_selected)
 				UpdateDraw();
 			CursorManager.removeAllCursors();
@@ -110,7 +110,7 @@ package zszh_WorkSpace2D
 		
 		private function WallCLICK(e:MouseEvent):void
 		{
-			var room_2d:Room_2D=(this.parent as Room_2D);
+			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			room_2d.SetSelected(true);
 			room_2d.SetAllNoSelected();
 
@@ -175,7 +175,7 @@ package zszh_WorkSpace2D
 		
 		private function MoveWall(i:int):void
 		{
-			var thisRoom:Room_2D=(this.parent as Room_2D);
+			var thisRoom:Object2D_Room=(this.parent as Object2D_Room);
 			
 			var vecLen:int=thisRoom._vertexVec1.length;
 			
@@ -280,7 +280,7 @@ package zszh_WorkSpace2D
 				
 			}
 			
-			thisRoom.Update();
+			thisRoom.Object2DUpdate();
 		}
 		
 		

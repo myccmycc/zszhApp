@@ -10,8 +10,9 @@
 		import mx.core.UIComponent;
 		import mx.events.FlexEvent;
 		
-		import zszh_WorkSpace2D.Model;
-		import zszh_WorkSpace2D.Room_2D;
+		import zszh_WorkSpace2D.Object2D_Model;
+		import zszh_WorkSpace2D.Object2D_Room;
+		import zszh_WorkSpace2D.Wall_2D;
 		[Embed(source="embeds/ToolsBar/toolbar_1.png")]
 		public var Button1_down:Class;
 		[Embed(source="embeds/ToolsBar/toolbar_2.png")]
@@ -55,30 +56,61 @@
 			
 			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._room2DVec.length;i++)
 			{
-				var room2d:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._room2DVec[i] as UIComponent;					
+				var room2d:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._room2DVec[i] as UIComponent;		
+				var vertex1:Vector.<Number>= (room2d as Object2D_Room)._vertexVec1;
+				
+				var vertex2:Vector.<Number>=new Vector.<Number>;
+				trace(vertex1);
+				
 				if(room2d.className=="Room_2D")
 				{
-					var pos:Array=new Array;
-					var vec:Vector.<Number>= (room2d as Room_2D)._vertexVec1;
-					/*for(var j:int=0;j<vec.length;j+=2)
+					
+					
+					for(var j:int=0;j<vertex1.length;j+=2)
 					{
-					var p:Point=new Point;
-					p.x=room2d.x+vec[j]-WS2D_MainContainer.WorkSpace2D._grid._gridWidth/2;
-					p.y=room2d.y+vec[j+1]-WS2D_MainContainer.WorkSpace2D._grid._gridHeight/2;
-					pos.push(p);
-					}*/
-					parentApplication.WorkSpace3D.BuildRoom(vec,room2d.name);				    
+						vertex2.push(room2d.x+vertex1[j]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridWidth/2);
+						vertex2.push(room2d.y+vertex1[j+1]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridHeight/2);
+					}
+					parentApplication.WorkSpace3D.AddRoom(vertex2,room2d.name);				    
 				}
 			}
+			//隔墙 
+			parentApplication.WorkSpace3D.ClearWallInside();
 			
+			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._wall2DVec.length;i++)
+			{
+				var wallInside:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._wall2DVec[i] as UIComponent;					
+				if(wallInside.className=="Wall_2D")
+				{
+					var pos:Array=new Array;
+					var vec:Vector.<Number>= (wallInside as Wall_2D)._vertexVec1;
+					
+					for(var j:int=0;j<vec.length;j+=2)
+					{
+						var p:Point=new Point;
+						p.x=wallInside.x+vec[j]-parentApplication.WorkSpace2D._grid._gridWidth/2;
+						p.y=wallInside.y+vec[j+1]-parentApplication.WorkSpace2D._grid._gridHeight/2;
+						pos.push(p);
+					}
+					parentApplication.WorkSpace3D.AddWallInside(pos,wallInside.name);	 
+				}
+				
+				
+			}
+						
+			//模型创建
 			parentApplication.WorkSpace3D.ClearModels();
 			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._modelsVec.length;i++)
 			{
 				var modelBed:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._modelsVec[i] as UIComponent;					
 				if(modelBed.className=="Model")
 				{
-					var mbed:Model = modelBed as Model;
-					parentApplication.WorkSpace3D.AddModels(mbed._loaderModel);		    
+					var mbed:Object2D_Model = modelBed as Object2D_Model;
+					var _vec3D:Vector3D=new Vector3D();
+					_vec3D.x=mbed.x-3200;
+					_vec3D.y=0;
+					_vec3D.z=mbed.y-3200;
+					parentApplication.WorkSpace3D.AddModels(mbed._resourcePath,mbed._modelName,_vec3D);    
 				}
 			}
 			

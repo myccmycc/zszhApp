@@ -6,22 +6,21 @@ package zszh_WorkSpace2D
 	import mx.events.FlexEvent;
 
 
-	public class Room_2D extends UIComponent
+	public class Object2D_Room extends Object2D_Base
 	{
 		public  var _vertexVec1:Vector.<Number>;
-		public var _indiceVec:Vector.<int>;
+		public  var _indiceVec:Vector.<int>;
 		
 		private  var _vertexVec2:Vector.<Number>;
 		private  var _vertexVec3:Vector.<Number>;
 	
 		
-		private var _selected:Boolean;
 		private var _floor:Room_2DFloor;
 		private var _wallVec:Vector.<Room_2DWall>;		
 		private var _wallCornerVec:Vector.<Room_2DCorner>;
 		private var _roomType:String;//0小,1大,2L,3room
 		
-		public function Room_2D(roomType:String)
+		public function Object2D_Room(roomType:String)
 		{
 			super();
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
@@ -37,27 +36,15 @@ package zszh_WorkSpace2D
 			//for(i=0;i<_wallCornerVec.length;i++)
 				//_wallCornerVec[i].SetSelected(false);
 		}
-		
-		public function SetSelected(b:Boolean):void
-		{
-			SetAllNoSelected();
-			_selected=b;
-			UpdateFloorWallCorner();
-		}
-		public function GetSelected():Boolean
-		{
-			return _selected;
-		}
-		
-		
-		public function Update():void
+	
+		override public function Object2DUpdate():void
 		{
 			UpdateData();
 			UpdateFloorWallCorner();
 		}
+		
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
-			
 			_vertexVec1=new Vector.<Number>();
 			_vertexVec2=new Vector.<Number>();
 			_vertexVec3=new Vector.<Number>();

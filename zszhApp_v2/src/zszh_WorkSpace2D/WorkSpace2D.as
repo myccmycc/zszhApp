@@ -19,29 +19,37 @@ package zszh_WorkSpace2D
 	public class WorkSpace2D extends UIComponent
 	{
 		public var _grid:Grid;
-		public var _room2DVec:Vector.<Room_2D>;
-		public var _modelsVec:Vector.<Model>;
+		public var _objects:Array;
+		
+		//---for create 3d space-------------------
+		public var _room2DVec:Vector.<Object2D_Room>;
+		public var _wall2DVec:Vector.<Wall_2D>;
+		public var _modelsVec:Vector.<Object2D_Model>;
 		
 		public function WorkSpace2D()
 		{
 			super();
+			_objects=new Array;
+			this.addEventListener(MouseEvent.MOUSE_DOWN,MouseDown);
 			this.addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 			this.addEventListener(ResizeEvent.RESIZE,OnResize);
 		}
 		
-		public function SetAllNoSelected():void
+		private function MouseDown(e:MouseEvent):void
 		{
-			for(var i:int=0;i<_room2DVec.length;i++)
-				_room2DVec[i].SetSelected(false);
-			
-			for(i=0;i<_modelsVec.length;i++)
-				_modelsVec[i].SetSelected(false);
+			SetAllNoSelected();
 		}
+		private function SetAllNoSelected():void
+		{
+			for(var i:int=0;i<_objects.length;i++)
+				_objects[i].SetSelected(false);
+		}
+		
+		
 		public function ShowCenter():void
 		{
 			_grid.scaleX=0.5;
 			_grid.scaleY=0.5;
-			
 			_grid.x=-(_grid.width*_grid.scaleX)/2+this.unscaledWidth/2;
 			_grid.y=-(_grid.height*_grid.scaleY)/2+this.unscaledHeight/2;
 		}
@@ -56,11 +64,11 @@ package zszh_WorkSpace2D
 		}
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
-			_grid=new Grid();	
+			_room2DVec=new Vector.<Object2D_Room>();
+			_wall2DVec=new Vector.<Wall_2D>();
+			_modelsVec=new Vector.<Object2D_Model>();
 			
-			_room2DVec=new Vector.<Room_2D>();
-			_modelsVec=new Vector.<Model>();
-			
+			_grid=new Grid();
 			_grid.scaleX=0.5;
 			_grid.scaleY=0.5;
 			
@@ -74,49 +82,64 @@ package zszh_WorkSpace2D
 			_grid.addEventListener(DragEvent.DRAG_DROP,DragDrop2D);
 		}
 
+		
+		
+		//D&D
 		private var room_number:int=0;
 		private var current_object:Object;
 		
-		//D&D
 		private function DragEnter2D(event:DragEvent):void
 		{
-			trace("DragEnter2D event.target.name:"+event.target.name);
-			trace("DragEnter2D event.dragInitiator.name:"+event.dragInitiator.name);
-			
 			var className:String=String(event.dragSource.dataForFormat("className"));
 			var classArgument:String=String(event.dragSource.dataForFormat("classArgument"));
 			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
 			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
 			
-			
-			trace("WorkSpace2D::DragEnter2D：className="+className); 
-			trace("WorkSpace2D::DragEnter2D：resourcePath="+resourcePath); 
-			trace("WorkSpace2D::DragEnter2D：objectName="+objectName); 
-			
 			current_object=null;
 			
 			if(className=="Room_2D")
 			{
-				var room:Room_2D=new Room_2D(classArgument);
+				var room:Object2D_Room=new Object2D_Room(classArgument);
 				room.x=event.localX;
 				room.y=event.localY;
 				room.name=room.className+room_number;
 				room_number++;
 				_grid.addChild(room);
+				_grid.setChildIndex(room,0);
 				_room2DVec.push(room);
+				_objects.push(room);
+				
 				current_object=room as Object;
 			}
+			else if(className=="Wall_2D")
+			{
+				var wall:Wall_2D =new Wall_2D(classArgument);
+				wall.x=event.localX;
+				wall.y=event.localY;
+				wall.name=wall.className+room_number;
+				room_number++;
+				_grid.addChild(wall);
+				_wall2DVec.push(wall);
+				_objects.push(wall);
+				
+				current_object=wall as Object;
+			}
+			
 			else if(className=="model_bed")
 			{
-				var model:Model=new Model(resourcePath,objectName);
+				var model:Object2D_Model=new Object2D_Model(resourcePath,objectName);
 				model.x=event.localX;
 				model.y=event.localY;
 				model.name=model.className+room_number;
 				room_number++;
 				_grid.addChild(model);
 				_modelsVec.push(model);
+				_objects.push(model);
+				
 				current_object=model as Object;
 			}
+		
+			
 			DragManager.acceptDragDrop(event.target as UIComponent);
 		}
 		private function DragOver2D(event:DragEvent):void

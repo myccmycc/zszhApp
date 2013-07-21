@@ -11,6 +11,7 @@ package zszh_WorkSpace3D
 	
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
+	import away3d.core.base.SubMesh;
 	import away3d.core.math.MathConsts;
 	import away3d.debug.AwayStats;
 	import away3d.debug.Trident;
@@ -20,6 +21,9 @@ package zszh_WorkSpace3D
 	import away3d.events.LoaderEvent;
 	import away3d.events.MouseEvent3D;
 	import away3d.library.AssetLibrary;
+	import away3d.library.assets.AssetType;
+	import away3d.library.assets.IAsset;
+	import away3d.library.utils.AssetLibraryIterator;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.PointLight;
 	import away3d.loaders.Loader3D;
@@ -39,15 +43,19 @@ package zszh_WorkSpace3D
 		//engine variables
 		private var _view3d:View3D;
 		private var _directionLight:DirectionalLight;
-		private var _lightPicker:StaticLightPicker;
+		public var _lightPicker:StaticLightPicker;
 		
 
 		//debug 
 		private var _debug:AwayStats;
 		//rooms
 		private var _roomContainer3D:ObjectContainer3D;
+		//wallInside
+		private var _wallInsideContainer3D:ObjectContainer3D;
 		//models
 		private var _modelsContainer3D:ObjectContainer3D;
+		
+		private var _meshArray:Array;
 		
 		public function WorkSpace3D()
 		{
@@ -62,13 +70,26 @@ package zszh_WorkSpace3D
 				_roomContainer3D.removeChildAt(i);
 			
 		}
-		public function BuildRoom(pos1:Vector.<Number>,roomName:String):void
+		public function AddRoom(pos1:Vector.<Number>,roomName:String):void
 		{
-			var room:Room_3D=new Room_3D(pos1);
+			var room:Room_3D=new Room_3D(pos1,_lightPicker);
 			room.name=roomName;
-			room.BuiltRoom();
 			_roomContainer3D.addChild(room);
 		}
+		
+		public function ClearWallInside():void
+		{
+			for(var i:int=_wallInsideContainer3D.numChildren-1;i>=0;i--)
+				_wallInsideContainer3D.removeChildAt(i);
+			
+		}
+		public function AddWallInside(pos1:Vector.<Number>,wallName:String):void
+		{
+			var room:Room_3D=new Room_3D(pos1,_lightPicker);
+			room.name=wallName;
+			_roomContainer3D.addChild(room);
+		}
+		
 		
 		public function ClearModels():void
 		{
@@ -76,12 +97,13 @@ package zszh_WorkSpace3D
 				_modelsContainer3D.removeChildAt(i);
 		}
 		
-		public function AddModels(modelLoader:Loader3D):void
-		{
-			_modelsContainer3D.addChild(modelLoader);
+		public function AddModels(resPath:String,modelName:String,pos:Vector3D):void
+		{			
+			var model:Model_3D=new Model_3D(resPath,modelName,pos);
+			_modelsContainer3D.addChild(model);
 		}
 		
-		
+	
 		
 		//--------------init the workspace3d-------------------------
 		private function OnCreation_Complete(e:FlexEvent):void
@@ -117,10 +139,7 @@ package zszh_WorkSpace3D
 			
 			_lightPicker = new StaticLightPicker([_directionLight]);
 			
-			
-			
-			
-			
+							
 			//setup camera controller
 			addEventListener(MouseEvent.MOUSE_DOWN,MOUSE_DOWN_view3d);
 			addEventListener(MouseEvent.MOUSE_MOVE,MOUSE_MOVE_view3d);
@@ -135,9 +154,11 @@ package zszh_WorkSpace3D
 			
 			//setup the scene
 			_roomContainer3D = new ObjectContainer3D();
+			_wallInsideContainer3D=new ObjectContainer3D();
 			_modelsContainer3D= new ObjectContainer3D();
 			
 			_view3d.scene.addChild(_roomContainer3D);
+			_view3d.scene.addChild(_wallInsideContainer3D);
 			_view3d.scene.addChild(_modelsContainer3D);
 			_view3d.scene.addChild(new Trident(50));
 			

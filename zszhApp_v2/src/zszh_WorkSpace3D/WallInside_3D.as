@@ -22,7 +22,7 @@ package zszh_WorkSpace3D
 	import away3d.primitives.PlaneGeometry;
 	import away3d.utils.Cast;
 	
-	public class Room_3D extends ObjectContainer3D
+	public class WallInside_3D extends ObjectContainer3D
 	{
 		//plane textures
 		[Embed(source="/../embeds/floor_diffuse.jpg")]
@@ -51,7 +51,7 @@ package zszh_WorkSpace3D
 		private var _wallHeight:int;
 		private var _wallWidth:int;
 		
-		public function Room_3D(_pos1:Vector.<Number>,lightPicker:StaticLightPicker)
+		public function WallInside_3D(_pos1:Vector.<Number>,lightPicker:StaticLightPicker)
 		{
 			super();
 			_pos1Vec=_pos1;
