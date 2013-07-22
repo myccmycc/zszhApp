@@ -88,8 +88,8 @@
 					for(var j:int=0;j<vec.length;j+=2)
 					{
 						var p:Point=new Point;
-						p.x=wallInside.x+vec[j]-parentApplication.WorkSpace2D._grid._gridWidth/2;
-						p.y=wallInside.y+vec[j+1]-parentApplication.WorkSpace2D._grid._gridHeight/2;
+						p.x=wallInside.x+vec[j]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridWidth/2;
+						p.y=wallInside.y+vec[j+1]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridHeight/2;
 						pos.push(p);
 					}
 					parentApplication.WorkSpace3D.AddWallInside(pos,wallInside.name);	 

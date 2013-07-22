@@ -6,6 +6,14 @@
 					  initialize="skinnablecontainer1_initializeHandler(event)">
 	
 	<fx:Declarations>
+		<s:Move id="Button0effect1" target="{Button1}"  yTo="0"/>
+		<s:Move id="Button0effect2" target="{Button2}"  yTo="43"/>
+		<s:Move id="Button0effect3" target="{Button3}"  yTo="86"/>
+		<s:Move id="Button0effect4" target="{Button4}"  yTo="129"/>
+		<s:Move id="Button0effect5" target="{Button5}"  yTo="172"/>
+		<s:Move id="Button0effect6" target="{Button6}"  yTo="215"/>
+		<s:Move id="Button0effect7" target="{Button7}"  yTo="258"/>
+		
 		<s:Move id="Button1effect1" target="{Button1}"  yTo="0"/>
 		<s:Move id="Button1effect2" target="{Button2}"  yTo="250"/>
 		<s:Move id="Button1effect3" target="{Button3}"  yTo="{250+43}"/>
@@ -71,6 +79,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			[Embed(source="embeds/Products/1.png")]
 			public var Button1_down:Class;
@@ -138,27 +147,83 @@
 				Text.text="";
 			}
 			
+			private var _buttonTwoBorder:UIComponent;
+			private var _buttonOpen:String;
 			protected function Button_mouseDownHandler(event:MouseEvent):void
 			{
 				var bname:String=event.target.name;
-				for(var i:int =1;i<8;i++)
-					this[bname+"effect"+i].play();
+				if(_buttonOpen==bname)
+				{
+					for(var i:int =1;i<8;i++)
+						this["Button0effect"+i].play();
+					
+					if(bname=="Button7")
+						Button7resize_.play();
+					
+					_buttonOpen=null;
+				}
+				else 
+				{
+					for(i=1;i<8;i++)
+						this[bname+"effect"+i].play();
 				
-				if(bname=="Button7")
-					Button7resize.play();
-				else Button7resize_.play();
+					if(bname=="Button7")
+						Button7resize.play();
+					else Button7resize_.play();
+					_buttonOpen=bname;
+				}
+				
+				
+				if(_buttonTwoBorder)
+				{
+					Buttons.removeElement(_buttonTwoBorder);
+					_buttonTwoBorder=null;
+				}
+				
+				Products.visible=false;
 			}
 			
 			//二级按钮
+			
 			protected function ButtonTwo_mouseDownHandler(event:MouseEvent):void
 			{
 				//二级按钮
 				var bname:String=event.target.name;
+
 				if(bname=="Button11")
 				{
 					Products.visible=true;
 				}
-				else Products.visible=false;
+				//else Products.visible=false;
+				
+				//button 边框
+				if(_buttonTwoBorder)
+				{
+					Buttons.removeElement(_buttonTwoBorder);
+					_buttonTwoBorder=null;
+				}
+				
+				var sp:Sprite=new Sprite;
+				sp.graphics.clear();
+				sp.graphics.lineStyle(1,0x00cd99);
+				sp.graphics.moveTo(0,0);
+				sp.graphics.lineTo(event.target.width,0);
+				sp.graphics.moveTo(0,0);
+				sp.graphics.lineTo(0,event.target.height);
+				sp.graphics.lineTo(event.target.width,event.target.height);
+
+				sp.graphics.lineStyle(1,0x171e22);
+				sp.graphics.lineTo(event.target.width,0);
+				
+				_buttonTwoBorder=new UIComponent;
+				_buttonTwoBorder.addChild(sp);
+				 
+				var buttonstr:String=bname.substr(0,7)+"s";
+				trace(buttonstr);
+				_buttonTwoBorder.x=this[buttonstr].x+event.target.x;
+				_buttonTwoBorder.y=this[buttonstr].y+event.target.y;
+				
+				Buttons.addElement(_buttonTwoBorder);
 			}
 			
 		]]>
@@ -168,13 +233,13 @@
 		<ns:ProductsList id="Products" x="63" height="100%" visible="false" showEffect="{ProductShowEffect}" hideEffect="{ProductHideEffect}"/>
 	</s:SkinnableContainer>
 	
-	<s:SkinnableContainer top="60" width="63" backgroundColor="0xff0000">
+	<s:SkinnableContainer id="Buttons" top="60" width="63">
 		
 	
 		<s:Label id="Text" backgroundAlpha="0" color="0xffffff" fontFamily="微软雅黑" fontWeight="normal" fontSize="14"/>
 	
 		<!-- Button11 Button12 Button13 Button14 -->
-		<s:SkinnableContainer id="Button1s" height="{Button2.y-Button1.y-Button1.height}" width="100%" backgroundColor="0xff00ff" y="{Button1.y+Button1.height}">
+		<s:SkinnableContainer id="Button1s" name="Button1s" height="{Button2.y-Button1.y-Button1.height}" width="100%"  y="{Button1.y+Button1.height}">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
@@ -185,22 +250,22 @@
 		</s:SkinnableContainer>
 	
 		<!-- Button21 Button22 Button23 Button24 -->
-		<s:SkinnableContainer id="Button2s" height="{Button3.y-Button2.y-Button2.height}" width="100%" backgroundColor="0xff00ff" y="{Button2.y+Button2.height}">
+		<s:SkinnableContainer id="Button2s" height="{Button3.y-Button2.y-Button2.height}" width="100%"  y="{Button2.y+Button2.height}">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
-		<s:Button  id="Button21" name="Button21" label="客厅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button22" name="Button22" label="餐厅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button23" name="Button23" label="厨房" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button24" name="Button24" label="卧室" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button25" name="Button25" label="厕所" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button26" name="Button26" label="书房" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button27" name="Button27" label="儿童" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button28" name="Button28" label="门厅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button21" name="Button21" label="客厅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button22" name="Button22" label="餐厅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button23" name="Button23" label="厨房" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button24" name="Button24" label="卧室" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button25" name="Button25" label="厕所" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button26" name="Button26" label="书房" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button27" name="Button27" label="儿童" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button28" name="Button28" label="门厅" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
 		</s:SkinnableContainer>
 		
 		<!-- Button31 Button32 Button33 Button34 -->
-		<s:SkinnableContainer id="Button3s" height="{Button4.y-Button3.y-Button3.height}" width="100%" backgroundColor="0xff00ff" y="{Button3.y+Button3.height}">
+		<s:SkinnableContainer id="Button3s" height="{Button4.y-Button3.y-Button3.height}" width="100%"  y="{Button3.y+Button3.height}">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
@@ -216,7 +281,7 @@
 		
 		
 			<!-- Button41 Button42 Button43 Button44 -->
-		<s:SkinnableContainer id="Button4s" height="{Button5.y-Button4.y-Button4.height}" width="100%" backgroundColor="0xff00ff" y="{Button4.y+Button4.height}">
+		<s:SkinnableContainer id="Button4s" height="{Button5.y-Button4.y-Button4.height}" width="100%"  y="{Button4.y+Button4.height}">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
@@ -232,7 +297,7 @@
 		
 		
 			<!-- Button51 Button52 Button53 Button54 -->
-		<s:SkinnableContainer id="Button5s" height="{Button6.y-Button5.y-Button5.height}" width="100%" backgroundColor="0xff00ff" y="{Button5.y+Button5.height}">
+		<s:SkinnableContainer id="Button5s" height="{Button6.y-Button5.y-Button5.height}" width="100%"  y="{Button5.y+Button5.height}">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
@@ -248,7 +313,7 @@
 		
 		
 			<!-- Button61 Button62 Button63 Button64 -->
-		<s:SkinnableContainer id="Button6s" height="{Button7.y-Button6.y-Button6.height}" width="100%" backgroundColor="0xff00ff" y="{Button6.y+Button6.height}">
+		<s:SkinnableContainer id="Button6s" height="{Button7.y-Button6.y-Button6.height}" width="100%"  y="{Button6.y+Button6.height}">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
@@ -264,7 +329,7 @@
 		
 		
 			<!-- Button71 Button72 Button73 Button74 -->
-		<s:SkinnableContainer id="Button7s" height="0" width="100%" backgroundColor="0xff00ff" y="{Button7.y+Button7.height}">
+		<s:SkinnableContainer id="Button7s" height="0" width="100%"  y="{Button7.y+Button7.height}">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
