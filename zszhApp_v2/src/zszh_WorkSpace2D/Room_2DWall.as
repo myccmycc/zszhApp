@@ -78,7 +78,9 @@ package zszh_WorkSpace2D
 			graphics.clear();
 			graphics.lineStyle(1,_lineColor);//白线
 			
-			if(_selected)
+			var room_2d:Object2D_Room=this.parent as Object2D_Room;
+			
+			if(_selected&&room_2d.GetSelected())
 				graphics.beginFill(_wallColorSelected,0.8);
 			else
 				graphics.beginFill(_wallColor,0.8);
@@ -112,7 +114,6 @@ package zszh_WorkSpace2D
 		{
 			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			room_2d.SetSelected(true);
-			room_2d.SetAllNoSelected();
 
 			SetSelected(true);
 			PopUpManager.addPopUp(_popupWindowMenu,this,false);

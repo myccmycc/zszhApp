@@ -14,7 +14,6 @@ package zszh_WorkSpace2D
 		private  var _vertexVec2:Vector.<Number>;
 		private  var _vertexVec3:Vector.<Number>;
 	
-		
 		private var _floor:Room_2DFloor;
 		private var _wallVec:Vector.<Room_2DWall>;		
 		private var _wallCornerVec:Vector.<Room_2DCorner>;
@@ -25,21 +24,21 @@ package zszh_WorkSpace2D
 			super();
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 			_roomType=roomType;
-			_selected=true;
 		}
 		
-		public function SetAllNoSelected():void
+		public function SetAllSelected(b:Boolean):void
 		{
 			for(var i:int=0;i<_wallVec.length;i++)
-				_wallVec[i].SetSelected(false);
+				_wallVec[i].SetSelected(b);
 			
-			//for(i=0;i<_wallCornerVec.length;i++)
-				//_wallCornerVec[i].SetSelected(false);
+			for(i=0;i<_wallCornerVec.length;i++)
+				_wallCornerVec[i].SetSelected(b);
 		}
 	
 		override public function Object2DUpdate():void
 		{
 			UpdateData();
+			SetAllSelected(_selected);
 			UpdateFloorWallCorner();
 		}
 		

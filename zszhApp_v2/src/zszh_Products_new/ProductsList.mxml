@@ -4,6 +4,13 @@
 					xmlns:mx="library://ns.adobe.com/flex/mx" width="313" height="700">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:ArrayCollection id="ComboxData">
+			<fx:String>品牌</fx:String>
+			<fx:String>品牌</fx:String>
+			<fx:String>品牌</fx:String>
+			<fx:String>品牌</fx:String>
+		</s:ArrayCollection>
+		
 	</fx:Declarations>
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -67,9 +74,9 @@
 	<s:SkinnableContainer id="ProductsShow" backgroundColor="#00cd99" y="75" width="100%" height="100%" > 
 		
 		<s:SkinnableContainer backgroundColor="#10181e" top="1" left="1" right="1" bottom="1">
-			<s:ComboBox x="5" width="100" top="5" height="30" styleName="customTextInput" />
-			<s:ComboBox x="106" width="100" top="5" height="30" styleName="customTextInput" />
-			<s:ComboBox x="207" width="100" top="5" height="30" styleName="customTextInput" />
+			<s:ComboBox x="5" width="99" top="5" height="25" styleName="customTextInput" dataProvider="{ComboxData}" selectedIndex="0" />
+			<s:ComboBox x="106" width="99" top="5" height="25" styleName="customTextInput" dataProvider="{ComboxData}" selectedIndex="0" />
+			<s:ComboBox x="207" width="99" top="5" height="25" styleName="customTextInput" dataProvider="{ComboxData}" selectedIndex="0"/>
 
 			<s:List id="myList" top="40" contentBackgroundColor="#10181e" borderVisible="false" horizontalCenter="0" 
 				itemRenderer="zszh_Products_new.ItemRender_Products" initialize="myList_initializeHandler(event)" mouseDown="myList_mouseDownHandler(event)"
