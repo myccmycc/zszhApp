@@ -136,6 +136,10 @@ package zszh_WorkSpace2D
 
 		private function WallMouseDown(e:MouseEvent):void
 		{
+		  var room_2d:Object2D_Room=(this.parent as Object2D_Room);
+		  room_2d.SetAllSelected(false);
+		  
+		  
 			trace("-------------------WallMouseDown--------------------");
 			
 			bStart=true;
@@ -156,6 +160,7 @@ package zszh_WorkSpace2D
 		
 		private function WallMouseUp(e:MouseEvent):void
 		{
+		  this.SetSelected(ture);
 			trace(e.currentTarget.name);
 			bStart=false;
 			CursorManager.removeAllCursors();
