@@ -57,21 +57,18 @@
 			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._room2DVec.length;i++)
 			{
 				var room2d:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._room2DVec[i] as UIComponent;		
-				var vertex1:Vector.<Number>= (room2d as Object2D_Room)._vertexVec1;
+				var vertex_old:Vector.<Number>= (room2d as Object2D_Room)._vertexVec1;
 				
-				var vertex2:Vector.<Number>=new Vector.<Number>;
-				trace(vertex1);
+				var vertex_new:Vector.<Number>=new Vector.<Number>;
 				
-				if(room2d.className=="Room_2D")
+				if(room2d.className=="Object2D_Room")
 				{
-					
-					
-					for(var j:int=0;j<vertex1.length;j+=2)
+					for(var j:int=0;j<vertex_old.length;j+=2)
 					{
-						vertex2.push(room2d.x+vertex1[j]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridWidth/2);
-						vertex2.push(room2d.y+vertex1[j+1]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridHeight/2);
+						vertex_new.push(room2d.x+vertex_old[j]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridWidth/2);
+						vertex_new.push(room2d.y+vertex_old[j+1]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridHeight/2);
 					}
-					parentApplication.WorkSpace3D.AddRoom(vertex2,room2d.name);				    
+					parentApplication.WorkSpace3D.AddRoom(vertex_new,room2d.name);				    
 				}
 			}
 			//隔墙 
@@ -83,16 +80,15 @@
 				if(wallInside.className=="Wall_2D")
 				{
 					var pos:Array=new Array;
-					var vec:Vector.<Number>= (wallInside as Wall_2D)._vertexVec1;
+					var vertex_old:Vector.<Number>= (wallInside as Wall_2D)._vertexVec1;
+					var vertex_new:Vector.<Number>=new Vector.<Number>;
 					
-					for(var j:int=0;j<vec.length;j+=2)
+					for(var j:int=0;j<vertex_old.length;j+=2)
 					{
-						var p:Point=new Point;
-						p.x=wallInside.x+vec[j]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridWidth/2;
-						p.y=wallInside.y+vec[j+1]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridHeight/2;
-						pos.push(p);
+						vertex_new.push(wallInside.x+vertex_old[j]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridWidth/2);
+						vertex_new.push(wallInside.y+vertex_old[j+1]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridHeight/2);
 					}
-					parentApplication.WorkSpace3D.AddWallInside(pos,wallInside.name);	 
+					parentApplication.WorkSpace3D.AddWallInside(vertex_new,wallInside.name);	 
 				}
 				
 				
@@ -103,7 +99,7 @@
 			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._modelsVec.length;i++)
 			{
 				var modelBed:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._modelsVec[i] as UIComponent;					
-				if(modelBed.className=="Model")
+				if(modelBed.className=="Object2D_Model")
 				{
 					var mbed:Object2D_Model = modelBed as Object2D_Model;
 					var _vec3D:Vector3D=new Vector3D();

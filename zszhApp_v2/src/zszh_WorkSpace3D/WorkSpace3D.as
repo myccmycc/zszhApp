@@ -85,9 +85,7 @@ package zszh_WorkSpace3D
 		}
 		public function AddWallInside(pos1:Vector.<Number>,wallName:String):void
 		{
-			var room:Room_3D=new Room_3D(pos1,_lightPicker);
-			room.name=wallName;
-			_roomContainer3D.addChild(room);
+			 
 		}
 		
 		

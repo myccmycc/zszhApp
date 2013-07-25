@@ -5,10 +5,12 @@ package zszh_WorkSpace2D
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.net.URLRequest;
 	
 	import mx.core.FlexGlobals;
 	import mx.managers.CursorManager;
+	import mx.managers.PopUpManager;
 	
 	public class Room_2DFloor extends Sprite
 	{
@@ -17,6 +19,9 @@ package zszh_WorkSpace2D
 		private var _floorBitmap:Bitmap;
 		private var _uvVec:Vector.<Number>;
 		
+		private var _popupWindowMenu:PopupMenu_Room2D_Floor;
+		private var _selected:Boolean;
+		
 		public function Room_2DFloor()
 		{
 			super();
@@ -24,6 +29,21 @@ package zszh_WorkSpace2D
 		}
 		
 	
+		public function SetSelected(b:Boolean):void
+		{
+			_selected=b;
+			Update();
+		}
+		public function GetSelected():Boolean
+		{
+			return _selected;
+		}
+		
+		private function OnDeleteThisRoom(e:Event):void
+		{
+			var room_2d:Object2D_Room=this.parent as Object2D_Room;
+			room_2d.DeleteThisRoom();
+		}
 		private function OnAddToStage(e:Event):void
 		{
 			addEventListener(MouseEvent.MOUSE_OVER,FloorMouseOver);
@@ -40,11 +60,11 @@ package zszh_WorkSpace2D
 			function onComplete(e:Event):void
 			{
 				_floorBitmap = Bitmap(_floorTexLoader.content);
-				Draw();
+				Update();
 			}
 		}
 		
-		public function Draw():void
+		public function Update():void
 		{
 			graphics.clear();
 			graphics.lineStyle(0, 0, 0);
@@ -63,6 +83,12 @@ package zszh_WorkSpace2D
 	
 			graphics.drawTriangles(room_2d._vertexVec1,room_2d._indiceVec,_uvVec);
 			graphics.endFill();	
+			
+			if(_popupWindowMenu)
+			{
+				PopUpManager.removePopUp(_popupWindowMenu);
+				_popupWindowMenu=null;
+			}
 		}
 		
 		//--------------floor mouse event----------------------------------------
@@ -77,6 +103,7 @@ package zszh_WorkSpace2D
 		
 		private function FloorMouseDown(e:MouseEvent):void
 		{
+			SetSelected(false);
 			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			if(room_2d.GetSelected())
 			{
@@ -97,7 +124,16 @@ package zszh_WorkSpace2D
 		private function FloorMouseClick(e:MouseEvent):void
 		{
 			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
-			room_2d.SetSelected(true);
+			if(room_2d.GetSelected())
+			{
+				_popupWindowMenu=new PopupMenu_Room2D_Floor;
+				_popupWindowMenu.addEventListener(PopupMenu_Room2D_Floor.DELETE_THIS_ROOM,OnDeleteThisRoom,false,0,true);
+				PopUpManager.addPopUp(_popupWindowMenu,this,false);
+				var pt:Point = new Point(0, 0);
+				pt = e.target.localToGlobal(pt);
+				_popupWindowMenu.move(pt.x,pt.y);
+			}
+			else room_2d.SetSelected(true);
 		}
 	}
 }

@@ -94,7 +94,8 @@
 				<fx:Object labelText="横墙"   ImgThumbnail="zszh_res/basic/wall/wall_h_divider.png" className="Wall_2D" classArgument="1" resourcePath=""/>
 				<fx:Object labelText="竖墙"   ImgThumbnail="zszh_res/basic/wall/wall_v_divider.png" className="Wall_2D" classArgument="2" resourcePath=""/>
 					
-				<fx:Object labelText="床00001" ImgThumbnail="zszh_res/models/beds/bed00001/bed00001_preview.png" className="model_bed" resourcePath="zszh_res/models/beds/bed00001/" objectName="bed00001"/>
+				<fx:Object labelText="床00001" ImgThumbnail="zszh_res/models/beds/bed00001/bed00001_preview.png" className="model" resourcePath="zszh_res/models/beds/bed00001/" objectName="bed00001"/>
+				<fx:Object labelText="浴缸00001" ImgThumbnail="zszh_res/models/yugangs/yugang00001/yugang00001_preview.png" className="model" resourcePath="zszh_res/models/yugangs/yugang00001/" objectName="yugang00001"/>
 
 				</s:ArrayCollection>
 			</s:List>

@@ -13,15 +13,11 @@ package zszh_WorkSpace2D
 	import mx.managers.CursorManager;
 	import mx.managers.PopUpManager;
 	
-	import flashx.textLayout.formats.Float;
-	
-	import zszh_Events.WS2D_PopupMenuEvent;
-	
-	import zszh_WorkSpace2D.PopupMenu_Wall2D;
+	import zszh_WorkSpace2D.PopupMenu_Room2D_Wall;
 	
 	public class Room_2DWall extends Sprite
 	{
-		private var _popupWindowMenu:PopupMenu_Wall2D;
+		private var _popupWindowMenu:PopupMenu_Room2D_Wall;
 		private var _lineColor:uint;
 		private var _wallColor:uint;
 		private var _wallColorSelected:uint;
@@ -33,7 +29,7 @@ package zszh_WorkSpace2D
 		public function Room_2DWall()
 		{
 			super();
-			_popupWindowMenu=new PopupMenu_Wall2D();
+		
 			_lineColor=0xffffff;
 			_wallColor=0x7c7e89;
 			_wallColorSelected=0xff6666;
@@ -45,8 +41,6 @@ package zszh_WorkSpace2D
 			addEventListener(MouseEvent.MOUSE_OUT,WallMouseOut);
 			
 			addEventListener(MouseEvent.MOUSE_DOWN,WallMouseDown);
-			
-			addEventListener(WS2D_PopupMenuEvent.HIDE_PopupMenu,HIDE_PopupMenu);
 		}
 		
 		public function UpdateVertex(p1x:Number,p1y:Number,p2x:Number,p2y:Number,p3x:Number,p3y:Number,p4x:Number,p4y:Number):void
@@ -57,14 +51,14 @@ package zszh_WorkSpace2D
 			_wallPos[4]=p3x;_wallPos[5]=p3y;
 			_wallPos[6]=p4x;_wallPos[7]=p4y;
 			
-			UpdateDraw();
+			Update();
 		}
 		
 		public function SetSelected(b:Boolean):void
 		{
 			_selected=b;
-			UpdateDraw();
-			PopUpManager.removePopUp(_popupWindowMenu);
+			Update();
+			
 		}
 		public function GetSelected():Boolean
 		{
@@ -72,8 +66,23 @@ package zszh_WorkSpace2D
 		}
 		
 	
+		private function OnDeleteWall(e:Event):void
+		{
+			trace("OnDeleteWall");
+			this.visible=false;
+		}
 		
-		private function UpdateDraw():void
+		private function OnSplitWall(e:Event):void
+		{
+			trace("OnSplitWall");
+		}
+		
+		private function OnHoleWall(e:Event):void
+		{
+			trace("OnHoleWall");
+		}
+		
+		private function Update():void
 		{
 			graphics.clear();
 			graphics.lineStyle(1,_lineColor);//白线
@@ -90,13 +99,19 @@ package zszh_WorkSpace2D
 			graphics.lineTo(_wallPos[6],_wallPos[7]);
 			graphics.lineTo(_wallPos[4],_wallPos[5]);
 			graphics.endFill();
+			
+			if(_popupWindowMenu)
+			{
+				PopUpManager.removePopUp(_popupWindowMenu);
+				_popupWindowMenu=null;
+			}
 		}
 		
 		private function WallMouseOver(e:MouseEvent):void
 		{
 			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			if(!room_2d.GetSelected()&&!_selected)
-				UpdateDraw();
+				Update();
 			
 			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor_Wall,2,-41,-14);
 			e.stopPropagation();
@@ -105,7 +120,7 @@ package zszh_WorkSpace2D
 		{
 			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			if(!room_2d.GetSelected()&&!_selected)
-				UpdateDraw();
+				Update();
 			CursorManager.removeAllCursors();
 			e.stopPropagation();
 		}
@@ -116,6 +131,10 @@ package zszh_WorkSpace2D
 			room_2d.SetSelected(true);
 
 			SetSelected(true);
+			_popupWindowMenu=new PopupMenu_Room2D_Wall();
+			_popupWindowMenu.addEventListener(PopupMenu_Room2D_Wall.DELETE_WALL,OnDeleteWall,false,0,true);
+			_popupWindowMenu.addEventListener(PopupMenu_Room2D_Wall.SPLIT_WALL,OnSplitWall,false,0,true);
+			_popupWindowMenu.addEventListener(PopupMenu_Room2D_Wall.HOLE_WALL,OnHoleWall,false,0,true);
 			PopUpManager.addPopUp(_popupWindowMenu,this,false);
 		
 			var pt:Point = new Point(e.localX, e.localY);
@@ -136,6 +155,8 @@ package zszh_WorkSpace2D
 
 		private function WallMouseDown(e:MouseEvent):void
 		{
+		  SetSelected(false);
+			
 		  var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 		  room_2d.SetAllSelected(false);
 		  
@@ -160,7 +181,7 @@ package zszh_WorkSpace2D
 		
 		private function WallMouseUp(e:MouseEvent):void
 		{
-		  this.SetSelected(ture);
+		  this.SetSelected(true);
 			trace(e.currentTarget.name);
 			bStart=false;
 			CursorManager.removeAllCursors();
@@ -314,12 +335,6 @@ package zszh_WorkSpace2D
 			}
 		}
 		
-		
-		private function HIDE_PopupMenu(e:WS2D_PopupMenuEvent):void
-		{
-			PopUpManager.removePopUp(_popupWindowMenu);
-			trace(e._text);
-		}
 		
 	}
 }

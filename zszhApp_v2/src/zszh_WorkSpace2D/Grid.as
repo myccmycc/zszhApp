@@ -51,13 +51,13 @@ package zszh_WorkSpace2D
 			this.drawHorizontalLine(_gridSize,_gridWidth,_gridHeight);
 			this.drawVerticalLine(_gridSize,_gridWidth,_gridHeight);
 			
-			this.graphics.lineStyle(2,0x0000ff,1);
+			/*this.graphics.lineStyle(2,0x0000ff,1);
 			
 			this.graphics.moveTo(0,_gridHeight/2);
 			this.graphics.lineTo(_gridWidth,_gridHeight/2);
 			
 			this.graphics.moveTo(_gridWidth/2,0);
-			this.graphics.lineTo(_gridWidth/2,_gridHeight);
+			this.graphics.lineTo(_gridWidth/2,_gridHeight);*/
 		}
 
 		private function drawHorizontalLine(size:Number,w:Number,h:Number):void
@@ -121,42 +121,21 @@ package zszh_WorkSpace2D
 			{
 				if(scaleX<1.0)
 				{
-					scaleX+=0.1
-					scaleY+=0.1
-						
-					x=parent.mouseX-mouseX*(scaleX);
-					y=parent.mouseY-mouseY*(scaleY);
-
-				
-					trace("parent.mouseX:"+parent.mouseX);
-					trace("_grid.mouseX:"+mouseX);
-					
-					/*trace("画布宽度："+_grid.width);
-					trace("画布缩放："+_grid.scaleX);
-					trace("workspace2d宽度："+this.width);
-					trace("workspace2d unscaledWidth宽度："+this.unscaledWidth);
-					trace("workspace2d缩放："+this.scaleX);*/
+					scaleX+=0.05;
+					scaleY+=0.05;
+					x-=mouseX*(0.05);
+					y-=mouseY*(0.05);
 				}
 			}
 			else
 			{
-				if(scaleX>0.2)
+				if(scaleX>0.15)
 				{
 					
-					scaleX-=0.1
-					scaleY-=0.1
-						
-					x=parent.mouseX-mouseX*(scaleX);
-					y=parent.mouseY-mouseY*(scaleY);
-
-					trace("parent.mouseX:"+parent.mouseX);
-					trace("_grid.mouseX:"+mouseX);
-					
-					/*trace("画布宽度："+_grid.width);
-					trace("画布缩放："+_grid.scaleX);
-					trace("workspace2d宽度："+this.width);
-					trace("workspace2d unscaledWidth宽度："+this.unscaledWidth);
-					trace("workspace2d缩放："+this.scaleX);*/
+					scaleX-=0.05
+					scaleY-=0.05
+					x+=mouseX*(0.05);
+					y+=mouseY*(0.05);
 				}
 			}				
 		}

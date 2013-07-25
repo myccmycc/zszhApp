@@ -42,7 +42,11 @@ package zszh_WorkSpace2D
 		private function SetAllNoSelected():void
 		{
 			for(var i:int=0;i<_objects.length;i++)
-				_objects[i].SetSelected(false);
+			{
+				if(_objects[i].visible==true)
+					_objects[i].SetSelected(false);
+				else _objects.splice(i,1);//删除
+			}
 		}
 		
 		
@@ -125,7 +129,7 @@ package zszh_WorkSpace2D
 				current_object=wall as Object;
 			}
 			
-			else if(className=="model_bed")
+			else if(className=="model")
 			{
 				var model:Object2D_Model=new Object2D_Model(resourcePath,objectName);
 				model.x=event.localX;

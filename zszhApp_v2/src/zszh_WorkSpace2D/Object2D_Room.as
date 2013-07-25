@@ -26,6 +26,11 @@ package zszh_WorkSpace2D
 			_roomType=roomType;
 		}
 		
+		public function DeleteThisRoom():void
+		{
+			this.visible=false;
+		}
+		
 		public function SetAllSelected(b:Boolean):void
 		{
 			for(var i:int=0;i<_wallVec.length;i++)
@@ -33,6 +38,8 @@ package zszh_WorkSpace2D
 			
 			for(i=0;i<_wallCornerVec.length;i++)
 				_wallCornerVec[i].SetSelected(b);
+			
+			_floor.SetSelected(b);
 		}
 	
 		override public function Object2DUpdate():void
@@ -41,6 +48,21 @@ package zszh_WorkSpace2D
 			SetAllSelected(_selected);
 			UpdateFloorWallCorner();
 		}
+		
+		private function UpdateFloorWallCorner():void
+		{
+			//floor
+			_floor.Update();
+			
+			//walls and corners
+			var len:int=_vertexVec1.length;
+			for(var i:int=0;i<len;i+=2)
+			{
+				_wallVec[i/2].UpdateVertex(_vertexVec2[i],_vertexVec2[i+1],_vertexVec2[(i+2)%len],_vertexVec2[(i+3)%len],_vertexVec3[i],_vertexVec3[i+1],_vertexVec3[(i+2)%len],_vertexVec3[(i+3)%len]);
+				_wallCornerVec[i/2].Draw(_vertexVec1[i],_vertexVec1[i+1]);
+			}
+		}
+		
 		
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
@@ -194,19 +216,6 @@ package zszh_WorkSpace2D
 			}
 		}
 		
-		private function UpdateFloorWallCorner():void
-		{
-			//floor
-			_floor.Draw();
-			
-			//walls and corners
-			var len:int=_vertexVec1.length;
-			for(var i:int=0;i<len;i+=2)
-			{
-				_wallVec[i/2].UpdateVertex(_vertexVec2[i],_vertexVec2[i+1],_vertexVec2[(i+2)%len],_vertexVec2[(i+3)%len],_vertexVec3[i],_vertexVec3[i+1],_vertexVec3[(i+2)%len],_vertexVec3[(i+3)%len]);
-				_wallCornerVec[i/2].Draw(_vertexVec1[i],_vertexVec1[i+1]);
-			}
-		}
-		
+	
 	}
 }
