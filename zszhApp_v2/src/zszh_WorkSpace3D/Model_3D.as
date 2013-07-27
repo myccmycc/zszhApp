@@ -19,12 +19,12 @@ package zszh_WorkSpace3D
 	
 	public class Model_3D extends ObjectContainer3D
 	{
-		private var _resPath:String;
-		private var _modelName:String;
-		private var _modelPos:Vector3D;
+		public var _resPath:String;
+		public var _modelName:String;
+		public var _modelPos:Vector3D;
 		
-		private var _loaderModel:Loader3D;
-		private var _mesh:Mesh;
+		public var _loaderModel:Loader3D;
+		public var _mesh:Mesh;
 		
 		public function Model_3D(path:String,name:String,pos:Vector3D)
 		{

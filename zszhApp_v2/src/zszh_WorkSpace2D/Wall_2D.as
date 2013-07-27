@@ -12,6 +12,8 @@ package zszh_WorkSpace2D
 				
 		private  var _vertexVec2:Vector.<Number>;
 		private  var _vertexVec3:Vector.<Number>;
+		
+		public  var _vertexVec:Vector.<Number>;
 
 
 		private var _selected:Boolean;
@@ -24,9 +26,17 @@ package zszh_WorkSpace2D
 		private var _wallCornerVec:Vector.<Wall_2DCorner>;
 		
 
-		public function Wall_2D(type:String)
+		public function Wall_2D(type:String,vec:Vector.<Number>=null)
 		{
 			super();
+			_vertexVec1=new Vector.<Number>();
+			_vertexVec2=new Vector.<Number>();
+			_vertexVec3=new Vector.<Number>();
+			_vertexVec=new Vector.<Number>();
+			
+			if(vec!=null)
+				_vertexVec1=vec;
+			
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 			if(type=="1" || type =="2")
 				_wallType=type;
@@ -65,9 +75,7 @@ package zszh_WorkSpace2D
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
 			
-			_vertexVec1=new Vector.<Number>();
-			_vertexVec2=new Vector.<Number>();
-			_vertexVec3=new Vector.<Number>();
+			
 			
 			if(_wallType=="1")
 			{
@@ -120,6 +128,15 @@ package zszh_WorkSpace2D
 				
 				_vertexVec3[2]=_vertexVec1[2]-10*sinx;
 				_vertexVec3[3]=_vertexVec1[3]-10*cosx;
+				
+				_vertexVec[0]=_vertexVec2[0];
+				_vertexVec[1]=_vertexVec2[1];
+				_vertexVec[2]=_vertexVec2[2];
+				_vertexVec[3]=_vertexVec2[3];
+				_vertexVec[4]=_vertexVec3[2];
+				_vertexVec[5]=_vertexVec3[3];
+				_vertexVec[6]=_vertexVec3[0];
+				_vertexVec[7]=_vertexVec3[1];
 			 
 		}
 		

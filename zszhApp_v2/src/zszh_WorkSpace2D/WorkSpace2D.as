@@ -2,6 +2,10 @@ package zszh_WorkSpace2D
 {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 	
 	import mx.controls.Alert;
 	import mx.core.DragSource;
@@ -12,6 +16,7 @@ package zszh_WorkSpace2D
 	import mx.events.ResizeEvent;
 	import mx.managers.CursorManager;
 	import mx.managers.DragManager;
+	import mx.rpc.http.HTTPService;
 	
 	import spark.components.Image;
 	
@@ -35,6 +40,157 @@ package zszh_WorkSpace2D
 			this.addEventListener(ResizeEvent.RESIZE,OnResize);
 		}
 		
+		public function SaveToXML(strPath:String):void
+		{	
+			var xml:XML = <Root></Root>;
+			{
+				for(var i:int=0;i<_room2DVec.length;i++)
+				{
+					var xmlList:XMLList = XMLList("<Object>"+"</Object>");
+					xmlList.appendChild(new XMLList("<ClassName>"+_room2DVec[i].className+"</ClassName>"));
+					xmlList.appendChild(new XMLList("<Position>"+_room2DVec[i].x+","+_room2DVec[i].y+"</Position>"));
+					
+					var len:int=_room2DVec[i]._vertexVec1.length;
+					var str:String="";
+					for(var j:int=0;j<len;j++)
+					{
+						if(j<len-1)
+							str+=_room2DVec[i]._vertexVec1[j].toString()+",";
+						else str+=_room2DVec[i]._vertexVec1[j].toString();
+					}
+						
+					Alert.show(str);
+					xmlList.appendChild(new XMLList("<Data>"+str+"</Data>"));
+					xml.appendChild(xmlList);
+				}
+				
+				for(var i:int=0;i<_wall2DVec.length;i++)
+				{
+					var xmlList:XMLList = XMLList("<Object>"+"</Object>");
+					xmlList.appendChild(new XMLList("<ClassName>"+_wall2DVec[i].className+"</ClassName>"));
+					xmlList.appendChild(new XMLList("<Position>"+_wall2DVec[i].x+","+_wall2DVec[i].y+"</Position>"));
+					
+					
+					var len:int=_wall2DVec[i]._vertexVec1.length;
+					var str:String="";
+					for(var j:int=0;j<len;j++)
+					{
+						if(j<len-1)
+							str+=_wall2DVec[i]._vertexVec1[j].toString()+",";
+						else str+=_wall2DVec[i]._vertexVec1[j].toString();
+					}
+					
+					Alert.show(str);
+					xmlList.appendChild(new XMLList("<Data>"+str+"</Data>"));
+					xml.appendChild(xmlList);
+				}
+				
+				for(var i:int=0;i<_modelsVec.length;i++)
+				{
+					var xmlList:XMLList = XMLList("<Object>"+"</Object>");
+					xmlList.appendChild(new XMLList("<ClassName>"+_modelsVec[i].className+"</ClassName>"));
+					xmlList.appendChild(new XMLList("<Position>"+_modelsVec[i].x+","+_modelsVec[i].y+"</Position>"));
+					xmlList.appendChild(new XMLList("<ModelName>"+_modelsVec[i]._modelName+"</ModelName>"));
+					xmlList.appendChild(new XMLList("<ResourcePath>"+_modelsVec[i]._resourcePath+"</ResourcePath>"));
+					xml.appendChild(xmlList);
+				}
+			}
+			
+
+			var data:Object = new Object();
+			data.xmlData = xml;//.toXMLString();
+			Alert.show(data.xmlData);
+			
+			var httpPost:HTTPService=new HTTPService;
+			httpPost.url="services/SaveXML.php";
+			httpPost.method="POST";
+			httpPost.useProxy=false;
+			httpPost.resultFormat="xml";
+			//httpPost.contentType="application/xml";
+			//httpPost.request=data;
+			httpPost.send(data);
+			
+		}
+		public function LoadFromXML(strPath:String):void
+		{
+			var myXML:XML=new XML();
+			var myURLLoader:URLLoader = new URLLoader(new URLRequest(strPath));
+			myURLLoader.addEventListener("complete", xmlLoaded);
+			
+			function xmlLoaded(evtObj:Event)
+			{
+				myXML=XML(myURLLoader.data);
+				
+				for (var pname:String in  myXML.Object)
+				{
+					trace(myXML.Object[pname]);
+					
+					if(myXML.Object[pname].ClassName=="Object2D_Room")
+					{
+						var vec:Vector.<Number>=new Vector.<Number>;
+						var vecStr:String=myXML.Object[pname].Data;
+						var paramsVec:Array = vecStr.split(",");
+						
+						for(var i:int=0;i<paramsVec.length;i++)
+							vec.push(paramsVec[i])
+						
+		
+						var room:Object2D_Room=new Object2D_Room("0",vec);
+						
+						var pos:String=myXML.Object[pname].Position;
+						var params:Array = pos.split(",",2);
+						room.x=params[0];
+						room.y=params[1];
+						
+						_grid.addChild(room);
+						_grid.setChildIndex(room,0);
+						_room2DVec.push(room);
+						_objects.push(room);
+					}
+					else if(myXML.Object[pname].ClassName=="Wall_2D")
+					{
+						var vec:Vector.<Number>=new Vector.<Number>;
+						var vecStr:String=myXML.Object[pname].Data;
+						var paramsVec:Array = vecStr.split(",");
+						
+						for(var i:int=0;i<paramsVec.length;i++)
+							vec.push(paramsVec[i])
+								
+						var wall:Wall_2D =new Wall_2D("0",vec);
+						
+						var pos:String=myXML.Object[pname].Position;
+						var params:Array = pos.split(",",2);
+						wall.x=params[0];
+						wall.y=params[1];
+
+						_grid.addChild(wall);
+						_wall2DVec.push(wall);
+						_objects.push(wall);
+
+					}
+						
+					else if(myXML.Object[pname].ClassName=="Object2D_Model")
+					{
+						var res:String=myXML.Object[pname].ResourcePath;
+						var name:String=myXML.Object[pname].ModelName;
+						var model:Object2D_Model=new Object2D_Model(res,name);
+						
+						var pos:String=myXML.Object[pname].Position;
+						var params:Array = pos.split(",",2);
+						model.x=params[0];
+						model.y=params[1];
+				 
+						 
+						_grid.addChild(model);
+						_modelsVec.push(model);
+						_objects.push(model);
+						
+						current_object=model as Object;
+					}
+				}
+				
+			}
+		}
 		private function MouseDown(e:MouseEvent):void
 		{
 			SetAllNoSelected();

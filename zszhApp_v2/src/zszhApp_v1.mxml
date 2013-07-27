@@ -49,7 +49,8 @@
 			import mx.events.ResizeEvent;
 			import mx.managers.PopUpManager;
 			
-			import zszh_MainMenu.Menu1;
+			import zszh_MainMenu.Menu2_File;
+			import zszh_MainMenu.Menu5_Help;
 			import zszh_MainMenu.Skin_MainMenuBt;
 			
 			import zszh_WorkSpace2D.Object2D_Model;
@@ -70,27 +71,75 @@
 			public var Cursor_CornerClass:Class;
 			
 			
-			private var _menu1:Menu1=new Menu1;
+			private var _menu2:Menu2_File=new Menu2_File;
+			private var _menu5:Menu5_Help=new Menu5_Help;
+			
 			protected function button1_mouseMoveHandler(event:MouseEvent):void
 			{
-				trace("mouse over MainMenu01");
-				
-				PopUpManager.removePopUp(_menu1);
-				PopUpManager.addPopUp(_menu1,this,false);
-				
-				var pt:Point = new Point(0,0);  
-				pt = event.target.localToGlobal(pt);  
-				
-				var x1:int=pt.x+event.target.width/2 -_menu1.width/2;
-				var y1:int=pt.y+event.target.height-2;
-				_menu1.move(x1,y1);
+				if(event.target.id=="MainMenu01")
+				{
+					
+				}
+				else if(event.target.id=="MainMenu02")
+				{
+					PopUpManager.removePopUp(_menu2);
+					PopUpManager.addPopUp(_menu2,this,false);
+					
+					var pt:Point = new Point(0,0);  
+					pt = event.target.localToGlobal(pt);  
+					
+					var x1:int=pt.x+event.target.width/2 -_menu5.width/2;
+					var y1:int=pt.y+event.target.height-2;
+					_menu2.move(x1,y1);
+				}
+				else if(event.target.id=="MainMenu03")
+				{
+					
+				}
+				else if(event.target.id=="MainMenu04")
+				{
+					
+				}
+				else if(event.target.id=="MainMenu05")
+				{
+					PopUpManager.removePopUp(_menu5);
+					PopUpManager.addPopUp(_menu5,this,false);
+					
+					var pt:Point = new Point(0,0);  
+					pt = event.target.localToGlobal(pt);  
+					
+					var x1:int=pt.x+event.target.width/2 -_menu5.width/2;
+					var y1:int=pt.y+event.target.height-2;
+					_menu5.move(x1,y1);
+				}
+			
 			}
 			
 			protected function button1_mouseOutHandler(event:MouseEvent):void
 			{
-				trace("mouse out MainMenu01");
-				if(!_menu1._bMouseOver)
-					PopUpManager.removePopUp(_menu1);
+				if(event.target.id=="MainMenu01")
+				{
+					
+				}
+				else if(event.target.id=="MainMenu02")
+				{
+					if(!_menu2._bMouseOver)
+						PopUpManager.removePopUp(_menu2);
+				}
+				else if(event.target.id=="MainMenu03")
+				{
+					
+				}
+				else if(event.target.id=="MainMenu04")
+				{
+					
+				}
+				else if(event.target.id=="MainMenu05")
+				{
+					if(!_menu5._bMouseOver)
+						PopUpManager.removePopUp(_menu5);
+				}
+				
 			}
 		
 			//-------------主菜单--end-------------------

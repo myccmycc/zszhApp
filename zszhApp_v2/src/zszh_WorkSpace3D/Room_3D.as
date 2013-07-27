@@ -27,12 +27,13 @@ package zszh_WorkSpace3D
 		//plane textures
 		[Embed(source="/../embeds/floor_diffuse.jpg")]
 		public static var WallDiffuse:Class;
+		
+		
 		[Embed(source="/../embeds/floor_specular.jpg")]
 		public static var FloorSpecular:Class;
 		[Embed(source="/../embeds/floor_normal.jpg")]
 		public static var FloorNormals:Class;
-
-		[Embed(source="/../embeds/TextureFloor.jpg")]
+		[Embed(source="/../embeds/floor_diffuse.jpg")]
 		public static var FloorDiffuse:Class;
 		
 		//WorkSpace3D _lightPicker
@@ -120,7 +121,6 @@ package zszh_WorkSpace3D
 				gem.addSubGeometry(subGeom);
 			}
 			
-			material.repeat=true;
 			addChild(new Mesh(gem,material));	
 			//_plane.mouseEnabled=true;
 			//_plane.addEventListener(MouseEvent3D.MOUSE_DOWN,onObjectMouseDown);
@@ -214,8 +214,7 @@ package zszh_WorkSpace3D
 			subGeom.updateIndexData(index);
 			subGeom.updateUVData(uv);
 			gem.addSubGeometry(subGeom);
-						
-			material.repeat=true;
+
 			addChild(new Mesh(gem,material));	
 		}
 		
@@ -292,10 +291,16 @@ package zszh_WorkSpace3D
 		private function InitMaterials():void
 		{
 			_wallMaterial = new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
-			_floorMaterial= new TextureMaterial(Cast.bitmapTexture(FloorDiffuse));
 			
-			//_wallMaterial.lightPicker=_lightPicker;
-			//_floorMaterial.lightPicker=_lightPicker;
+			_floorMaterial= new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
+			//_floorMaterial.specularMap = Cast.bitmapTexture(FloorSpecular);
+			//_floorMaterial.normalMap = Cast.bitmapTexture(FloorNormals);
+			_floorMaterial.lightPicker = _lightPicker;
+			_floorMaterial.repeat = true;
+			//_floorMaterial.mipmap = false;
+			
+			_wallMaterial.lightPicker=_lightPicker;
+			_wallMaterial.repeat=true;
 		}
 		private function onObjectMouseDown( event:MouseEvent3D ):void {
 			event.target.showBounds=true;

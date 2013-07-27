@@ -16,9 +16,9 @@
     </annotation>
     <annotation name="ServiceConfig">
       <item name="PHP_RELATIVE_LOCATION">PHPTest-debug/services/Mysqlcon.php</item>
-      <item name="PHP_SERVER_ROOT">C:/xampp/htdocs</item>
+      <item name="PHP_SERVER_ROOT">C:\xampp\htdocs</item>
       <item name="DEFAULT_ENTITY_PACKAGE">valueObjects</item>
-      <item name="PHP_SERVICES_FOLDER">C:/xampp/htdocs/PHPTest-debug/services</item>
+      <item name="PHP_SERVICES_FOLDER">C:\xampp\htdocs\PHPTest-debug\services</item>
       <item name="PHP_LOCATION">C:/xampp/htdocs/PHPTest-debug/services/Mysqlcon.php</item>
       <item name="LINKED_FILE">Mysqlcon.php</item>
       <item name="PHP_SERVER_ROOT_URL">http://localhost:8080/</item>

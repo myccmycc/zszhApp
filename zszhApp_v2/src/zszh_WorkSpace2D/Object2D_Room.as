@@ -19,12 +19,20 @@ package zszh_WorkSpace2D
 		private var _wallCornerVec:Vector.<Room_2DCorner>;
 		private var _roomType:String;//0小,1大,2L,3room
 		
-		public function Object2D_Room(roomType:String)
+		public function Object2D_Room(roomType:String,_vertexData:Vector.<Number>=null)
 		{
 			super();
+			_vertexVec1=new Vector.<Number>();
+			_vertexVec2=new Vector.<Number>();
+			_vertexVec3=new Vector.<Number>();
+			_indiceVec =new Vector.<int>();
+			if(_vertexData!=null)
+				_vertexVec1=_vertexData;
+			
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 			_roomType=roomType;
 		}
+		
 		
 		public function DeleteThisRoom():void
 		{
@@ -66,10 +74,7 @@ package zszh_WorkSpace2D
 		
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
-			_vertexVec1=new Vector.<Number>();
-			_vertexVec2=new Vector.<Number>();
-			_vertexVec3=new Vector.<Number>();
-			_indiceVec =new Vector.<int>();
+		
 			
 			if(_roomType=="4")
 			{

@@ -38,11 +38,14 @@ package zszh_WorkSpace3D
 	import away3d.textures.Texture2DBase;
 	import away3d.utils.Cast;
 	
+	import zszh_WorkSpace2D.Wall_2D;
+	
 	public class WorkSpace3D extends UIComponent
 	{
 		//engine variables
 		private var _view3d:View3D;
 		private var _directionLight:DirectionalLight;
+		private var _pointLight:PointLight;
 		public var _lightPicker:StaticLightPicker;
 		
 
@@ -72,9 +75,9 @@ package zszh_WorkSpace3D
 		}
 		public function AddRoom(pos1:Vector.<Number>,roomName:String):void
 		{
-			var room:Room_3D=new Room_3D(pos1,_lightPicker);
+			/*var room:Room_3D=new Room_3D(pos1,_lightPicker);
 			room.name=roomName;
-			_roomContainer3D.addChild(room);
+			_roomContainer3D.addChild(room);*/
 		}
 		
 		public function ClearWallInside():void
@@ -85,7 +88,9 @@ package zszh_WorkSpace3D
 		}
 		public function AddWallInside(pos1:Vector.<Number>,wallName:String):void
 		{
-			 
+			var wallInside:WallInside_3D=new WallInside_3D(pos1,_lightPicker);
+			wallInside.name=wallName;
+			_wallInsideContainer3D.addChild(wallInside);
 		}
 		
 		
@@ -129,13 +134,20 @@ package zszh_WorkSpace3D
 			//setup light
 			_directionLight = new DirectionalLight();
 			_directionLight.direction = _view3d.camera.forwardVector;
-			_directionLight.color = 0x00FFFF;
-			_directionLight.ambient = 0.1;
-			_directionLight.diffuse = 0.7;
+			_directionLight.color = 0xFFFFFF;
+			_directionLight.ambient = 0.5;
+			_directionLight.diffuse = 0.9;
+			
+			_pointLight = new PointLight();
+			_pointLight.y=300;
+			_pointLight.color=0xFF0000;
+			_pointLight.ambient=0.5;
+			_pointLight.diffuse=0.9;
 			
 			_view3d.scene.addChild(_directionLight);
+			_view3d.scene.addChild(_pointLight);
 			
-			_lightPicker = new StaticLightPicker([_directionLight]);
+			_lightPicker = new StaticLightPicker([_directionLight,_pointLight]);
 			
 							
 			//setup camera controller

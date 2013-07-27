@@ -42,6 +42,10 @@
 			
 		}
 		
+		protected function SaveToXML(event:MouseEvent):void
+		{
+			parentApplication.WorkSpace2D.WorkSpace2D.SaveToXML("SaveTest.xml");
+		}
 		protected function ShowWorkspace2D(event:MouseEvent):void
 		{
 			parentApplication.WorkspaceBack.visible=true;
@@ -80,7 +84,7 @@
 				if(wallInside.className=="Wall_2D")
 				{
 					var pos:Array=new Array;
-					var vertex_old:Vector.<Number>= (wallInside as Wall_2D)._vertexVec1;
+					var vertex_old:Vector.<Number>= (wallInside as Wall_2D)._vertexVec;
 					var vertex_new:Vector.<Number>=new Vector.<Number>;
 					
 					for(var j:int=0;j<vertex_old.length;j+=2)
@@ -127,7 +131,7 @@
 	<s:Button id="Button1" name="Button1" x="35" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button1_down}" buttonMode="true" />
 	<s:Button id="Button2" name="Button2" x="70" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button2_down}" buttonMode="true" />
 	
-	<s:Button id="Button3" name="Button3" x="125" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button3_down}" buttonMode="true" />
+	<s:Button id="Button3" name="Button3" x="125" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button3_down}" buttonMode="true" click="SaveToXML(event)"/>
 	<s:Button id="Button4" name="Button4" x="170" verticalCenter="0" width="30" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button4_down}" buttonMode="true" />
 	<s:Button id="Button5" name="Button5" x="220" verticalCenter="0" width="30" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button5_down}" buttonMode="true" />
 	
