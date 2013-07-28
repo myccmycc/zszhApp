@@ -8,12 +8,11 @@ package zszh_WorkSpace2D
 
 	public class Object2D_Room extends Object2D_Base
 	{
-		public  var _vertexVec1:Vector.<Number>;
-		public  var _indiceVec:Vector.<int>;
-		
+		public   var _vertexVec1:Vector.<Number>;
 		private  var _vertexVec2:Vector.<Number>;
 		private  var _vertexVec3:Vector.<Number>;
-	
+		public   var _roomArea:Number;
+		
 		private var _floor:Room_2DFloor;
 		private var _wallVec:Vector.<Room_2DWall>;		
 		private var _wallCornerVec:Vector.<Room_2DCorner>;
@@ -25,9 +24,9 @@ package zszh_WorkSpace2D
 			_vertexVec1=new Vector.<Number>();
 			_vertexVec2=new Vector.<Number>();
 			_vertexVec3=new Vector.<Number>();
-			_indiceVec =new Vector.<int>();
 			if(_vertexData!=null)
 				_vertexVec1=_vertexData;
+			_roomArea=0;
 			
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 			_roomType=roomType;
@@ -128,12 +127,17 @@ package zszh_WorkSpace2D
 		}
 		
 		private function UpdateData():void
-		{
-			for(var i:int=0;i<_vertexVec1.length;i++)
+		{		
+			//多边形面积
+			var points:Vector.<Point>=new Vector.<Point>;
+			for(var i:int=0;i<_vertexVec1.length;i+=2)
 			{
-				if(i+2<_vertexVec1.length)
-					_indiceVec.push(0,i+1,i+2);
+				var p1:Point=new Point(_vertexVec1[i],_vertexVec1[i+1]);
+				var p2:Point=new Point(_vertexVec1[(i+2)%_vertexVec1.length],_vertexVec1[(i+3)%_vertexVec1.length]);
+				var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
+				points.push(p1p2);
 			}
+			_roomArea=GetPolygonArea(points);
 			
 			for(var i:int=0;i<_vertexVec1.length;i+=2)
 			{
@@ -149,7 +153,7 @@ package zszh_WorkSpace2D
 			
 				var C1:Number = P2.x*P1.y-P1.x*P2.y;
 			
-				trace("ABC:"+A1+B1+C1);
+				//trace("ABC:"+A1+B1+C1);
 			
 				//2求平移后的直线  |C1-C0|/sqrt（A*A+B*B）=DIS
 			
@@ -162,8 +166,8 @@ package zszh_WorkSpace2D
 			
 				var C1_1:Number=C1+s;
 				var C1_2:Number=C1-s;
-				trace("C1_1:"+C1_1);
-				trace("C1_2:"+C1_2);
+				//trace("C1_1:"+C1_1);
+				//trace("C1_2:"+C1_2);
 				
 				
 				//2 P2P3 直线方程  Ax+By+c=0的表达式
@@ -174,7 +178,7 @@ package zszh_WorkSpace2D
 			
 				var C2:Number = P3.x*P2.y-P2.x*P3.y;
 			
-				trace("ABC:"+A2+B2+C2);
+				//trace("ABC:"+A2+B2+C2);
 			
 				//2求平移后的直线  |C1-C0|/sqrt（A*A+B*B）=DIS
 			
@@ -187,8 +191,8 @@ package zszh_WorkSpace2D
 			
 				var C2_1:Number=C2+s;
 				var C2_2:Number=C2-s;
-				trace("C2_1:"+C2_1);
-				trace("C2_2:"+C2_2);
+				//trace("C2_1:"+C2_1);
+				//trace("C2_2:"+C2_2);
 			
 			
 			
@@ -221,6 +225,26 @@ package zszh_WorkSpace2D
 			}
 		}
 		
-	
+		public static function GetPolygonArea(points:Vector.<Point>):Number
+		{
+			if (points.length < 3) {//至少是三角形
+				return 0;
+			}
+			var result:Number = 0;
+			for (var i:int = 0; i < points.length - 1; i++) {//见任意多边形的面积公式
+				var a:Point = points[i];
+				var b:Point = points[i+1];
+				var d:Number=b.x*a.y-b.y*a.x;
+				
+				result += b.x*a.y-b.y*a.x;
+				
+			}
+			var begin:Point = points[0];//特殊处理最后一条边,避免在循环中使用if
+			var end:Point   = points[points.length - 1];
+			
+			result += end.x*begin.y-end.y*begin.x;
+			result *= 0.5;//记得取一半
+			return result;
+		}
 	}
 }

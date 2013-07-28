@@ -94,10 +94,10 @@ package zszh_WorkSpace2D
 			else
 				graphics.beginFill(_wallColor,0.8);
 			
-			graphics.moveTo(_wallPos[0],_wallPos[1]);
-			graphics.lineTo(_wallPos[2],_wallPos[3]);
-			graphics.lineTo(_wallPos[6],_wallPos[7]);
-			graphics.lineTo(_wallPos[4],_wallPos[5]);
+			graphics.moveTo(_wallPos[0],-_wallPos[1]);
+			graphics.lineTo(_wallPos[2],-_wallPos[3]);
+			graphics.lineTo(_wallPos[6],-_wallPos[7]);
+			graphics.lineTo(_wallPos[4],-_wallPos[5]);
 			graphics.endFill();
 			
 			if(_popupWindowMenu)
@@ -220,7 +220,7 @@ package zszh_WorkSpace2D
 			
 			//1.求鼠标移动的向量
 			
-			var VMouseMove:Point=new Point((int)(this.stage.mouseX-startPoint.x),int(-this.stage.mouseY+startPoint.y));
+			var VMouseMove:Point=new Point((int)(this.stage.mouseX-startPoint.x),int(this.stage.mouseY-startPoint.y));
 			trace("VMouseMove:"+VMouseMove);
 			
 			

@@ -9,6 +9,7 @@ package zszh_WorkSpace2D
 	import flash.net.URLRequest;
 	
 	import mx.core.FlexGlobals;
+	import mx.core.INavigatorContent;
 	import mx.managers.CursorManager;
 	import mx.managers.PopUpManager;
 	
@@ -18,6 +19,7 @@ package zszh_WorkSpace2D
 		private var _floorTexLoader:Loader;
 		private var _floorBitmap:Bitmap;
 		private var _uvVec:Vector.<Number>;
+		private var _uvScale:int;
 		
 		private var _popupWindowMenu:PopupMenu_Room2D_Floor;
 		private var _selected:Boolean;
@@ -25,6 +27,7 @@ package zszh_WorkSpace2D
 		public function Room_2DFloor()
 		{
 			super();
+			_uvScale=100;
 			addEventListener(Event.ADDED_TO_STAGE,OnAddToStage);
 		}
 		
@@ -73,15 +76,73 @@ package zszh_WorkSpace2D
 			if(_floorBitmap)
 				graphics.beginBitmapFill(_floorBitmap.bitmapData);
 			
-			//update uv
-			_uvVec=new Vector.<Number>();
 			var room_2d:Object2D_Room=this.parent as Object2D_Room;
-			for(var i:int=0;i<room_2d._vertexVec1.length;i+=2)
+			var vectex:Vector.<Number>=new Vector.<Number>;
+			var len:int=room_2d._vertexVec1.length;
+			
+			for(var i:int=0;i<len;i++)
 			{
-				_uvVec.push(room_2d._vertexVec1[i]/200,room_2d._vertexVec1[i+1]/200);
+				vectex.push(room_2d._vertexVec1[i]);
 			}
-	
-			graphics.drawTriangles(room_2d._vertexVec1,room_2d._indiceVec,_uvVec);
+			
+			var mArea:int=room_2d._roomArea;
+			trace("面积：",mArea);
+			//while( vectex.length>4)
+			{
+				var iPos:int=0;
+				for(;iPos<vectex.length;iPos+=2)
+				{
+					 var p1:Point=new Point(vectex[iPos],vectex[iPos+1]);
+					 var p2:Point=new Point(vectex[(iPos+2)%vectex.length],vectex[(iPos+3)%vectex.length]);
+					 var p3:Point=new Point(vectex[(iPos+4)%vectex.length],vectex[(iPos+5)%vectex.length]);
+					 
+					 var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
+					 var p2p3:Point=new Point(p3.x-p2.x,p3.y-p2.y);
+					 var p3p1:Point=new Point(p1.x-p3.x,p1.y-p3.y);
+					 
+					 var points:Vector.<Point>=new Vector.<Point>;
+					 points.push(p1p2);
+					 points.push(p2p3);
+					 points.push(p3p1);
+					 
+					 var test:Number = Object2D_Room.GetPolygonArea(points);
+					 
+					 if(test>=0)
+					 {
+						 if(test<=mArea)//凸点
+						 {
+							 mArea-=test;
+							 vectex.splice((iPos+2)%vectex.length,2);
+							 trace(vectex.length);
+							 iPos=0;
+							 graphics.lineStyle(1,0xff0000);
+							 
+							 graphics.moveTo(p1.x,-p1.y);
+							 graphics.lineTo(p3.x,-p3.y);
+		 
+							 graphics.endFill();
+							 
+							 //vertex
+							 /*var vertexVec:Vector.<Number>=new Vector.<Number>();
+							 vertexVec.push(p1.x,-p1.y,p2.x,-p2.y,p3.x,-p3.y);
+							 //indice
+							 var indiceVec:Vector.<int>=new Vector.<int>();
+							 indiceVec.push(0,1,2);
+							 //uv
+							 var uvVec:Vector.<Number>=new Vector.<Number>();
+							 uvVec.push(p1.x/_uvScale,-p1.y/_uvScale,p2.x/_uvScale,-p2.y/_uvScale,p3.x/_uvScale,-p3.y/_uvScale);
+
+							 graphics.drawTriangles(vertexVec,indiceVec,uvVec);*/
+						 }
+						// else
+						 {
+							 
+						 }
+					 }
+				}
+			}
+			
+			
 			graphics.endFill();	
 			
 			if(_popupWindowMenu)
@@ -91,6 +152,7 @@ package zszh_WorkSpace2D
 			}
 		}
 		
+
 		//--------------floor mouse event----------------------------------------
 		private function FloorMouseOver(e:MouseEvent):void
 		{

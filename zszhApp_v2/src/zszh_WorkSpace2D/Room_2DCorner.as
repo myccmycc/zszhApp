@@ -42,7 +42,7 @@ package zszh_WorkSpace2D
 			graphics.clear();
 			graphics.lineStyle(1,0x000000);
 			graphics.beginFill(0xffffff,1);
-			graphics.drawCircle(px,py,10);
+			graphics.drawCircle(px,-py,10);
 			graphics.endFill();
 		}
 		
@@ -112,7 +112,7 @@ package zszh_WorkSpace2D
 			var VMouseMove:Point=new Point((int)(this.stage.mouseX-startPoint.x),int(-this.stage.mouseY+startPoint.y));
 			trace("VMouseMove:"+VMouseMove);
 			thisRoom._vertexVec1[i]+=VMouseMove.x;
-			thisRoom._vertexVec1[i+1]-=VMouseMove.y;
+			thisRoom._vertexVec1[i+1]+=VMouseMove.y;
 			thisRoom.Object2DUpdate();
 			
 		}
