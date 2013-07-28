@@ -108,8 +108,47 @@ package zszh_WorkSpace2D
 					 var test:Number = Object2D_Room.GetPolygonArea(points);
 					 
 					 if(test>=0)
-					 {
-						 if(test<=mArea)//凸点
+					 {    
+						 bool PointinTriangle(Vector3 A, Vector3 B, Vector3 C, Vector3 P)
+						 {
+							 Vector3 v0 = C - A ;
+							 Vector3 v1 = B - A ;
+							 Vector3 v2 = P - A ;
+							 
+							 float dot00 = v0.Dot(v0) ;
+							 float dot01 = v0.Dot(v1) ;
+							 float dot02 = v0.Dot(v2) ;
+							 float dot11 = v1.Dot(v1) ;
+							 float dot12 = v1.Dot(v2) ;
+							 
+							 float inverDeno = 1 / (dot00 * dot11 - dot01 * dot01) ;
+							 
+							 float u = (dot11 * dot02 - dot01 * dot12) * inverDeno ;
+							 if (u < 0 || u > 1) // if u out of range, return directly
+							 {
+								 return false ;
+							 }
+							 
+							 float v = (dot00 * dot12 - dot01 * dot02) * inverDeno ;
+							 if (v < 0 || v > 1) // if v out of range, return directly
+							 {
+								 return false ;
+							 }
+							 
+							 return u + v <= 1 ;
+						 }
+						 
+						 var b:Boolean=false;//是否有其他 顶点在三角形中。。。
+						 for(var i:int=0;i<vectex.length;i+=2)
+						 {
+							 if(i!= iPos iPos+1 iPos+2 iPos+3 iPos+4 iPos+5 && !b)
+							 {
+								 b=PointinTriangle(vectex[i],vectex[i+1]);
+							 }
+						 }
+						 
+						 
+						 if(!b)//凸点
 						 {
 							 mArea-=test;
 							 vectex.splice((iPos+2)%vectex.length,2);
