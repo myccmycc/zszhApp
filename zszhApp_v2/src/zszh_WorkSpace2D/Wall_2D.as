@@ -114,8 +114,8 @@ package zszh_WorkSpace2D
 				
 				var disP1P2:Number=Math.sqrt((P2.x-P1.x)*(P2.x-P1.x)+(P2.y-P1.y)*(P2.y-P1.y));
 
-				var sinx:Number=Math.abs(P2.y-P1.y)/disP1P2;
-				var cosx:Number=Math.abs(P2.x-P1.x)/disP1P2;
+				var sinx:Number=(P2.y-P1.y)/disP1P2;
+				var cosx:Number=(P2.x-P1.x)/disP1P2;
 				
 				_vertexVec2[0]=_vertexVec1[0]+10*sinx;
 				_vertexVec2[1]=_vertexVec1[1]+10*cosx;

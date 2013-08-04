@@ -58,7 +58,7 @@ package zszh_WorkSpace2D
 		{
 			_topImageLoader = new Loader();
 			_topImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onComplete);
-			var topImageFile:String=_resourcePath+_modelName+"_top.png"
+			var topImageFile:String=_resourcePath+"top.png"
 			_topImageLoader.load(new URLRequest(topImageFile));
 			
 			function onComplete(e:Event):void

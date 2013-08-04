@@ -87,98 +87,70 @@ package zszh_WorkSpace2D
 			
 			var mArea:int=room_2d._roomArea;
 			trace("面积：",mArea);
-			//while( vectex.length>4)
+			 
+			
+			//三角分解
+			var iPos:int=0;
+			while(vectex.length>=6)
 			{
-				var iPos:int=0;
-				for(;iPos<vectex.length;iPos+=2)
-				{
-					 var p1:Point=new Point(vectex[iPos],vectex[iPos+1]);
-					 var p2:Point=new Point(vectex[(iPos+2)%vectex.length],vectex[(iPos+3)%vectex.length]);
-					 var p3:Point=new Point(vectex[(iPos+4)%vectex.length],vectex[(iPos+5)%vectex.length]);
+				var p1:Point=new Point(vectex[iPos%vectex.length],vectex[(iPos+1)%vectex.length]);
+				var p2:Point=new Point(vectex[(iPos+2)%vectex.length],vectex[(iPos+3)%vectex.length]);
+				var p3:Point=new Point(vectex[(iPos+4)%vectex.length],vectex[(iPos+5)%vectex.length]);
 					 
-					 var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
-					 var p2p3:Point=new Point(p3.x-p2.x,p3.y-p2.y);
-					 var p3p1:Point=new Point(p1.x-p3.x,p1.y-p3.y);
+				var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
+				var p2p3:Point=new Point(p3.x-p2.x,p3.y-p2.y);
+				var p3p1:Point=new Point(p1.x-p3.x,p1.y-p3.y);
 					 
-					 var points:Vector.<Point>=new Vector.<Point>;
-					 points.push(p1p2);
-					 points.push(p2p3);
-					 points.push(p3p1);
+				var points:Vector.<Point>=new Vector.<Point>;
+				points.push(p1p2);
+				points.push(p2p3);
+				points.push(p3p1);
 					 
-					 var test:Number = Object2D_Room.GetPolygonArea(points);
+				var test:Number = Object2D_Room.GetPolygonArea(points);
+				
+				//test==0 it is mean that the points on the same line
 					 
-					 if(test>=0)
-					 {    
-						 bool PointinTriangle(Vector3 A, Vector3 B, Vector3 C, Vector3 P)
-						 {
-							 Vector3 v0 = C - A ;
-							 Vector3 v1 = B - A ;
-							 Vector3 v2 = P - A ;
-							 
-							 float dot00 = v0.Dot(v0) ;
-							 float dot01 = v0.Dot(v1) ;
-							 float dot02 = v0.Dot(v2) ;
-							 float dot11 = v1.Dot(v1) ;
-							 float dot12 = v1.Dot(v2) ;
-							 
-							 float inverDeno = 1 / (dot00 * dot11 - dot01 * dot01) ;
-							 
-							 float u = (dot11 * dot02 - dot01 * dot12) * inverDeno ;
-							 if (u < 0 || u > 1) // if u out of range, return directly
-							 {
-								 return false ;
-							 }
-							 
-							 float v = (dot00 * dot12 - dot01 * dot02) * inverDeno ;
-							 if (v < 0 || v > 1) // if v out of range, return directly
-							 {
-								 return false ;
-							 }
-							 
-							 return u + v <= 1 ;
-						 }
-						 
-						 var b:Boolean=false;//是否有其他 顶点在三角形中。。。
-						 for(var i:int=0;i<vectex.length;i+=2)
-						 {
-							 if(i!= iPos iPos+1 iPos+2 iPos+3 iPos+4 iPos+5 && !b)
-							 {
-								 b=PointinTriangle(vectex[i],vectex[i+1]);
-							 }
-						 }
+				if(test>0||vectex.length==6)
+				{     
+					var bCover:Boolean=false;//是否有其他 顶点在三角形中。。。
+					/*for(var i:int=0;i<vectex.length;i+=2)
+					{
+						if(!b&&i<iPos||i>iPos+5)
+						{
+							b=PointinTriangle(p1,p2,p3,new Point(vectex[i],vectex[i+1]));
+						}
+					}*/
 						 
 						 
-						 if(!b)//凸点
-						 {
-							 mArea-=test;
-							 vectex.splice((iPos+2)%vectex.length,2);
-							 trace(vectex.length);
-							 iPos=0;
-							 graphics.lineStyle(1,0xff0000);
+					if(!bCover)//凸点
+					{
+						mArea-=test;
+						vectex.splice((iPos+2)%vectex.length,2);
+						
+						graphics.lineStyle(1,0x00ff00);
 							 
-							 graphics.moveTo(p1.x,-p1.y);
-							 graphics.lineTo(p3.x,-p3.y);
+						graphics.moveTo(p1.x,-p1.y);
+						graphics.lineTo(p3.x,-p3.y);
 		 
-							 graphics.endFill();
-							 
-							 //vertex
-							 /*var vertexVec:Vector.<Number>=new Vector.<Number>();
-							 vertexVec.push(p1.x,-p1.y,p2.x,-p2.y,p3.x,-p3.y);
-							 //indice
-							 var indiceVec:Vector.<int>=new Vector.<int>();
-							 indiceVec.push(0,1,2);
-							 //uv
-							 var uvVec:Vector.<Number>=new Vector.<Number>();
-							 uvVec.push(p1.x/_uvScale,-p1.y/_uvScale,p2.x/_uvScale,-p2.y/_uvScale,p3.x/_uvScale,-p3.y/_uvScale);
+						//graphics.endFill();
 
-							 graphics.drawTriangles(vertexVec,indiceVec,uvVec);*/
-						 }
-						// else
-						 {
-							 
-						 }
-					 }
+						//vertex
+						var vertexVec:Vector.<Number>=new Vector.<Number>();
+						vertexVec.push(p1.x,-p1.y,p2.x,-p2.y,p3.x,-p3.y);
+						//indice
+						var indiceVec:Vector.<int>=new Vector.<int>();
+						indiceVec.push(0,1,2);
+						//uv
+						var uvVec:Vector.<Number>=new Vector.<Number>();
+						uvVec.push(p1.x/_uvScale,-p1.y/_uvScale,p2.x/_uvScale,-p2.y/_uvScale,p3.x/_uvScale,-p3.y/_uvScale);
+
+						graphics.drawTriangles(vertexVec,indiceVec,uvVec);
+						
+						continue;
+					}
 				}
+				
+				iPos+=2;
 			}
 			
 			
@@ -190,8 +162,35 @@ package zszh_WorkSpace2D
 				_popupWindowMenu=null;
 			}
 		}
-		
 
+		private function PointinTriangle( A:Point, B:Point, C:Point, P:Point):Boolean
+		{
+			var  v0:Point =new Point(C.x - A.x,C.y-A.y) ;
+			var  v1:Point =new Point(B.x - A.x,B.y-A.y) ;
+			var  v2:Point =new Point(P.x - A.x,P.y-A.y) ;
+			
+			var dot00 = v0.x*v0.x+v0.y*v0.y;
+			var dot01 = v0.x*v1.x+v0.y*v1.y;
+			var dot02 = v0.x*v2.x+v0.y*v2.y;
+			var dot11 = v1.x*v1.x+v1.y*v1.y;
+			var dot12 = v1.x*v2.x+v1.y*v2.y;
+			
+			var inverDeno = 1 / (dot00 * dot11 - dot01 * dot01) ;
+			
+			var u = (dot11 * dot02 - dot01 * dot12) * inverDeno ;
+			if (u < 0 || u > 1) // if u out of range, return directly
+			{
+				return false ;
+			}
+			
+			var v = (dot00 * dot12 - dot01 * dot02) * inverDeno ;
+			if (v < 0 || v > 1) // if v out of range, return directly
+			{
+				return false ;
+			}
+			
+			return u + v <= 1 ;
+		}
 		//--------------floor mouse event----------------------------------------
 		private function FloorMouseOver(e:MouseEvent):void
 		{

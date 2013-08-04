@@ -10,9 +10,13 @@
 		import mx.core.UIComponent;
 		import mx.events.FlexEvent;
 		
+		import away3d.containers.ObjectContainer3D;
+		
 		import zszh_WorkSpace2D.Object2D_Model;
 		import zszh_WorkSpace2D.Object2D_Room;
 		import zszh_WorkSpace2D.Wall_2D;
+		
+		import zszh_WorkSpace3D.Model_3D;
 		[Embed(source="embeds/ToolsBar/toolbar_1.png")]
 		public var Button1_down:Class;
 		[Embed(source="embeds/ToolsBar/toolbar_2.png")]
@@ -48,6 +52,27 @@
 		}
 		protected function ShowWorkspace2D(event:MouseEvent):void
 		{
+			//updata 2d model position
+			var _models3D:ObjectContainer3D=parentApplication.WorkSpace3D._modelsContainer3D;
+			for(var i:int=0;i<_models3D.numChildren;i++)
+			{
+				var model3d:Model_3D = _models3D.getChildAt(i) as Model_3D;
+
+				var _models2DVec:Vector.<Object2D_Model>=parentApplication.WorkSpace2D.WorkSpace2D._modelsVec;
+				
+				for(var i:int=0;i<_models2DVec.length;i++)
+				{
+					var model2d:Object2D_Model=_models2DVec[i];	
+					
+					if(model2d.name==model3d.name )
+					{
+						model2d.x=model3d.x+3200;
+						model2d.y=3200-model3d.z;  
+						break;
+					}
+				}
+			}	
+				
 			parentApplication.WorkspaceBack.visible=true;
 			parentApplication.WorkSpace3D.visible=false;
 			parentApplication.WorkSpace2D.visible=true;
@@ -56,27 +81,38 @@
 		protected function ShowWorkspace3D(event:MouseEvent):void
 		{
 			parentApplication.WorkspaceBack.visible=false;
-			parentApplication.WorkSpace3D.ClearRoom();
+				parentApplication.WorkSpace3D.ClearRoom();
 			
 			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._room2DVec.length;i++)
 			{
 				var room2d:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._room2DVec[i] as UIComponent;		
 				var vertex_old:Vector.<Number>= (room2d as Object2D_Room)._vertexVec1;
 				
+				var vertex_old2:Vector.<Number>= (room2d as Object2D_Room)._vertexVec2;
+				var vertex_old3:Vector.<Number>= (room2d as Object2D_Room)._vertexVec3;
+				
 				var vertex_new:Vector.<Number>=new Vector.<Number>;
+				var vertex_new2:Vector.<Number>=new Vector.<Number>;
+				var vertex_new3:Vector.<Number>=new Vector.<Number>;
 				
 				if(room2d.className=="Object2D_Room")
 				{
 					for(var j:int=0;j<vertex_old.length;j+=2)
 					{
-						vertex_new.push(room2d.x+vertex_old[j]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridWidth/2);
-						vertex_new.push(room2d.y+vertex_old[j+1]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridHeight/2);
+						vertex_new.push(room2d.x+vertex_old[j]-3200);
+						vertex_new.push(room2d.y+vertex_old[j+1]-3200);
+						
+						vertex_new2.push(room2d.x+vertex_old2[j]-3200);
+						vertex_new2.push(room2d.y+vertex_old2[j+1]-3200);
+						
+						vertex_new3.push(room2d.x+vertex_old3[j]-3200);
+						vertex_new3.push(room2d.y+vertex_old3[j+1]-3200);
 					}
-					parentApplication.WorkSpace3D.AddRoom(vertex_new,room2d.name);				    
+					parentApplication.WorkSpace3D.AddRoom(vertex_new,vertex_new2,vertex_new3,room2d.name);				    
 				}
 			}
 			//隔墙 
-			parentApplication.WorkSpace3D.ClearWallInside();
+		parentApplication.WorkSpace3D.ClearWallInside();
 			
 			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._wall2DVec.length;i++)
 			{
@@ -89,8 +125,8 @@
 					
 					for(var j:int=0;j<vertex_old.length;j+=2)
 					{
-						vertex_new.push(wallInside.x+vertex_old[j]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridWidth/2);
-						vertex_new.push(wallInside.y+vertex_old[j+1]-parentApplication.WorkSpace2D.WorkSpace2D._grid._gridHeight/2);
+						vertex_new.push(wallInside.x+vertex_old[j]-3200);
+						vertex_new.push(-wallInside.y-vertex_old[j+1]+3200);
 					}
 					parentApplication.WorkSpace3D.AddWallInside(vertex_new,wallInside.name);	 
 				}
@@ -106,11 +142,11 @@
 				if(modelBed.className=="Object2D_Model")
 				{
 					var mbed:Object2D_Model = modelBed as Object2D_Model;
-					var _vec3D:Vector3D=new Vector3D();
-					_vec3D.x=mbed.x-3200;
-					_vec3D.y=0;
-					_vec3D.z=mbed.y-3200;
-					parentApplication.WorkSpace3D.AddModels(mbed._resourcePath,mbed._modelName,_vec3D);    
+					var mPos:Vector3D=new Vector3D();
+					mPos.x=mbed.x-3200;
+					mPos.y=0;
+					mPos.z=-mbed.y+3200;
+					parentApplication.WorkSpace3D.AddModels(mbed._resourcePath,mbed._modelName,mPos,mbed.name);    
 				}
 			}
 			

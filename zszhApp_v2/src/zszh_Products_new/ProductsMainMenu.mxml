@@ -193,6 +193,17 @@
 				if(bname=="Button11")
 				{
 					Products.visible=true;
+					Products.SetDataProvider(1);
+				}
+				else if(bname=="Button12")
+				{
+					Products.visible=true;
+					Products.SetDataProvider(2);
+				}
+				else if(bname=="Button13")
+				{
+					Products.visible=true;
+					Products.SetDataProvider(3);
 				}
 				//else Products.visible=false;
 				

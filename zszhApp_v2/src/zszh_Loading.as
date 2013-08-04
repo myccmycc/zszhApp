@@ -1,21 +1,27 @@
 package
 {  
-	import flash.display.*;  
-	import flash.events.*;  
-	import flash.net.*;  
-	import flash.text.TextField;  
-	import flash.text.TextFormat;  
-	import mx.events.FlexEvent;  
+	import flash.display.Loader;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.ProgressEvent;
+	import flash.net.URLRequest;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
+	
+	import mx.events.FlexEvent;
 	import mx.preloaders.DownloadProgressBar;  
 	public class zszh_Loading  extends DownloadProgressBar  
 	{  
 		private var logo:Loader;  
 		private var txt:TextField;  
 		private var _preloader:Sprite;  
+		private var bLogoShow:Boolean;
 		public function zszh_Loading()  
 		{  
+			bLogoShow=true;
 			logo = new Loader();  
 			logo.load(new URLRequest("zszh_res/loading.png"));  
+			//logo.contentLoaderInfo.addEventListener(Event.COMPLETE,OnLogoComplete);
 			addChild(logo); 
 			
 			var style:TextFormat = new TextFormat("微软雅黑","16",0xFFFFFF,true,null,null,null,null,"center");  
@@ -39,6 +45,12 @@ package
 			stage.addEventListener(Event.RESIZE,resize)  
 			resize(null);  
 		}  
+		
+		private function OnLogoComplete(e:Event):void
+		{
+			bLogoShow=true;
+			logo.contentLoaderInfo.removeEventListener(Event.COMPLETE,OnLogoComplete);
+		}
 		private function remove():void{  
 			_preloader.removeEventListener(ProgressEvent.PROGRESS,load_progress);  
 			_preloader.removeEventListener(Event.COMPLETE,load_complete);  
@@ -57,15 +69,19 @@ package
 			graphics.endFill();  
 		}  
 		private function load_progress(e:ProgressEvent):void{  
+			if(bLogoShow)
 			txt.text = "正在加载..."+int(e.bytesLoaded/e.bytesTotal*100)+"%";  
 		}  
 		private function load_complete(e:Event):void{  
+			if(bLogoShow)
 			txt.text = "加载完毕!"
 		}  
-		private function init_progress(e:FlexEvent):void{  
+		private function init_progress(e:FlexEvent):void{ 
+			if(bLogoShow)
 			txt.text = "正在初始化..."
 		}  
 		private function init_complete(e:FlexEvent):void{  
+			if(bLogoShow)
 			txt.text = "初始化完毕!"
 			remove()  
 			//最后这个地方需要dpe一个Event.COMPLETE事件..表示加载完毕让swf继续操作~  

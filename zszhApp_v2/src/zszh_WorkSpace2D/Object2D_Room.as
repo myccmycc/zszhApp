@@ -9,8 +9,8 @@ package zszh_WorkSpace2D
 	public class Object2D_Room extends Object2D_Base
 	{
 		public   var _vertexVec1:Vector.<Number>;
-		private  var _vertexVec2:Vector.<Number>;
-		private  var _vertexVec3:Vector.<Number>;
+		public  var _vertexVec2:Vector.<Number>;
+		public  var _vertexVec3:Vector.<Number>;
 		public   var _roomArea:Number;
 		
 		private var _floor:Room_2DFloor;

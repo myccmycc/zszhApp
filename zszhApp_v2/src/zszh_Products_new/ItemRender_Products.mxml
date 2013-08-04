@@ -6,8 +6,10 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.core.DragSource;
+			import mx.core.FlexGlobals;
 			import mx.core.UIComponent;
 			import mx.events.ItemClickEvent;
+			import mx.managers.CursorManager;
 			import mx.managers.DragManager;
 			
 			import spark.components.Image;
@@ -32,21 +34,35 @@
 				ds.addData(data.resourcePath, "resourcePath");//传递的数据
 				ds.addData(data.objectName, "objectName");//传递的数据
 				
-				var loader:Loader=new Loader;
-				loader.load(new URLRequest(event.currentTarget.img.source));
-				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, OnComplete);
-				
 				var dragProxy:Image=new Image();
 				
+				if(data.className=="model")
+				{
+					var loader:Loader=new Loader;
+					loader.load(new URLRequest(data.resourcePath+"top.png"));
+					loader.contentLoaderInfo.addEventListener(Event.COMPLETE, OnComplete);
+				}
+				else if(data.className=="Room_2D")
+				{
+					dragProxy.source=img.source;
+					dragProxy.width=120;
+					dragProxy.height=120;
+					CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor_Wall,2,-41,-14);
+					DragManager.doDrag(dragInitiator, ds,event,null,0,0,0);
+				}
 				
 				function OnComplete(e:Event):void
 				{
-					dragProxy.source=loader.content ;
-					DragManager.doDrag(dragInitiator, ds,event,dragProxy,-15,-5);
-				}
-				
+					dragProxy.source=loader.content;
+					var w:int=loader.content.width*parentApplication.WorkSpace2D.WorkSpace2D._grid.scaleX;
+					var h:int=loader.content.height*parentApplication.WorkSpace2D.WorkSpace2D._grid.scaleY;
+					dragProxy.width=w;
+					dragProxy.height=h;
+					var dw:int=-w/2;
+					var dh:int=-h/2;
+					DragManager.doDrag(dragInitiator, ds,event,dragProxy,dw,dh);
+				}		
 			}
-			
 		]]>
 	</fx:Script>
 	
@@ -54,10 +70,10 @@
 		<s:layout>
 			<s:VerticalLayout />
 		</s:layout>
-		<s:SkinnableContainer width="90" height="70" backgroundColor="0xff0000" >
-			<s:Image id="img" source="{data.ImgThumbnail}" width="60" height="60" backgroundColor="0x404040" verticalCenter="0" horizontalCenter="0" />
+		<s:SkinnableContainer width="120" height="120" backgroundColor="0xff0000" >
+			<s:Image id="img" source="{data.ImgThumbnail}" width="120" height="120" backgroundColor="0x404040" verticalCenter="0" horizontalCenter="0" />
 		</s:SkinnableContainer>
-		<s:Label text="{data.labelText}" width="90" textAlign="center" />
+		<!--s:Label text="{data.labelText}" width="90" textAlign="center" /-->
 	</s:SkinnableContainer>
 	
 </s:ItemRenderer>

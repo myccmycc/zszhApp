@@ -31,7 +31,7 @@ package zszh_WorkSpace3D
 		//WorkSpace3D _lightPicker
 		private var _lightPicker:StaticLightPicker;
 		//material objects
-		private var _wallMaterial:TextureMaterial;
+		private var _wallMaterial:MaterialBase;
 
 		
 		//vertexs data
@@ -79,26 +79,34 @@ package zszh_WorkSpace3D
 					posVec[(i+2)%posLen],_floorY, posVec[(i+3)%posLen],
 					posVec[i],_floorY, posVec[i+1]);
 				
-				index.push(0,1,2,0,2,3);
+				
+				
+				
+				var v1:Point=new Point(posVec[2]-posVec[0],posVec[3]-posVec[1]);
+				var v2:Point=new Point(posVec[4]-posVec[2],posVec[5]-posVec[3]);
+				
+				var d:Number=v1.x*v2.y-v1.y*v2.x;
+				if(d>0)	
+					index.push(0,1,2,0,2,3);
+				else index.push(0,3,2,0,2,1);
 				
 				//uv 还是有点问题
-				var p1:Number=Math.sqrt( posVec[i]*posVec[i]+posVec[i+1]*posVec[i+1])/_uvScale;
-				var p2:Number=Math.sqrt( posVec[(i+2)%posLen]*posVec[(i+2)%posLen]+posVec[(i+3)%posLen]*posVec[(i+3)%posLen])/_uvScale;
+				var dx:Number= posVec[(i+2)%posLen]- posVec[i];
+				var dy:Number= posVec[(i+3)%posLen]- posVec[i+1];				
+				var p1:Number=Math.sqrt(dx*dx+dy*dy);
+				 
 				
-				uv.push(p1, _wallHeight/_uvScale,
-					-p2, _wallHeight/_uvScale,
-					-p2, _floorY/_uvScale,
-					p1, _floorY/_uvScale);
-				
-				trace("p1==",p1);
-				trace("p2==",p2);
+				uv.push(0, _wallHeight/_uvScale,
+					p1/_uvScale, _wallHeight/_uvScale,
+					p1/_uvScale, _floorY/_uvScale,
+					0, _floorY/_uvScale);
+
 				subGeom.updateVertexData(vertex);
 				subGeom.updateIndexData(index);
 				subGeom.updateUVData(uv);
 				gem.addSubGeometry(subGeom);
 			}
-			
-		
+
 			addChild(new Mesh(gem,_wallMaterial));
 		}
  
@@ -106,35 +114,36 @@ package zszh_WorkSpace3D
 		{
 			var gem:Geometry=new Geometry();
 			
-			var posLen:int=posVec.length;
-			for(var i:int=0;i<posLen;i+=8)
-			{
-				var subGeom : SubGeometry = new SubGeometry;
-				var vertex : Vector.<Number> = new Vector.<Number>;
-				var index : Vector.<uint> = new Vector.<uint>;
+			var subGeom : SubGeometry = new SubGeometry;
+			var vertex : Vector.<Number> = new Vector.<Number>;
+			var index : Vector.<uint> = new Vector.<uint>;
 			
-				//p0  pi pi+1 顺时针方向 三角形
-				vertex.push(posVec[i],_wallHeight, posVec[i+1],
-					posVec[(i+2)%posLen],_wallHeight, posVec[(i+3)%posLen],
-					posVec[(i+4)%posLen],_wallHeight, posVec[(i+5)%posLen],
-					posVec[(i+6)%posLen],_wallHeight, posVec[(i+7)%posLen]);
-				
-				index.push(0,1,2,0,2,3,0,2,1,0,3,2);
-
-				subGeom.updateVertexData(vertex);
-				subGeom.updateIndexData(index);
-
-				gem.addSubGeometry(subGeom);
-			}
+			//p0  pi pi+1 顺时针方向 三角形
+			vertex.push(posVec[0],_wallHeight, posVec[1],
+						posVec[2],_wallHeight, posVec[3],
+						posVec[4],_wallHeight, posVec[5],
+						posVec[6],_wallHeight, posVec[7]);
 			
-			var whiteMaterial :ColorMaterial = new ColorMaterial(0xffffff, 1);
+			var v1:Point=new Point(posVec[2]-posVec[0],posVec[3]-posVec[1]);
+			var v2:Point=new Point(posVec[4]-posVec[2],posVec[5]-posVec[3]);
+			
+			var d:Number=v1.x*v2.y-v1.y*v2.x;
+			if(d<0)	
+				index.push(0,1,2,0,2,3);
+			else index.push(0,3,2,0,2,1);
+			subGeom.updateVertexData(vertex);
+			subGeom.updateIndexData(index);
+			gem.addSubGeometry(subGeom);
+			
+			var whiteMaterial :ColorMaterial = new ColorMaterial(0xeff3f6, 1);
 			whiteMaterial.lightPicker=_lightPicker;
 			addChild(new Mesh(gem,whiteMaterial));
 		}
 		
 		private function InitMaterials():void
 		{
-			_wallMaterial = new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
+			//_wallMaterial = new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
+			 _wallMaterial  = new ColorMaterial(0xccd3d9, 1);
 			_wallMaterial.lightPicker=_lightPicker;
 			_wallMaterial.repeat=true;
 		}

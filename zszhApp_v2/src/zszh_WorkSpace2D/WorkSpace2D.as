@@ -175,6 +175,8 @@ package zszh_WorkSpace2D
 						var name:String=myXML.Object[pname].ModelName;
 						var model:Object2D_Model=new Object2D_Model(res,name);
 						
+						model.name=name+pname;
+						
 						var pos:String=myXML.Object[pname].Position;
 						var params:Array = pos.split(",",2);
 						model.x=params[0];
@@ -250,6 +252,7 @@ package zszh_WorkSpace2D
 		
 		private function DragEnter2D(event:DragEvent):void
 		{
+			
 			var className:String=String(event.dragSource.dataForFormat("className"));
 			var classArgument:String=String(event.dragSource.dataForFormat("classArgument"));
 			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
@@ -259,6 +262,7 @@ package zszh_WorkSpace2D
 			
 			if(className=="Room_2D")
 			{
+				CursorManager.removeAllCursors();
 				var room:Object2D_Room=new Object2D_Room(classArgument);
 				room.x=event.localX;
 				room.y=event.localY;
@@ -285,19 +289,7 @@ package zszh_WorkSpace2D
 				current_object=wall as Object;
 			}
 			
-			else if(className=="model")
-			{
-				var model:Object2D_Model=new Object2D_Model(resourcePath,objectName);
-				model.x=event.localX;
-				model.y=event.localY;
-				model.name=model.className+room_number;
-				room_number++;
-				_grid.addChild(model);
-				_modelsVec.push(model);
-				_objects.push(model);
-				
-				current_object=model as Object;
-			}
+		
 		
 			
 			DragManager.acceptDragDrop(event.target as UIComponent);
@@ -312,6 +304,26 @@ package zszh_WorkSpace2D
 		}
 		private function DragDrop2D(event:DragEvent):void
 		{
+			var className:String=String(event.dragSource.dataForFormat("className"));
+			var classArgument:String=String(event.dragSource.dataForFormat("classArgument"));
+			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
+			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
+			
+			current_object=null;
+
+			if(className=="model")
+			{
+				var model:Object2D_Model=new Object2D_Model(resourcePath,objectName);
+				model.x=event.localX;
+				model.y=event.localY;
+				model.name=model.className+room_number;
+				room_number++;
+				_grid.addChild(model);
+				_modelsVec.push(model);
+				_objects.push(model);
+				
+				current_object=model as Object;
+			}
 		}
 	}
 }

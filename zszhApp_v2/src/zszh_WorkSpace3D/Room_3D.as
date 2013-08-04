@@ -22,6 +22,8 @@ package zszh_WorkSpace3D
 	import away3d.primitives.PlaneGeometry;
 	import away3d.utils.Cast;
 	
+	import zszh_WorkSpace2D.Object2D_Room;
+	
 	public class Room_3D extends ObjectContainer3D
 	{
 		//plane textures
@@ -33,7 +35,7 @@ package zszh_WorkSpace3D
 		public static var FloorSpecular:Class;
 		[Embed(source="/../embeds/floor_normal.jpg")]
 		public static var FloorNormals:Class;
-		[Embed(source="/../embeds/floor_diffuse.jpg")]
+		[Embed(source="/../embeds/rooms/TextureFloor.jpg")]
 		public static var FloorDiffuse:Class;
 		
 		//WorkSpace3D _lightPicker
@@ -52,17 +54,17 @@ package zszh_WorkSpace3D
 		private var _wallHeight:int;
 		private var _wallWidth:int;
 		
-		public function Room_3D(_pos1:Vector.<Number>,lightPicker:StaticLightPicker)
+		public function Room_3D(_pos1:Vector.<Number>,_pos2:Vector.<Number>,_pos3:Vector.<Number>,lightPicker:StaticLightPicker)
 		{
 			super();
 			_pos1Vec=_pos1;
-			_pos2Vec=new Vector.<Number>;
-			_pos3Vec=new Vector.<Number>;
+			_pos2Vec=_pos2;
+			_pos3Vec=_pos3;
+			
 			_wallHeight=270;
 			_wallWidth=20;
 			_lightPicker=lightPicker;
-			
-			InitVertexData();
+		
 			InitMaterials();
 			BuiltRoom();
 		}
@@ -72,15 +74,17 @@ package zszh_WorkSpace3D
 		{
 			
 			BuiltRoomFloor(_pos2Vec,_floorMaterial);
-			BuiltRoomWall(_pos2Vec,_wallMaterial,270);
-			var whiteMaterial :ColorMaterial = new ColorMaterial(0xffffff, 1);
-			BuiltRoomWall(_pos3Vec,whiteMaterial,270);
-			var redMaterial :ColorMaterial = new ColorMaterial(0xff0000, 1);
+			
+			var whiteMaterial :ColorMaterial = new ColorMaterial(0xccd3d9, 1);
+			whiteMaterial.lightPicker=this._lightPicker;
+			BuiltRoomWall(_pos2Vec,whiteMaterial,_wallHeight);
+			BuiltRoomWall(_pos3Vec,whiteMaterial,_wallHeight);
+			
+			var redMaterial :ColorMaterial = new ColorMaterial(0xeff3f6, 1);
 			BuiltTopBottom(_pos2Vec,_pos3Vec,redMaterial);
-			var greenMaterial :ColorMaterial = new ColorMaterial(0x00ff00, 1);
+			
+			var greenMaterial :ColorMaterial = new ColorMaterial(0xeff3f6, 1);
 			BuiltMid(_pos2Vec,_pos3Vec,greenMaterial);
-			
-			
 		}
 		
 		//ok
@@ -106,15 +110,16 @@ package zszh_WorkSpace3D
 				index.push(0,1,2,0,2,3);
 				
 				//uv 还是有点问题
-				var p1:Number=Math.sqrt( posVec[i]*posVec[i]+posVec[i+1]*posVec[i+1])/uvScale;
-				var p2:Number=Math.sqrt( posVec[(i+2)%posLen]*posVec[(i+2)%posLen]+posVec[(i+3)%posLen]*posVec[(i+3)%posLen])/uvScale;
-				uv.push(p1, wallHeight/uvScale,
-					-p2, wallHeight/uvScale,
-					-p2, floorZ/uvScale,
-					p1, floorZ/uvScale);
+				var dx:Number= posVec[(i+2)%posLen]- posVec[i];
+				var dy:Number= posVec[(i+3)%posLen]- posVec[i+1];				
+				var p1:Number=Math.sqrt(dx*dx+dy*dy);
 				
-				trace("p1==",p1);
-				trace("p2==",p2);
+				
+				uv.push(0, _wallHeight/uvScale,
+					p1/uvScale, _wallHeight/uvScale,
+					p1/uvScale, floorZ/uvScale,
+					0, floorZ/uvScale);
+				
 				subGeom.updateVertexData(vertex);
 				subGeom.updateIndexData(index);
 				subGeom.updateUVData(uv);
@@ -127,9 +132,9 @@ package zszh_WorkSpace3D
 			
 		}
 
-		private function BuiltTopBottom(posVecIn:Vector.<Number>,posVecOut:Vector.<Number>,material:MaterialBase):void
+		private function BuiltTopBottom(posVecIn:Vector.<Number>,posVecOut:Vector.<Number>,material:MaterialBase,floorZ:int=0):void
 		{
-		    //top
+		    //top and bottom
 			var gemTop:Geometry=new Geometry();
 
 			var len:int=posVecIn.length;
@@ -142,10 +147,15 @@ package zszh_WorkSpace3D
 				vertex.push(posVecOut[i], _wallHeight, posVecOut[i+1]
 					, posVecOut[(i+2)%len], _wallHeight, posVecOut[(i+3)%len]
 					, posVecIn[(i+2)%len], _wallHeight, posVecIn[(i+3)%len]
-					, posVecIn[i], _wallHeight,posVecIn[i+1]);
+					, posVecIn[i], _wallHeight,posVecIn[i+1]
+					,posVecOut[i], floorZ, posVecOut[i+1]
+					, posVecOut[(i+2)%len], floorZ, posVecOut[(i+3)%len]
+					, posVecIn[(i+2)%len], floorZ, posVecIn[(i+3)%len]
+					, posVecIn[i], floorZ,posVecIn[i+1]
+					);
 			
 			
-				index.push(0, 1, 2,0,2,3);
+				index.push(0, 1, 2,0,2,3, 4,5,6, 4,6,7);
 			
 				subGeom.updateVertexData(vertex);
 				subGeom.updateIndexData(index);		
@@ -172,7 +182,8 @@ package zszh_WorkSpace3D
 					, posVecIn[i], floorZ,posVecIn[i+1]
 					, posVecOut[i], floorZ, posVecOut[i+1]);			
 				
-				index.push(0, 1, 2,0,2,3,0,3,2,0,2,1);
+				index.push(0,3,2,0,2,1);
+				index.push(0,1,2,0,2,3);
 				
 				subGeom.updateVertexData(vertex);
 				subGeom.updateIndexData(index);		
@@ -183,117 +194,99 @@ package zszh_WorkSpace3D
 		}
 		
 		// ok
-		private function BuiltRoomFloor(posVec:Vector.<Number>,material:MaterialBase,uvScale:int=100,floorZ:int=0):void
+		private function BuiltRoomFloor(posVec:Vector.<Number>,material:MaterialBase,uvScale:int=100,floorY:int=0):void
 		{
 			var gem:Geometry=new Geometry();
 			
-			
-			var subGeom : SubGeometry = new SubGeometry;
-			
-			var vertex : Vector.<Number> = new Vector.<Number>;
-			var index : Vector.<uint> = new Vector.<uint>;
-			var uv : Vector.<Number> = new Vector.<Number>;
-			
+			//三角分解
+			var vertexTmp : Vector.<Number> = new Vector.<Number>;
 			var posLen:int=posVec.length;
 			for(var i:int=0;i<posLen;i+=2)
 			{
-				vertex.push(posVec[i],floorZ,posVec[i+1]);
+				vertexTmp.push(posVec[i],posVec[i+1]);
 			}
-
-			for(i=0;i<posLen;i++)
+			var iPos:int=0;
+			while(vertexTmp.length>=6)
 			{
-				uv.push(posVec[i]/uvScale);
+				var len:int=vertexTmp.length;
+				
+				var p1:Point=new Point(vertexTmp[iPos%len],vertexTmp[(iPos+1)%len]);
+				var p2:Point=new Point(vertexTmp[(iPos+2)%len],vertexTmp[(iPos+3)%len]);
+				var p3:Point=new Point(vertexTmp[(iPos+4)%len],vertexTmp[(iPos+5)%len]);
+				
+				var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
+				var p2p3:Point=new Point(p3.x-p2.x,p3.y-p2.y);
+				var p3p1:Point=new Point(p1.x-p3.x,p1.y-p3.y);
+				
+				var points:Vector.<Point>=new Vector.<Point>;
+				points.push(p1p2);
+				points.push(p2p3);
+				points.push(p3p1);
+				
+				var test:Number = Object2D_Room.GetPolygonArea(points);
+				
+				//test==0 it is mean that the points on the same line
+				
+				if(test>0||vertexTmp.length==6)
+				{     
+					var bCover:Boolean=false;//是否有其他 顶点在三角形中。。。
+					/*for(var i:int=0;i<vectex.length;i+=2)
+					{
+					if(!b&&i<iPos||i>iPos+5)
+					{
+					b=PointinTriangle(p1,p2,p3,new Point(vectex[i],vectex[i+1]));
+					}
+					}*/
+					
+					
+					if(!bCover)//凸点
+					{
+						
+						
+						var vertex : Vector.<Number> = new Vector.<Number>;
+						var index : Vector.<uint> = new Vector.<uint>;
+						var uv : Vector.<Number> = new Vector.<Number>;
+						
+						var tmpLen:int=vertexTmp.length;
+						
+						vertex.push(vertexTmp[iPos%tmpLen],floorY-1,vertexTmp[(iPos+1)%tmpLen],
+							vertexTmp[(iPos+2)%tmpLen],floorY-1,vertexTmp[(iPos+3)%tmpLen],
+							vertexTmp[(iPos+4)%tmpLen],floorY-1,vertexTmp[(iPos+5)%tmpLen]);//floorY-1 is necessary
+						
+						uv.push(vertexTmp[iPos%tmpLen]/uvScale,vertexTmp[(iPos+1)%tmpLen]/uvScale,
+							vertexTmp[(iPos+2)%tmpLen]/uvScale,vertexTmp[(iPos+3)%tmpLen]/uvScale,
+							vertexTmp[(iPos+4)%tmpLen]/uvScale,vertexTmp[(iPos+5)%tmpLen]/uvScale);
+						
+						
+				 
+						index.push(0,1,2);
+						
+						var subGeom : SubGeometry = new SubGeometry;
+						subGeom.updateVertexData(vertex);
+						subGeom.updateIndexData(index);
+						subGeom.updateUVData(uv);
+						gem.addSubGeometry(subGeom);
+						
+						vertexTmp.splice((iPos+2)%vertexTmp.length,2);
+						continue;
+					}
+				}
+				
+				iPos+=2;
 			}
+		
 			
-			for(i=0;i<posLen/2-2;i++)
-			{
-				index.push(0,i+1,i+2);
-			}
 			
-			subGeom.updateVertexData(vertex);
-			subGeom.updateIndexData(index);
-			subGeom.updateUVData(uv);
-			gem.addSubGeometry(subGeom);
 
 			addChild(new Mesh(gem,material));	
 		}
 		
-		private function InitVertexData():void
-		{
-			var pos1Len:int=_pos1Vec.length;
-			for(var i:int=0;i<pos1Len;i+=2)
-			{
-				var P1:Point=new Point(_pos1Vec[(i+pos1Len-2)%pos1Len], _pos1Vec[(i+pos1Len-1)%pos1Len]);
-				var P2:Point=new Point(_pos1Vec[(i)%pos1Len],_pos1Vec[(i+1)%pos1Len]);
-				var P3:Point=new Point(_pos1Vec[(i+2)%pos1Len],_pos1Vec[(i+3)%pos1Len]);
-				
-				//2 P1P2 直线方程  Ax+By+c=0的表达式
-				var A1:Number=(P2.y-P1.y);
-				var B1:Number=(P1.x-P2.x);
-				var C1:Number = P2.x*P1.y-P1.x*P2.y;
-				trace("ABC:"+A1+B1+C1);
-				
-				//2求平移后的直线  |C1-C0|/sqrt（A*A+B*B）=DIS
-				var aabb:Number=Math.sqrt(A1*A1+B1*B1);
-				var dis:Number=10;
-				var s:Number=dis*aabb;
-				var C1_1:Number=C1+s;
-				var C1_2:Number=C1-s;
-				trace("C1_1:"+C1_1);
-				trace("C1_2:"+C1_2);
-				
-							
-				//2 P2P3 直线方程  Ax+By+c=0的表达式
-				var A2:Number=(P3.y-P2.y);
-				var B2:Number=(P2.x-P3.x);
-				var C2:Number = P3.x*P2.y-P2.x*P3.y;
-				trace("ABC:"+A2+B2+C2);
-				
-				//2求平移后的直线  |C1-C0|/sqrt（A*A+B*B）=DIS
-				
-				var aabb:Number=Math.sqrt(A2*A2+B2*B2);
-				var dis:Number=10;
-				var s:Number=dis*aabb;
-				var C2_1:Number=C2+s;
-				var C2_2:Number=C2-s;
-				trace("C2_1:"+C2_1);
-				trace("C2_2:"+C2_2);
-				
-				//求P1P2平移线 和P2P3平移线 交点
-				var p:Point=intersection(A1,B1,C1_1,A2,B2,C2_1);
-				_pos3Vec[i]=p.x;
-				_pos3Vec[i+1]=p.y;
-				
-				var p:Point=intersection(A1,B1,C1_2,A2,B2,C2_2);
-				_pos2Vec[i]=p.x;
-				_pos2Vec[i+1]=p.y;
-			}
-			
-		}
-		
-		private static function intersection( A1:Number, B1:Number, C1:Number , A2:Number, B2:Number, C2:Number ):Point
-		{
-			if (A1 * B2 == B1 * A2)    {
-				if ((A1 + B1) * C2==(A2 + B2) * C1 ) {
-					return new Point(Number.POSITIVE_INFINITY,0);
-				} else {
-					return new Point(Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY);
-				}
-			} 
-				
-			else {
-				var result:Point=new Point;
-				result.x = (B2 * C1 - B1 * C2) / (A2 * B1 - A1 * B2);
-				result.y = (A1 * C2 - A2 * C1) / (A2 * B1 - A1 * B2);
-				return result;
-			}
-		}
 		private function InitMaterials():void
 		{
 			_wallMaterial = new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
 			
-			_floorMaterial= new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
-			//_floorMaterial.specularMap = Cast.bitmapTexture(FloorSpecular);
+			_floorMaterial= new TextureMaterial(Cast.bitmapTexture(FloorDiffuse));
+			_floorMaterial.specularMap = Cast.bitmapTexture(FloorSpecular);
 			//_floorMaterial.normalMap = Cast.bitmapTexture(FloorNormals);
 			_floorMaterial.lightPicker = _lightPicker;
 			_floorMaterial.repeat = true;
