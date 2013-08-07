@@ -205,7 +205,17 @@
 					Products.visible=true;
 					Products.SetDataProvider(3);
 				}
-				//else Products.visible=false;
+				else if(bname=="Button41")
+				{
+					Products.visible=true;
+					Products.SetDataProvider(41);
+				}
+				
+				else if(bname=="Button44")
+				{
+					Products.visible=true;
+					Products.SetDataProvider(44);
+				}
 				
 				//button 边框
 				if(_buttonTwoBorder)
@@ -296,14 +306,13 @@
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
-		<s:Button  id="Button41" name="Button41" label="4床"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button42" name="Button42" label="4柜"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button43" name="Button43" label="4沙发" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button44" name="Button44" label="4桌" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button45" name="Button45" label="椅4" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button46" name="Button46" label="箱4" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button47" name="Button47" label="几类4" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
-		<s:Button  id="Button48" name="Button48" label="镜子4" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  buttonMode="true" />
+		<s:Button  id="Button41" name="Button41" label="地板"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button42" name="Button42" label="地砖"  width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button43" name="Button43" label="全铺地毯" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button44" name="Button44" label="乳胶漆" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button45" name="Button45" label="墙纸" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button46" name="Button46" label="墙砖" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt"  mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
+		<s:Button  id="Button47" name="Button47" label="前脚线" width="63" height="25%" skinClass="zszh_Products_new.Skin_ProductsBt" mouseDown="ButtonTwo_mouseDownHandler(event)" buttonMode="true" />
 		</s:SkinnableContainer>
 		
 		

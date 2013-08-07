@@ -43,9 +43,17 @@
         <s:State name="disabled" />
     </s:states>
     
-	<s:Rect includeIn="over" radiusX="2" radiusY="2" top="0" bottom="0" left="0" right="0">
+	<s:Rect radiusX="2" radiusY="2" top="0" bottom="0" left="0" right="0">
 		<s:fill>
-			<s:SolidColor color="#1abc9c" />
+			
+			<s:LinearGradient rotation="90">
+				
+				<s:GradientEntry color="0x3d9de5" alpha="1" />
+				
+				<s:GradientEntry color="0x1666ca" alpha="1" />
+				
+			</s:LinearGradient>
+			
 		</s:fill>
 	</s:Rect>
 	
@@ -54,7 +62,7 @@
     <!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->
     <s:Label id="labelDisplay"
              textAlign="center" 
-			 fontSize="14" color.over="0xffffff" color="0x97bdc6"
+			 fontSize="26"  color="0xffffff"
 			 fontFamily="微软雅黑" fontWeight="normal"
              maxDisplayedLines="1"
              horizontalCenter="0" verticalCenter="1" verticalAlign="middle"

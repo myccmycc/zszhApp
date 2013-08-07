@@ -45,7 +45,7 @@
     
 	<s:Rect includeIn="over" radiusX="2" radiusY="2" top="0" bottom="0" left="0" right="0">
 		<s:fill>
-			<s:SolidColor color="#1abc9c" />
+			<s:SolidColor color="#b3b3b3" />
 		</s:fill>
 	</s:Rect>
 	

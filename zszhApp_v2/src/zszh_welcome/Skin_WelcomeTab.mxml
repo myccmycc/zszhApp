@@ -2,7 +2,7 @@
 
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
 			 xmlns:s="library://ns.adobe.com/flex/spark"
-			 minWidth="217" minHeight="46">
+			 minWidth="165" minHeight="33">
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
@@ -15,4 +15,5 @@
 		</s:fill>
 		
 	</s:Rect>
+	
 </s:SparkSkin>

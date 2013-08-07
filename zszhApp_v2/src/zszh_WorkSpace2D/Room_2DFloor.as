@@ -10,10 +10,13 @@ package zszh_WorkSpace2D
 	
 	import mx.core.FlexGlobals;
 	import mx.core.INavigatorContent;
+	import mx.core.UIComponent;
+	import mx.events.DragEvent;
 	import mx.managers.CursorManager;
+	import mx.managers.DragManager;
 	import mx.managers.PopUpManager;
 	
-	public class Room_2DFloor extends Sprite
+	public class Room_2DFloor extends UIComponent
 	{
 		private var _floorTex:String="zszh_res/basic/wall/TextureFloor.jpg";
 		private var _floorTexLoader:Loader;
@@ -28,10 +31,37 @@ package zszh_WorkSpace2D
 		{
 			super();
 			_uvScale=100;
+			this.addEventListener(DragEvent.DRAG_ENTER,DragEnter2D);
+			this.addEventListener(DragEvent.DRAG_DROP,OnDrap);
 			addEventListener(Event.ADDED_TO_STAGE,OnAddToStage);
 		}
 		
-	
+		private function DragEnter2D(event:DragEvent):void
+		{			
+			DragManager.acceptDragDrop(event.target as UIComponent);
+		}
+		
+	    public function OnDrap(event:DragEvent):void
+		{
+			var className:String=String(event.dragSource.dataForFormat("className"));
+			var classArgument:String=String(event.dragSource.dataForFormat("classArgument"));
+			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
+			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
+			
+			if(className=="diban")
+			{
+				_floorTex=resourcePath+"texture.jpg";
+				_floorTexLoader = new Loader();
+				_floorTexLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onComplete);
+				_floorTexLoader.load(new URLRequest(_floorTex));
+				
+				function onComplete(e:Event):void
+				{
+					_floorBitmap = Bitmap(_floorTexLoader.content);
+					Update();
+				}
+			}
+		}
 		public function SetSelected(b:Boolean):void
 		{
 			_selected=b;

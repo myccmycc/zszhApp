@@ -2,12 +2,13 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				autoDrawBackground="true" click="itemrenderer1_clickHandler(event)" mouseDown="itemrenderer1_mouseDownHandler(event)">
+				autoDrawBackground="true" click="itemrenderer1_clickHandler(event)" mouseDown="itemrenderer1_mouseDownHandler(event)" dataChange="itemrenderer1_dataChangeHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import mx.core.DragSource;
 			import mx.core.FlexGlobals;
 			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
 			import mx.events.ItemClickEvent;
 			import mx.managers.CursorManager;
 			import mx.managers.DragManager;
@@ -50,7 +51,14 @@
 					CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor_Wall,2,-41,-14);
 					DragManager.doDrag(dragInitiator, ds,event,null,0,0,0);
 				}
-				
+				else if(data.className=="diban")
+				{
+					dragProxy.source=img.source;
+					dragProxy.width=120;
+					dragProxy.height=120;
+					//CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor_Wall,2);
+					DragManager.doDrag(dragInitiator, ds,event,dragProxy);
+				}
 				function OnComplete(e:Event):void
 				{
 					dragProxy.source=loader.content;
@@ -63,6 +71,17 @@
 					DragManager.doDrag(dragInitiator, ds,event,dragProxy,dw,dh);
 				}		
 			}
+		
+			
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				if(!img)
+					return;
+				if(data.ImgThumbnail=="preview.png" || data.ImgThumbnail=="preview.jpg")
+					img.source=data.resourcePath+data.ImgThumbnail;
+				else img.source = data.ImgThumbnail;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -71,7 +90,7 @@
 			<s:VerticalLayout />
 		</s:layout>
 		<s:SkinnableContainer width="120" height="120" backgroundColor="0xff0000" >
-			<s:Image id="img" source="{data.ImgThumbnail}" width="120" height="120" backgroundColor="0x404040" verticalCenter="0" horizontalCenter="0" />
+			<s:Image id="img"  width="120" height="120" backgroundColor="0x404040" verticalCenter="0" horizontalCenter="0" />
 		</s:SkinnableContainer>
 		<!--s:Label text="{data.labelText}" width="90" textAlign="center" /-->
 	</s:SkinnableContainer>
