@@ -3,7 +3,7 @@
 					xmlns:s="library://ns.adobe.com/flex/spark" 
 					xmlns:mx="library://ns.adobe.com/flex/mx" 
 					xmlns:mysqlCon="services.mysqlcon.*" 
-					xmlns:mysqlJiancai="services.zszhjiancaiservice.*" width="313" height="700">
+					xmlns:mysqlJiancai="services.zszhjiancaiservice.*" width="313" height="700" xmlns:ns="zszh_Products_new.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 		<s:ArrayCollection id="ComboxData">
@@ -60,6 +60,8 @@
 		</s:ArrayCollection>
 		
 		<s:CallResponder id="testCallresponder"/>
+		<s:CallResponder id="testCallresponderCount"/>
+		<mysqlJiancai:ZszhjiancaiService1 id="getallTest2" result="getallTest2_resultHandler(event)" fault="Alert.show(event.fault.faultString+ '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
 		<mysqlJiancai:ZszhjiancaiService1 id="getallTest" result="getallTest_resultHandler(event)" fault="Alert.show(event.fault.faultString+ '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
 	</fx:Declarations>
 	<fx:Style>
@@ -120,7 +122,7 @@
 				bloggersCol = new ArrayCollection (bloggersArray);    
 			}*/
 			
-			
+			private var currentPage:int=0;
 
 			protected function myList_initializeHandler(event:FlexEvent):void
 			{
@@ -139,11 +141,14 @@
 					productsCol=product13;
 				else if (index==41)
 				{
-					testCallresponder.token=getallTest.getZszh_jiancaiByClassName("diban");
+					testCallresponderCount.token=getallTest2.countByClassName("diban");
+					
+					testCallresponder.token=getallTest.getZszh_jiancaiByClassName("diban",currentPage,10);
 				}
 				else if (index==44)
 				{
-					testCallresponder.token=getallTest.getZszh_jiancaiByClassName("rujiaoqi");
+					testCallresponder.token=getallTest.getZszh_jiancaiByClassName("rujiaoqi",currentPage,10);
+					//getallTest.count()
 				} 
 			}
 			
@@ -152,7 +157,22 @@
 				// TODO Auto-generated method stub
 				productsCol=testCallresponder.lastResult;
 			}
+			protected function getallTest2_resultHandler(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
+				var pagesTotal:int=testCallresponderCount.lastResult;
+				ProductsPage.SetPagesTotal(pagesTotal);
+				ProductsPage.visible=true;
+			}
 			
+			protected function OnPageDown(event:MouseEvent):void
+			{
+				if(ProductsPage.currentPage!=currentPage)
+				{
+					currentPage=ProductsPage.currentPage;
+					testCallresponder.token=getallTest.getZszh_jiancaiByClassName("diban",currentPage,10);
+				}
+			}
 		]]>
 	</fx:Script>
 	
@@ -173,14 +193,14 @@
 
 			<s:List id="myList"  dragEnabled="true" top="40"  contentBackgroundColor="#10181e" borderVisible="false" horizontalCenter="0" 
 				itemRenderer="zszh_Products_new.ItemRender_Products" initialize="myList_initializeHandler(event)" dataProvider="{productsCol}"
-				height="100%" verticalScrollPolicy="off">
+				height="100%" verticalScrollPolicy="on">
 				<s:layout>
 				<s:TileLayout orientation="rows" requestedColumnCount="2" />
 				</s:layout>
 			
 
 			</s:List>
-			
+			<ns:ProductsPage id="ProductsPage" bottom="20" horizontalCenter="0" visible="false" mouseDown="OnPageDown(event)"/>
 		</s:SkinnableContainer>
 		
 	</s:SkinnableContainer>

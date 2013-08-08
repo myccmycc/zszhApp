@@ -54,6 +54,9 @@ internal class _Super_ZszhjiancaiService1 extends com.adobe.fiber.services.wrapp
         operation = new mx.rpc.remoting.Operation(null, "getZszh_jiancaiByClassName");
          operation.resultType = Object;
         operations["getZszh_jiancaiByClassName"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "countByClassName");
+         operation.resultType = Object;
+        operations["countByClassName"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -210,9 +213,27 @@ internal class _Super_ZszhjiancaiService1 extends com.adobe.fiber.services.wrapp
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function getZszh_jiancaiByClassName(itemClassName:Object) : mx.rpc.AsyncToken
+    public function getZszh_jiancaiByClassName(itemClassName:Object, startIndex:Object, numItems:Object) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getZszh_jiancaiByClassName");
+		var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(itemClassName,startIndex,numItems) ;
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'countByClassName' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function countByClassName(itemClassName:Object) : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("countByClassName");
 		var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(itemClassName) ;
         return _internal_token;
     }
