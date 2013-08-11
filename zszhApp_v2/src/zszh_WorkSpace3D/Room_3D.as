@@ -1,7 +1,11 @@
 package zszh_WorkSpace3D
 {
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
+	import flash.net.URLRequest;
 	
 	import mx.containers.Panel;
 	
@@ -20,9 +24,12 @@ package zszh_WorkSpace3D
 	import away3d.materials.TextureMultiPassMaterial;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.primitives.PlaneGeometry;
+	
+	import away3d.core.pick.PickingColliderType;
 	import away3d.utils.Cast;
 	
-	import zszh_WorkSpace2D.Object2D_Room;
+	import zszh_WorkSpace2D.Room_2DFloor;
+	import zszh_WorkSpace3D.WorkSpace3D;
 	
 	public class Room_3D extends ObjectContainer3D
 	{
@@ -37,6 +44,12 @@ package zszh_WorkSpace3D
 		public static var FloorNormals:Class;
 		[Embed(source="/../embeds/rooms/TextureFloor.jpg")]
 		public static var FloorDiffuse:Class;
+		
+		public var _floorTex:String="zszh_res/basic/wall/TextureFloor.jpg";
+		private var _floorTexLoader:Loader;
+		private var _floorBitmap:Bitmap;
+		
+		
 		
 		//WorkSpace3D _lightPicker
 		private var _lightPicker:StaticLightPicker;
@@ -54,7 +67,7 @@ package zszh_WorkSpace3D
 		private var _wallHeight:int;
 		private var _wallWidth:int;
 		
-		public function Room_3D(_pos1:Vector.<Number>,_pos2:Vector.<Number>,_pos3:Vector.<Number>,lightPicker:StaticLightPicker)
+		public function Room_3D(_pos1:Vector.<Number>,_pos2:Vector.<Number>,_pos3:Vector.<Number>,floorTex:String,lightPicker:StaticLightPicker)
 		{
 			super();
 			_pos1Vec=_pos1;
@@ -65,8 +78,19 @@ package zszh_WorkSpace3D
 			_wallWidth=20;
 			_lightPicker=lightPicker;
 		
-			InitMaterials();
-			BuiltRoom();
+			_floorTex=floorTex;
+			_floorTexLoader = new Loader();
+			_floorTexLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onComplete);
+			_floorTexLoader.load(new URLRequest(_floorTex));
+			
+			function onComplete(e:Event):void
+			{
+				_floorBitmap = Bitmap(_floorTexLoader.content);
+				InitMaterials();
+				BuiltRoom();
+			}
+			
+			
 		}
 		
 		
@@ -90,11 +114,11 @@ package zszh_WorkSpace3D
 		//ok
 		private function BuiltRoomWall(posVec:Vector.<Number>,material:MaterialBase,wallHeight:int,uvScale:int=100,floorZ:int=0):void
 		{
-			var gem:Geometry=new Geometry();
 			var posLen:int=posVec.length;
 			
 			for(var i:int=0;i<posLen;i+=2)
 			{
+				var gem:Geometry=new Geometry();
 				var subGeom : SubGeometry = new SubGeometry;
 				
 				var vertex : Vector.<Number> = new Vector.<Number>;
@@ -124,11 +148,20 @@ package zszh_WorkSpace3D
 				subGeom.updateIndexData(index);
 				subGeom.updateUVData(uv);
 				gem.addSubGeometry(subGeom);
+				
+				
+				var wallPlane:Mesh=new Mesh(gem,material);
+				addChild(wallPlane);
+				
+				wallPlane.mouseEnabled=true;
+				wallPlane.pickingCollider=PickingColliderType.AS3_BEST_HIT;
+				
+				wallPlane.addEventListener(MouseEvent3D.MOUSE_DOWN,onObjectMouseDown);
+				wallPlane.addEventListener(MouseEvent3D.MOUSE_OVER,onObjectMouseOver);
+				wallPlane.addEventListener(MouseEvent3D.MOUSE_OUT,onObjectMouseOut);
 			}
 			
-			addChild(new Mesh(gem,material));	
-			//_plane.mouseEnabled=true;
-			//_plane.addEventListener(MouseEvent3D.MOUSE_DOWN,onObjectMouseDown);
+			
 			
 		}
 
@@ -223,7 +256,7 @@ package zszh_WorkSpace3D
 				points.push(p2p3);
 				points.push(p3p1);
 				
-				var test:Number = Object2D_Room.GetPolygonArea(points);
+				var test:Number = Room_2DFloor.GetPolygonArea(points);
 				
 				//test==0 it is mean that the points on the same line
 				
@@ -284,8 +317,7 @@ package zszh_WorkSpace3D
 		private function InitMaterials():void
 		{
 			_wallMaterial = new TextureMaterial(Cast.bitmapTexture(WallDiffuse));
-			
-			_floorMaterial= new TextureMaterial(Cast.bitmapTexture(FloorDiffuse));
+			_floorMaterial= new TextureMaterial(Cast.bitmapTexture(_floorBitmap));
 			_floorMaterial.specularMap = Cast.bitmapTexture(FloorSpecular);
 			//_floorMaterial.normalMap = Cast.bitmapTexture(FloorNormals);
 			_floorMaterial.lightPicker = _lightPicker;
@@ -295,8 +327,28 @@ package zszh_WorkSpace3D
 			_wallMaterial.lightPicker=_lightPicker;
 			_wallMaterial.repeat=true;
 		}
+		
+		
+		//-------------mouse event----------------------------------
 		private function onObjectMouseDown( event:MouseEvent3D ):void {
-			event.target.showBounds=true;
+			var mesh:Mesh=event.target as Mesh;  
+			mesh.bounds.boundingRenderable.color=0xff0000;
+			mesh.showBounds=true;
 		}
+		
+		private function onObjectMouseOver( event:MouseEvent3D ):void {
+			var mesh:Mesh=event.target as Mesh;  
+			mesh.bounds.boundingRenderable.color=0xff0000;
+			mesh.showBounds=true;
+			
+			WorkSpace3D.SetCurrentWallMesh(mesh);
+		}
+		
+		private function onObjectMouseOut( event:MouseEvent3D ):void {
+			var mesh:Mesh=event.target as Mesh;  
+			mesh.showBounds=false;
+		}
+		
+		
 	}
 }

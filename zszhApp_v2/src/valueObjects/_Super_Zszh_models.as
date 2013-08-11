@@ -1,6 +1,6 @@
 /**
  * This is a generated class and is not intended for modification.  To customize behavior
- * of this value object you may modify the generated sub-class of this class - Zszh_jiancai.as.
+ * of this value object you may modify the generated sub-class of this class - Zszh_models.as.
  */
 
 package valueObjects
@@ -21,7 +21,7 @@ use namespace model_internal;
 
 [Managed]
 [ExcludeClass]
-public class _Super_Zszh_jiancai extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
+public class _Super_Zszh_models extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
 {
     model_internal static function initRemoteClassAliasSingle(cz:Class) : void
     {
@@ -31,7 +31,7 @@ public class _Super_Zszh_jiancai extends flash.events.EventDispatcher implements
     {
     }
 
-    model_internal var _dminternal_model : _Zszh_jiancaiEntityMetadata;
+    model_internal var _dminternal_model : _Zszh_modelsEntityMetadata;
     model_internal var _changedObjects:mx.collections.ArrayCollection = new ArrayCollection();
 
     public function getChangedObjects() : Array
@@ -49,11 +49,12 @@ public class _Super_Zszh_jiancai extends flash.events.EventDispatcher implements
      * properties
      */
     private var _internal_id : int;
-    private var _internal_resourcePath : String;
-    private var _internal_imgThumbnail : String;
     private var _internal_className : String;
-    private var _internal_classArgument : String;
     private var _internal_objectName : String;
+    private var _internal_resourcePath : String;
+    private var _internal_category : String;
+    private var _internal_property : String;
+    private var _internal_imgThumbnail : String;
 
     private static var emptyArray:Array = new Array();
 
@@ -65,9 +66,9 @@ public class _Super_Zszh_jiancai extends flash.events.EventDispatcher implements
 
     model_internal var _changeWatcherArray:Array = new Array();
 
-    public function _Super_Zszh_jiancai()
+    public function _Super_Zszh_models()
     {
-        _model = new _Zszh_jiancaiEntityMetadata(this);
+        _model = new _Zszh_modelsEntityMetadata(this);
 
         // Bind to own data or source properties for cache invalidation triggering
 
@@ -84,33 +85,39 @@ public class _Super_Zszh_jiancai extends flash.events.EventDispatcher implements
     }
 
     [Bindable(event="propertyChange")]
-    public function get resourcePath() : String
-    {
-        return _internal_resourcePath;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get imgThumbnail() : String
-    {
-        return _internal_imgThumbnail;
-    }
-
-    [Bindable(event="propertyChange")]
     public function get className() : String
     {
         return _internal_className;
     }
 
     [Bindable(event="propertyChange")]
-    public function get classArgument() : String
-    {
-        return _internal_classArgument;
-    }
-
-    [Bindable(event="propertyChange")]
     public function get objectName() : String
     {
         return _internal_objectName;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get resourcePath() : String
+    {
+        return _internal_resourcePath;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get category() : String
+    {
+        return _internal_category;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get property() : String
+    {
+        return _internal_property;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get imgThumbnail() : String
+    {
+        return _internal_imgThumbnail;
     }
 
     public function clearAssociations() : void
@@ -130,24 +137,6 @@ public class _Super_Zszh_jiancai extends flash.events.EventDispatcher implements
         }
     }
 
-    public function set resourcePath(value:String) : void
-    {
-        var oldValue:String = _internal_resourcePath;
-        if (oldValue !== value)
-        {
-            _internal_resourcePath = value;
-        }
-    }
-
-    public function set imgThumbnail(value:String) : void
-    {
-        var oldValue:String = _internal_imgThumbnail;
-        if (oldValue !== value)
-        {
-            _internal_imgThumbnail = value;
-        }
-    }
-
     public function set className(value:String) : void
     {
         var oldValue:String = _internal_className;
@@ -157,21 +146,48 @@ public class _Super_Zszh_jiancai extends flash.events.EventDispatcher implements
         }
     }
 
-    public function set classArgument(value:String) : void
-    {
-        var oldValue:String = _internal_classArgument;
-        if (oldValue !== value)
-        {
-            _internal_classArgument = value;
-        }
-    }
-
     public function set objectName(value:String) : void
     {
         var oldValue:String = _internal_objectName;
         if (oldValue !== value)
         {
             _internal_objectName = value;
+        }
+    }
+
+    public function set resourcePath(value:String) : void
+    {
+        var oldValue:String = _internal_resourcePath;
+        if (oldValue !== value)
+        {
+            _internal_resourcePath = value;
+        }
+    }
+
+    public function set category(value:String) : void
+    {
+        var oldValue:String = _internal_category;
+        if (oldValue !== value)
+        {
+            _internal_category = value;
+        }
+    }
+
+    public function set property(value:String) : void
+    {
+        var oldValue:String = _internal_property;
+        if (oldValue !== value)
+        {
+            _internal_property = value;
+        }
+    }
+
+    public function set imgThumbnail(value:String) : void
+    {
+        var oldValue:String = _internal_imgThumbnail;
+        if (oldValue !== value)
+        {
+            _internal_imgThumbnail = value;
         }
     }
 
@@ -235,14 +251,14 @@ public class _Super_Zszh_jiancai extends flash.events.EventDispatcher implements
 
     [Transient]
     [Bindable(event="propertyChange")]
-    public function get _model() : _Zszh_jiancaiEntityMetadata
+    public function get _model() : _Zszh_modelsEntityMetadata
     {
         return model_internal::_dminternal_model;
     }
 
-    public function set _model(value : _Zszh_jiancaiEntityMetadata) : void
+    public function set _model(value : _Zszh_modelsEntityMetadata) : void
     {
-        var oldValue : _Zszh_jiancaiEntityMetadata = model_internal::_dminternal_model;
+        var oldValue : _Zszh_modelsEntityMetadata = model_internal::_dminternal_model;
         if (oldValue !== value)
         {
             model_internal::_dminternal_model = value;

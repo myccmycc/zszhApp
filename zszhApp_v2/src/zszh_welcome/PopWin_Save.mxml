@@ -2,21 +2,6 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					  xmlns:s="library://ns.adobe.com/flex/spark" 
 					  xmlns:mx="library://ns.adobe.com/flex/mx" width="775" height="510">
-	<fx:Script>
-		<![CDATA[
-			import mx.managers.PopUpManager;
-			
-			
-			[Embed(source="embeds/PopupWindow/B1.png")]
-			[Bindable] 
-			public var icon_B1:Class;
-			
-			
-			private function StartApp():void {
-				PopUpManager.removePopUp(this);
-			}
-		]]>
-	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -68,29 +53,71 @@
 			color:#00ff00;  
 		}  
 	</fx:Style>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			
+			private function OnSave():void{
+				
+			}
+			private function OnCancel():void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			public function GetSnapshot()
+			{
+				/*var imageSnap:ImageSnapshot = ImageSnapshot.captureImage(text1); 
+				var imageByteArray:ByteArray = imageSnap.data as ByteArray; 
+				HouseStylePic .load(imageByteArray);
+				
+				
+				//用bitmapdata全部获取预览图片的像素
+				65                 var initBD:BitmapData = new BitmapData(preUploadImage.width,preUploadImage.height);
+				66                 initBD.draw(preUploadImage);                
+				67                 var bytearray:ByteArray = new ByteArray();
+				68                 //矩形为要截取区域                
+				69                 var re:Rectangle = new Rectangle(finalX,finalY,w,h);                            
+				70                 bytearray = initBD.getPixels(re); //截取出所选区域的像素集合
+				71                 var imgBD:BitmapData = new BitmapData(w,h);                
+				72                 bytearray.position=0;            //必须的，当前的bytearray.position为最大长度，要设为从0开始读取
+				73                 var fillre:Rectangle = new Rectangle(0,0,w,h);
+				74                 imgBD.setPixels(fillre,bytearray);    //将截取出的像素集合存在新的bitmapdata里，大小和截取区域一样
+				75                 showImg(imgBD);            //显示图片*/
+				
+			}
+		]]>
+	</fx:Script>
+	
+	
 	<mx:TabNavigator width="100%" height="100%" tabStyleName="WelcomeTabs" backgroundColor="0x2980d7" >
 		
 		<s:NavigatorContent label="保存" width="100%" height="100%" backgroundColor="0xffffff" >
-			<s:Button label="Save" skinClass="zszh_welcome.Skin_BtStart" width="178" height="62" horizontalCenter="-150" bottom="15" click="StartApp()" />
-			<s:Button label="Cancel" skinClass="zszh_welcome.Skin_BtStart" width="178" height="62" horizontalCenter="150" bottom="15" click="StartApp()" />
 			
-			<s:SkinnableContainer backgroundColor="0xf2f0ec"  width="100%" height="290" bottom="100" >
-				<s:Group>
+			<s:Button label="Save" skinClass="zszh_welcome.Skin_BtStart" width="178" height="62" horizontalCenter="-150" bottom="15" click="OnSave()" />
+			<s:Button label="Cancel" skinClass="zszh_welcome.Skin_BtStart" width="178" height="62" horizontalCenter="150" bottom="15" click="OnCancel()" />
+			
+			<s:SkinnableContainer  width="100%" height="290" bottom="100" skinClass="zszh_welcome.Skin_WelcomeCenter" >
 					
-					<s:Label />
-					<s:Label />
-					<s:TextInput />
-					<s:TextInput />
+					<s:Image id="HouseStylePic" x="110" y="50" width="160" height="145" backgroundColor="0xb3b3b3" />
+					<s:Label id="CreateDate" text="2013/4/23" x="205" y="205" color="0x595959"  />
 					
-					<s:ComboBox />
-					<s:ComboBox />
-					<s:ComboBox />
-					<s:ComboBox />
+					<s:Label text="设计名称" x="320" y="55" />
+					<s:TextInput  x="400" y="50" width="280" text="键入设计名称" color="0x595959"/>
 					
-				</s:Group>
+					<s:Label text="小区信息" x="320" y="105" />
+					<s:TextInput  x="400" y="100" width="280" text="键入小区信息" color="0x595959"/>
+					
+					<s:ComboBox labelField="省份"  x="400" y="150"  width="90" color="0x595959"/>
+					<s:ComboBox labelField="城市" x="495" y="150" width="90" color="0x595959"/>
+					<s:ComboBox labelField="区县" x="590" y="150" width="90" color="0x595959"/>
+					<s:ComboBox labelField="格局"  x="400" y="200" width="250" color="0x595959"/>
+					
 			</s:SkinnableContainer>
 		</s:NavigatorContent>
-		
 		
 	</mx:TabNavigator>
 	

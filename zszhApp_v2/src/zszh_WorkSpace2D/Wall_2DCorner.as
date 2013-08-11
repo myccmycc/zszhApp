@@ -108,7 +108,7 @@ package zszh_WorkSpace2D
 		
 		private function MoveCorner(i:int):void
 		{
-			var thisWall:Wall_2D=(this.parent as Wall_2D);
+			var thisWall:Object2D_PartitionWall=(this.parent as Object2D_PartitionWall);
 			
 			var VMouseMove:Point=new Point((int)(this.stage.mouseX-startPoint.x),int(-this.stage.mouseY+startPoint.y));
 			trace("VMouseMove:"+VMouseMove);

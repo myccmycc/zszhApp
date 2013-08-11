@@ -1,5 +1,7 @@
 package zszh_WorkSpace3D
 {
+	import flash.display.Bitmap;
+	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
@@ -7,7 +9,9 @@ package zszh_WorkSpace3D
 	import flash.net.URLRequest;
 	
 	import mx.core.UIComponent;
+	import mx.events.DragEvent;
 	import mx.events.FlexEvent;
+	import mx.managers.DragManager;
 	
 	import away3d.cameras.Camera3D;
 	import away3d.cameras.lenses.OrthographicLens;
@@ -34,6 +38,7 @@ package zszh_WorkSpace3D
 	import away3d.loaders.parsers.AWD2Parser;
 	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.ColorMaterial;
+	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
 	import away3d.materials.TextureMultiPassMaterial;
 	import away3d.materials.lightpickers.StaticLightPicker;
@@ -43,7 +48,7 @@ package zszh_WorkSpace3D
 	import away3d.textures.Texture2DBase;
 	import away3d.utils.Cast;
 	
-	import zszh_WorkSpace2D.Wall_2D;
+	import zszh_WorkSpace2D.Object2D_PartitionWall;
 	
 	public class WorkSpace3D extends UIComponent
 	{
@@ -87,7 +92,8 @@ package zszh_WorkSpace3D
 			//3D loader	
 			//AssetLibrary.enableParser(AWD2Parser);
 			//AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);
- 
+ 			this.addEventListener(DragEvent.DRAG_ENTER,OnDragEnter);
+			this.addEventListener(DragEvent.DRAG_DROP,OnDragDrop);
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 		}
 	
@@ -111,9 +117,9 @@ package zszh_WorkSpace3D
 				_roomContainer3D.removeChildAt(i);
 			
 		}
-		public function AddRoom(pos1:Vector.<Number>,pos2:Vector.<Number>,pos3:Vector.<Number>,roomName:String):void
+		public function AddRoom(pos1:Vector.<Number>,pos2:Vector.<Number>,pos3:Vector.<Number>,floorTex:String,roomName:String):void
 		{
-			var room:Room_3D=new Room_3D(pos1,pos2,pos3,_lightPicker);
+			var room:Room_3D=new Room_3D(pos1,pos2,pos3,floorTex,_lightPicker);
 			room.name=roomName;
 			_roomContainer3D.addChild(room);
 		}
@@ -415,6 +421,53 @@ package zszh_WorkSpace3D
 			}				
 		}
 		
+		//----------------D&D-------------------
+		private function OnDragEnter(event:DragEvent):void
+		{
+			DragManager.acceptDragDrop(event.target as UIComponent);
+		}
+		
+		private static var currentMesh:Mesh=null;
+		
+		private function OnDragDrop(event:DragEvent):void
+		{
+			var className:String=String(event.dragSource.dataForFormat("className"));
+			var classArgument:String=String(event.dragSource.dataForFormat("classArgument"));
+			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
+			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
+			
+			
+			if(className=="rujiaoqi")
+			{
+				 
+				var wallTex:String=resourcePath+"texture.jpg";
+				
+				var wallTexLoader:Loader = new Loader();
+				wallTexLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onComplete);
+				wallTexLoader.load(new URLRequest(wallTex));
+				
+				function onComplete(e:Event):void
+				{
+					var wallBitmap:Bitmap = Bitmap(wallTexLoader.content);
+					var wallMaterial:MaterialBase = new TextureMaterial(Cast.bitmapTexture(wallBitmap));
+					
+					var wall:Mesh=GetCurrentWallMesh();
+					if(wall)
+						wall.material=wallMaterial;
+				}
+				
+			}
+		}
+		
+		private function GetCurrentWallMesh():Mesh
+		{
+			return currentMesh;
+		}
+		
+		public static function SetCurrentWallMesh(mesh:Mesh):void
+		{
+			currentMesh=mesh;
+		}
 		
 	}
 }

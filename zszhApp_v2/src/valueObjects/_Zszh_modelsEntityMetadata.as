@@ -16,31 +16,31 @@ import mx.events.PropertyChangeEvent;
 use namespace model_internal;
 
 [ExcludeClass]
-internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEntityMetadata
+internal class _Zszh_modelsEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEntityMetadata
 {
     private static var emptyArray:Array = new Array();
 
-    model_internal static var allProperties:Array = new Array("id", "resourcePath", "imgThumbnail", "className", "classArgument", "objectName");
+    model_internal static var allProperties:Array = new Array("id", "className", "objectName", "resourcePath", "category", "property", "imgThumbnail");
     model_internal static var allAssociationProperties:Array = new Array();
     model_internal static var allRequiredProperties:Array = new Array("id");
-    model_internal static var allAlwaysAvailableProperties:Array = new Array("id", "resourcePath", "imgThumbnail", "className", "classArgument", "objectName");
+    model_internal static var allAlwaysAvailableProperties:Array = new Array("id", "className", "objectName", "resourcePath", "category", "property", "imgThumbnail");
     model_internal static var guardedProperties:Array = new Array();
-    model_internal static var dataProperties:Array = new Array("id", "resourcePath", "imgThumbnail", "className", "classArgument", "objectName");
+    model_internal static var dataProperties:Array = new Array("id", "className", "objectName", "resourcePath", "category", "property", "imgThumbnail");
     model_internal static var sourceProperties:Array = emptyArray
-    model_internal static var nonDerivedProperties:Array = new Array("id", "resourcePath", "imgThumbnail", "className", "classArgument", "objectName");
+    model_internal static var nonDerivedProperties:Array = new Array("id", "className", "objectName", "resourcePath", "category", "property", "imgThumbnail");
     model_internal static var derivedProperties:Array = new Array();
     model_internal static var collectionProperties:Array = new Array();
     model_internal static var collectionBaseMap:Object;
-    model_internal static var entityName:String = "Zszh_jiancai";
+    model_internal static var entityName:String = "Zszh_models";
     model_internal static var dependentsOnMap:Object;
     model_internal static var dependedOnServices:Array = new Array();
     model_internal static var propertyTypeMap:Object;
 
 
-    model_internal var _instance:_Super_Zszh_jiancai;
+    model_internal var _instance:_Super_Zszh_models;
     model_internal static var _nullStyle:com.adobe.fiber.styles.Style = new com.adobe.fiber.styles.Style();
 
-    public function _Zszh_jiancaiEntityMetadata(value : _Super_Zszh_jiancai)
+    public function _Zszh_modelsEntityMetadata(value : _Super_Zszh_models)
     {
         // initialize property maps
         if (model_internal::dependentsOnMap == null)
@@ -48,11 +48,12 @@ internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.
             // dependents map
             model_internal::dependentsOnMap = new Object();
             model_internal::dependentsOnMap["id"] = new Array();
-            model_internal::dependentsOnMap["resourcePath"] = new Array();
-            model_internal::dependentsOnMap["imgThumbnail"] = new Array();
             model_internal::dependentsOnMap["className"] = new Array();
-            model_internal::dependentsOnMap["classArgument"] = new Array();
             model_internal::dependentsOnMap["objectName"] = new Array();
+            model_internal::dependentsOnMap["resourcePath"] = new Array();
+            model_internal::dependentsOnMap["category"] = new Array();
+            model_internal::dependentsOnMap["property"] = new Array();
+            model_internal::dependentsOnMap["imgThumbnail"] = new Array();
 
             // collection base map
             model_internal::collectionBaseMap = new Object();
@@ -61,11 +62,12 @@ internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.
         // Property type Map
         model_internal::propertyTypeMap = new Object();
         model_internal::propertyTypeMap["id"] = "int";
-        model_internal::propertyTypeMap["resourcePath"] = "String";
-        model_internal::propertyTypeMap["imgThumbnail"] = "String";
         model_internal::propertyTypeMap["className"] = "String";
-        model_internal::propertyTypeMap["classArgument"] = "String";
         model_internal::propertyTypeMap["objectName"] = "String";
+        model_internal::propertyTypeMap["resourcePath"] = "String";
+        model_internal::propertyTypeMap["category"] = "String";
+        model_internal::propertyTypeMap["property"] = "String";
+        model_internal::propertyTypeMap["imgThumbnail"] = "String";
 
         model_internal::_instance = value;
     }
@@ -118,7 +120,7 @@ internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.
     override public function getDependants(propertyName:String):Array
     {
        if (model_internal::nonDerivedProperties.indexOf(propertyName) == -1)
-            throw new Error(propertyName + " is not a data property of entity Zszh_jiancai");
+            throw new Error(propertyName + " is not a data property of entity Zszh_models");
             
        return model_internal::dependentsOnMap[propertyName] as Array;  
     }
@@ -136,7 +138,7 @@ internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.
     override public function getCollectionBase(propertyName:String):String
     {
         if (model_internal::collectionProperties.indexOf(propertyName) == -1)
-            throw new Error(propertyName + " is not a collection property of entity Zszh_jiancai");
+            throw new Error(propertyName + " is not a collection property of entity Zszh_models");
 
         return model_internal::collectionBaseMap[propertyName];
     }
@@ -144,7 +146,7 @@ internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.
     override public function getPropertyType(propertyName:String):String
     {
         if (model_internal::allProperties.indexOf(propertyName) == -1)
-            throw new Error(propertyName + " is not a property of Zszh_jiancai");
+            throw new Error(propertyName + " is not a property of Zszh_models");
 
         return model_internal::propertyTypeMap[propertyName];
     }
@@ -158,7 +160,7 @@ internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.
     {
         if (model_internal::allProperties.indexOf(propertyName) == -1)
         {
-            throw new Error(propertyName + " does not exist for entity Zszh_jiancai");
+            throw new Error(propertyName + " does not exist for entity Zszh_models");
         }
 
         return model_internal::_instance[propertyName];
@@ -168,7 +170,7 @@ internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.
     {
         if (model_internal::nonDerivedProperties.indexOf(propertyName) == -1)
         {
-            throw new Error(propertyName + " is not a modifiable property of entity Zszh_jiancai");
+            throw new Error(propertyName + " is not a modifiable property of entity Zszh_models");
         }
 
         model_internal::_instance[propertyName] = value;
@@ -200,7 +202,7 @@ internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.
     {
         if (model_internal::allProperties.indexOf(propertyName) == -1)
         {
-            throw new Error(propertyName + " does not exist for entity Zszh_jiancai");
+            throw new Error(propertyName + " does not exist for entity Zszh_models");
         }
 
         if (model_internal::allAlwaysAvailableProperties.indexOf(propertyName) != -1)
@@ -302,31 +304,37 @@ internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.
     }
 
     [Bindable(event="propertyChange")]
-    public function get isResourcePathAvailable():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get isImgThumbnailAvailable():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
     public function get isClassNameAvailable():Boolean
     {
         return true;
     }
 
     [Bindable(event="propertyChange")]
-    public function get isClassArgumentAvailable():Boolean
+    public function get isObjectNameAvailable():Boolean
     {
         return true;
     }
 
     [Bindable(event="propertyChange")]
-    public function get isObjectNameAvailable():Boolean
+    public function get isResourcePathAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isCategoryAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isPropertyAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isImgThumbnailAvailable():Boolean
     {
         return true;
     }
@@ -348,31 +356,37 @@ internal class _Zszh_jiancaiEntityMetadata extends com.adobe.fiber.valueobjects.
     }
 
     [Bindable(event="propertyChange")]   
-    public function get resourcePathStyle():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get imgThumbnailStyle():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
     public function get classNameStyle():com.adobe.fiber.styles.Style
     {
         return model_internal::_nullStyle;
     }
 
     [Bindable(event="propertyChange")]   
-    public function get classArgumentStyle():com.adobe.fiber.styles.Style
+    public function get objectNameStyle():com.adobe.fiber.styles.Style
     {
         return model_internal::_nullStyle;
     }
 
     [Bindable(event="propertyChange")]   
-    public function get objectNameStyle():com.adobe.fiber.styles.Style
+    public function get resourcePathStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get categoryStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get propertyStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get imgThumbnailStyle():com.adobe.fiber.styles.Style
     {
         return model_internal::_nullStyle;
     }

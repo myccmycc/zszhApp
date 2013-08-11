@@ -49,9 +49,6 @@ package zszh_WorkSpace3D
 				mesh.addEventListener(MouseEvent3D.MOUSE_DOWN, MeshMouseDown);
 				mesh.addEventListener(MouseEvent3D.MOUSE_OUT, MeshMouseUp);
 				mesh.addEventListener(MouseEvent3D.MOUSE_UP, MeshMouseUp);
-				mesh.scaleX=0.1;
-				mesh.scaleY=0.1;
-				mesh.scaleZ=0.1;
 				addChild(mesh);
 			}
 		}

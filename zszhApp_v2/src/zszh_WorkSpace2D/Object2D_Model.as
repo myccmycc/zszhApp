@@ -73,7 +73,7 @@ package zszh_WorkSpace2D
 			addEventListener(MouseEvent.MOUSE_MOVE,MouseMove);
 			addEventListener(MouseEvent.MOUSE_UP,MouseUp);
 			addEventListener(MouseEvent.MOUSE_UP,MouseOut);
-			addEventListener(MouseEvent.CLICK,MouseCLICK);	
+			addEventListener(MouseEvent.RIGHT_CLICK,MouseCLICK);	
 		}	
 		
 		private var _bMouseDown:Boolean=false;

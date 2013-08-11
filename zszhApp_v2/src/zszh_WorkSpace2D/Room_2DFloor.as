@@ -12,13 +12,14 @@ package zszh_WorkSpace2D
 	import mx.core.INavigatorContent;
 	import mx.core.UIComponent;
 	import mx.events.DragEvent;
+	import mx.events.FlexEvent;
 	import mx.managers.CursorManager;
 	import mx.managers.DragManager;
 	import mx.managers.PopUpManager;
 	
 	public class Room_2DFloor extends UIComponent
 	{
-		private var _floorTex:String="zszh_res/basic/wall/TextureFloor.jpg";
+		public var _floorTex:String="zszh_res/basic/wall/TextureFloor.jpg";
 		private var _floorTexLoader:Loader;
 		private var _floorBitmap:Bitmap;
 		private var _uvVec:Vector.<Number>;
@@ -33,7 +34,8 @@ package zszh_WorkSpace2D
 			_uvScale=100;
 			this.addEventListener(DragEvent.DRAG_ENTER,DragEnter2D);
 			this.addEventListener(DragEvent.DRAG_DROP,OnDrap);
-			addEventListener(Event.ADDED_TO_STAGE,OnAddToStage);
+			this.addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
+			
 		}
 		
 		private function DragEnter2D(event:DragEvent):void
@@ -77,13 +79,24 @@ package zszh_WorkSpace2D
 			var room_2d:Object2D_Room=this.parent as Object2D_Room;
 			room_2d.DeleteThisRoom();
 		}
-		private function OnAddToStage(e:Event):void
+		
+		private function OnChangeFloor(e:Event):void
+		{
+			
+		}
+		private function OnChangeFloorTile(e:Event):void
+		{}
+			
+		private function OnAddFurniture(e:Event):void	
+		{}
+			
+		private function OnCreation_Complete(e:FlexEvent):void
 		{
 			addEventListener(MouseEvent.MOUSE_OVER,FloorMouseOver);
 			addEventListener(MouseEvent.MOUSE_OUT,FloorMouseOut);
 			addEventListener(MouseEvent.MOUSE_DOWN,FloorMouseDown);
 			addEventListener(MouseEvent.MOUSE_UP,FloorMouseUp);
-			addEventListener(MouseEvent.CLICK,FloorMouseClick);
+			addEventListener(MouseEvent.RIGHT_CLICK,FloorMouseClick);
 		
 			_floorTexLoader = new Loader();
 			_floorTexLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onComplete);
@@ -115,7 +128,17 @@ package zszh_WorkSpace2D
 				vectex.push(room_2d._vertexVec1[i]);
 			}
 			
-			var mArea:int=room_2d._roomArea;
+			//多边形面积
+			var points:Vector.<Point>=new Vector.<Point>;
+			for(var i:int=0;i<vectex.length;i+=2)
+			{
+				var p1:Point=new Point(vectex[i],vectex[i+1]);
+				var p2:Point=new Point(vectex[(i+2)%vectex.length],vectex[(i+3)%vectex.length]);
+				var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
+				points.push(p1p2);
+			}
+			
+			var mArea:int=GetPolygonArea(points);
 			trace("面积：",mArea);
 			 
 			
@@ -136,7 +159,7 @@ package zszh_WorkSpace2D
 				points.push(p2p3);
 				points.push(p3p1);
 					 
-				var test:Number = Object2D_Room.GetPolygonArea(points);
+				var test:Number = GetPolygonArea(points);
 				
 				//test==0 it is mean that the points on the same line
 					 
@@ -193,6 +216,70 @@ package zszh_WorkSpace2D
 			}
 		}
 
+		
+		
+		
+		//--------------floor mouse event----------------------------------------
+		private function FloorMouseOver(e:MouseEvent):void
+		{
+			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
+		}
+		private function FloorMouseOut(e:MouseEvent):void
+		{
+			CursorManager.removeAllCursors();
+		}
+		
+		private function FloorMouseDown(e:MouseEvent):void
+		{
+			SetSelected(false);
+			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
+			if(room_2d.GetSelected())
+			{
+				room_2d.startDrag();
+				e.stopPropagation();
+			}
+			
+		}
+		
+		private function FloorMouseUp(e:MouseEvent):void
+		{
+			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
+			if(room_2d.GetSelected())
+			{
+				room_2d.stopDrag();
+				//e.stopPropagation();
+			}
+			else room_2d.SetSelected(true);
+		}
+		private function FloorMouseClick(e:MouseEvent):void
+		{
+			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
+			if(room_2d.GetSelected())
+			{
+				if(_popupWindowMenu)
+				{
+					PopUpManager.removePopUp(_popupWindowMenu);
+					_popupWindowMenu=null;
+				}
+				
+				_popupWindowMenu=new PopupMenu_Room2D_Floor;
+				_popupWindowMenu.addEventListener(PopupMenu_Room2D_Floor.DELETE_THIS_ROOM,OnDeleteThisRoom,false,0,true);
+				_popupWindowMenu.addEventListener(PopupMenu_Room2D_Floor.CHANGE_FLOOR,OnChangeFloor,false,0,true);
+				_popupWindowMenu.addEventListener(PopupMenu_Room2D_Floor.CHANGE_FLOORTILE,OnChangeFloorTile,false,0,true);
+				_popupWindowMenu.addEventListener(PopupMenu_Room2D_Floor.ADD_FURNITURE,OnAddFurniture,false,0,true);
+				
+				PopUpManager.addPopUp(_popupWindowMenu,this,false);
+				var pt:Point = new Point(0, 0);
+				pt = e.target.localToGlobal(pt);
+				_popupWindowMenu.move(pt.x,pt.y);
+			}
+			
+		}
+		
+		
+		
+		
+		//--------------some private function----------------------------------------
 		private function PointinTriangle( A:Point, B:Point, C:Point, P:Point):Boolean
 		{
 			var  v0:Point =new Point(C.x - A.x,C.y-A.y) ;
@@ -221,49 +308,27 @@ package zszh_WorkSpace2D
 			
 			return u + v <= 1 ;
 		}
-		//--------------floor mouse event----------------------------------------
-		private function FloorMouseOver(e:MouseEvent):void
+
+		public static function GetPolygonArea(points:Vector.<Point>):Number
 		{
-			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
-		}
-		private function FloorMouseOut(e:MouseEvent):void
-		{
-			CursorManager.removeAllCursors();
-		}
-		
-		private function FloorMouseDown(e:MouseEvent):void
-		{
-			SetSelected(false);
-			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
-			if(room_2d.GetSelected())
-			{
-				room_2d.startDrag();
-				e.stopPropagation();
+			if (points.length < 3) {//至少是三角形
+				return 0;
 			}
-		}
-		
-		private function FloorMouseUp(e:MouseEvent):void
-		{
-			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
-			if(room_2d.GetSelected())
-			{
-				room_2d.stopDrag();
-				e.stopPropagation();
+			var result:Number = 0;
+			for (var i:int = 0; i < points.length - 1; i++) {//见任意多边形的面积公式
+				var a:Point = points[i];
+				var b:Point = points[i+1];
+				var d:Number=b.x*a.y-b.y*a.x;
+				
+				result += b.x*a.y-b.y*a.x;
+				
 			}
-		}
-		private function FloorMouseClick(e:MouseEvent):void
-		{
-			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
-			if(room_2d.GetSelected())
-			{
-				_popupWindowMenu=new PopupMenu_Room2D_Floor;
-				_popupWindowMenu.addEventListener(PopupMenu_Room2D_Floor.DELETE_THIS_ROOM,OnDeleteThisRoom,false,0,true);
-				PopUpManager.addPopUp(_popupWindowMenu,this,false);
-				var pt:Point = new Point(0, 0);
-				pt = e.target.localToGlobal(pt);
-				_popupWindowMenu.move(pt.x,pt.y);
-			}
-			else room_2d.SetSelected(true);
+			var begin:Point = points[0];//特殊处理最后一条边,避免在循环中使用if
+			var end:Point   = points[points.length - 1];
+			
+			result += end.x*begin.y-end.y*begin.x;
+			result *= 0.5;//记得取一半
+			return result;
 		}
 	}
 }

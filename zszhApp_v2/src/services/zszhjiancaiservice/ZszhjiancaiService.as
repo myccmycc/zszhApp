@@ -1,5 +1,5 @@
 /**
- * This is a generated sub-class of _ZszhjiancaiService1.as and is intended for behavior
+ * This is a generated sub-class of _ZszhjiancaiService.as and is intended for behavior
  * customization.  This class is only generated when there is no file already present
  * at its target location.  Thus custom behavior that you add here will survive regeneration
  * of the super-class. 
@@ -7,10 +7,8 @@
  
 package services.zszhjiancaiservice
 {
-	import mx.rpc.AbstractOperation;
-	import mx.rpc.AsyncToken;
 
-public class ZszhjiancaiService1 extends _Super_ZszhjiancaiService1
+public class ZszhjiancaiService extends _Super_ZszhjiancaiService
 {
     /**
      * Override super.init() to provide any initialization customization if needed.
@@ -20,11 +18,7 @@ public class ZszhjiancaiService1 extends _Super_ZszhjiancaiService1
         super.preInitializeService();
         // Initialization customization goes here
     }
-             
-
-
-	
-	
+               
 }
 
 }

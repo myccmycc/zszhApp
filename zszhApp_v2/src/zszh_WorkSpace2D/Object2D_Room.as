@@ -1,19 +1,16 @@
 package zszh_WorkSpace2D
 {
 	import flash.geom.Point;
-	
-	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 
 
 	public class Object2D_Room extends Object2D_Base
 	{
-		public   var _vertexVec1:Vector.<Number>;
+		public  var _vertexVec1:Vector.<Number>;
 		public  var _vertexVec2:Vector.<Number>;
 		public  var _vertexVec3:Vector.<Number>;
-		public   var _roomArea:Number;
 		
-		private var _floor:Room_2DFloor;
+		public var _floor:Room_2DFloor;
 		private var _wallVec:Vector.<Room_2DWall>;		
 		private var _wallCornerVec:Vector.<Room_2DCorner>;
 		private var _roomType:String;//0小,1大,2L,3room
@@ -24,12 +21,13 @@ package zszh_WorkSpace2D
 			_vertexVec1=new Vector.<Number>();
 			_vertexVec2=new Vector.<Number>();
 			_vertexVec3=new Vector.<Number>();
-			if(_vertexData!=null)
-				_vertexVec1=_vertexData;
-			_roomArea=0;
 			
+			if(_vertexData!=null&&roomType=="0")
+				_vertexVec1=_vertexData;
+			else trace("error: Object2D_Room  construct _vertexData!=null  roomType==0");
+			
+			_roomType=roomType;		
 			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
-			_roomType=roomType;
 		}
 		
 		
@@ -74,21 +72,20 @@ package zszh_WorkSpace2D
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
 		
-			
 			if(_roomType=="4")
 			{
-				_vertexVec1.push(-100,100,100,100,100,-100,-100,-100);
+				_vertexVec1.push(-100,50,100,100,100,-100,-100,-100);
 			}
 			else if(_roomType=="1")
 			{
 				_vertexVec1.push(-200,200,200,200,200,-200,-200,-200);
 			}
-			
+				
 			else if(_roomType=="2")
 			{
 				_vertexVec1.push(0,0, 200,0, 200,-200, -200,-200,  -200,200, 0,200);
 			}
-			
+				
 			else if(_roomType=="3")
 			{
 				_vertexVec1.push(0,400, 500,400, 500,-300, 0,-300, 0,-500, -500,-500, -500,500, 0,500);
@@ -107,7 +104,7 @@ package zszh_WorkSpace2D
 			for(var i:int=0;i<len;i+=2)
 			{
 				var wall:Room_2DWall=new Room_2DWall();
-				wall.name="wall"+i;
+				wall._postionInRoom=i;
 				addChild(wall);
 				_wallVec.push(wall);
 				wall.UpdateVertex(_vertexVec2[i],_vertexVec2[i+1],_vertexVec2[(i+2)%len],_vertexVec2[(i+3)%len],_vertexVec3[i],_vertexVec3[i+1],_vertexVec3[(i+2)%len],_vertexVec3[(i+3)%len]);
@@ -115,30 +112,20 @@ package zszh_WorkSpace2D
 			
 			//wall corners 
 			_wallCornerVec=new Vector.<Room_2DCorner>;
-			
 			for(i=0;i<_vertexVec1.length;i+=2)
 			{
 				var wallCorner:Room_2DCorner=new Room_2DCorner();
-				wallCorner.name="wallCorner"+i;
-			
+				wallCorner._posInRoom=i;
+				wallCorner.Draw(_vertexVec1[i],_vertexVec1[i+1]);
 				addChild(wallCorner);
 				_wallCornerVec.push(wallCorner);
 			}
 		}
 		
+		
+		
 		private function UpdateData():void
-		{		
-			//多边形面积
-			var points:Vector.<Point>=new Vector.<Point>;
-			for(var i:int=0;i<_vertexVec1.length;i+=2)
-			{
-				var p1:Point=new Point(_vertexVec1[i],_vertexVec1[i+1]);
-				var p2:Point=new Point(_vertexVec1[(i+2)%_vertexVec1.length],_vertexVec1[(i+3)%_vertexVec1.length]);
-				var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
-				points.push(p1p2);
-			}
-			_roomArea=GetPolygonArea(points);
-			
+		{	
 			for(var i:int=0;i<_vertexVec1.length;i+=2)
 			{
 				var P1:Point=new Point(_vertexVec1[i],_vertexVec1[i+1]);
@@ -225,26 +212,6 @@ package zszh_WorkSpace2D
 			}
 		}
 		
-		public static function GetPolygonArea(points:Vector.<Point>):Number
-		{
-			if (points.length < 3) {//至少是三角形
-				return 0;
-			}
-			var result:Number = 0;
-			for (var i:int = 0; i < points.length - 1; i++) {//见任意多边形的面积公式
-				var a:Point = points[i];
-				var b:Point = points[i+1];
-				var d:Number=b.x*a.y-b.y*a.x;
-				
-				result += b.x*a.y-b.y*a.x;
-				
-			}
-			var begin:Point = points[0];//特殊处理最后一条边,避免在循环中使用if
-			var end:Point   = points[points.length - 1];
-			
-			result += end.x*begin.y-end.y*begin.x;
-			result *= 0.5;//记得取一半
-			return result;
-		}
+
 	}
 }

@@ -48,8 +48,8 @@
 					dragProxy.source=img.source;
 					dragProxy.width=120;
 					dragProxy.height=120;
-					CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor_Wall,2,-41,-14);
-					DragManager.doDrag(dragInitiator, ds,event,null,0,0,0);
+					
+					DragManager.doDrag(dragInitiator, ds,event,dragProxy,0,0);
 				}
 				else if(data.className=="diban")
 				{
@@ -57,8 +57,17 @@
 					dragProxy.width=120;
 					dragProxy.height=120;
 					//CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor_Wall,2);
-					DragManager.doDrag(dragInitiator, ds,event,dragProxy);
+					DragManager.doDrag(dragInitiator, ds,event,dragProxy,0,0);
 				}
+				
+				else if(data.className=="rujiaoqi")
+				{
+					dragProxy.source=img.source;
+					dragProxy.width=120;
+					dragProxy.height=120;
+					DragManager.doDrag(dragInitiator, ds,event,dragProxy,0,0);
+				}
+				
 				function OnComplete(e:Event):void
 				{
 					dragProxy.source=loader.content;
@@ -77,9 +86,9 @@
 			{
 				if(!img)
 					return;
-				if(data.ImgThumbnail=="preview.png" || data.ImgThumbnail=="preview.jpg")
-					img.source=data.resourcePath+data.ImgThumbnail;
-				else img.source = data.ImgThumbnail;
+				if(data.imgThumbnail=="preview.png" || data.imgThumbnail=="preview.jpg")
+					img.source=data.resourcePath+data.imgThumbnail;
+				else img.source = data.imgThumbnail;
 			}
 			
 		]]>

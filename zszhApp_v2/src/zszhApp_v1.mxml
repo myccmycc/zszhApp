@@ -10,7 +10,7 @@
 	</fx:Declarations>
 	
 	<fx:Style>
-		
+		@namespace mx  "library://ns.adobe.com/flex/mx";
 		global {
 			modalTransparencyBlur: 2;/* 模糊度*/
 			modalTransparency: 0.6; /* 透明度*/
@@ -18,6 +18,13 @@
 			modalTransparencyColor: black;
 		}
 		
+		mx|DragManager{
+			copy-cursor:Embed(source="../embeds/mouse01.png");
+			link-cursor:Embed(source="../embeds/mouse01.png");
+			move-cursor:Embed(source="../embeds/mouse01.png");
+			reject-cursor:Embed(source="../embeds/mouse01.png");
+		
+		}
 		.customAccordionHeadStyles {
 			skin: ClassReference("zszh_Products_old.Skin_AccordionHead");
 		}
@@ -43,6 +50,7 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.core.UIComponent;
+			import mx.managers.DragManager;
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
 			import mx.events.IndexChangedEvent;
@@ -66,11 +74,8 @@
 			[Embed(source="../embeds/mouse01.png")]
 			public var imageCursor:Class;
 			
-			[Embed(source="../embeds/MouseOver_wall.png")]
-			public var imageCursor_Wall:Class;
+
 			
-			[Embed(source="../embeds/cursor_corner.png")]
-			public var Cursor_CornerClass:Class;
 			
 			
 			private var _menu2:Menu2_File=new Menu2_File;
@@ -128,10 +133,16 @@
 			//-------------主菜单--end-------------------
 			
 			//PopWindows 
+			private var currentDoc:String=null;
+			
 			public function ShowPopWindow(window:String):void
 			{
-				if(window=="PopWin_MyDoc")
+				if(window=="PopWin_MyDoc")//打开
 				{
+					//查询数据库
+					//发送给弹出对话框
+					
+					
 					var mydocWindow:PopWin_MyDoc=new PopWin_MyDoc();
 					PopUpManager.addPopUp(mydocWindow,this,true);
 					
@@ -140,14 +151,22 @@
 					mydocWindow.move(x1,y1);
 					
 				}
-				else if(window=="PopWin_Save")
+				else if(window=="PopWin_Save")//保存
 				{
-					var saveWindow:PopWin_Save=new PopWin_Save();
-					PopUpManager.addPopUp(saveWindow,this,true);
+					if(currentDoc)
+					{
+						//保存现有文件
+						WorkSpace2D.WorkSpace2D.SaveToXML(currentDoc);
+					}
+					else 
+					{
+						var saveWindow:PopWin_Save=new PopWin_Save();
+						PopUpManager.addPopUp(saveWindow,this,true);
 					
-					var x1:int=(this.width-saveWindow.width)/2;
-					var y1:int=(this.height-saveWindow.height)/2;
-					saveWindow.move(x1,y1);
+						var x1:int=(this.width-saveWindow.width)/2;
+						var y1:int=(this.height-saveWindow.height)/2;
+						saveWindow.move(x1,y1);
+					}
 					
 				}
 			}

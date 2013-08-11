@@ -4,6 +4,10 @@
 					  xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" initialize="skinnablecontainer_initializeHandler(event)" enterFrame="skinnablecontainer_enterFrameHandler(event)">
 	<fx:Metadata>
 		[Event(name="DeleteThisRoom", type="flash.events.Event")]
+		[Event(name="ChangeFloor", type="flash.events.Event")]
+		[Event(name="ChangeFloorTile", type="flash.events.Event")]
+		[Event(name="AddFurniture", type="flash.events.Event")]
+		
 	</fx:Metadata>
 	
 	<fx:Script>
@@ -12,8 +16,32 @@
 			import mx.events.FlexEvent;
 			import mx.managers.PopUpManager;
 			public static const DELETE_THIS_ROOM:String="DeleteThisRoom";
+			public static const CHANGE_FLOOR:String="ChangeFloor";
+			public static const CHANGE_FLOORTILE:String="ChangeFloorTile";
+			public static const ADD_FURNITURE:String="AddFurniture";
 			
-			private function ShowScale():void {
+			private function ShowPorperty():void {
+	
+				
+			}
+			
+			private function ChangeFloor():void {
+				this.dispatchEvent(new Event(CHANGE_FLOOR));
+				
+				parentApplication.ProductsMenuMain.ButtonOneMouseDown("Button4",false);
+				parentApplication.ProductsMenuMain.ButtonTwoMouseDown("Button41");
+			}
+			
+			private function ChangeFloorTile():void {
+				this.dispatchEvent(new Event(CHANGE_FLOORTILE));
+				parentApplication.ProductsMenuMain.ButtonOneMouseDown("Button4",false);
+				parentApplication.ProductsMenuMain.ButtonTwoMouseDown("Button44");
+			}
+			
+			private function AddFurniture():void {
+				this.dispatchEvent(new Event(ADD_FURNITURE));
+				parentApplication.ProductsMenuMain.ButtonOneMouseDown("Button1",false);
+				parentApplication.ProductsMenuMain.ButtonTwoMouseDown("Button13");
 			}
 			
 			private function Delete():void {
@@ -25,6 +53,7 @@
 			{
 				PopUpManager.removePopUp(this);
 			}
+			
 			private var sp:Sprite;
 			private var backComponent:UIComponent;
 			private var _Start:Boolean=false;
@@ -86,13 +115,13 @@
 		<s:Move id="myButton5Out" target="{myButton5}" xFrom="0" yFrom="0"  xTo="{myButton5.x}" yTo="{myButton5.y}"/>
 		
 	</fx:Declarations>
-	<s:Button id="myButton1" x="-100" y="-50"  label="属性" width="80" height="25" click="ShowScale()" skinClass="zszh_WorkSpace2D.Skin_PopupMenuBt" />
+	<s:Button id="myButton1" x="-100" y="-50"  label="属性" width="80" height="25" click="ShowPorperty()" skinClass="zszh_WorkSpace2D.Skin_PopupMenuBt" />
 	
-	<s:Button id="myButton2" x="-120" y="-10"  label="换地板" width="80" height="25" click="ShowScale()" skinClass="zszh_WorkSpace2D.Skin_PopupMenuBt"/>
+	<s:Button id="myButton2" x="-120" y="-10"  label="换地板" width="80" height="25" click="ChangeFloor()" skinClass="zszh_WorkSpace2D.Skin_PopupMenuBt"/>
 	
-	<s:Button id="myButton3" x="20" y="-50"  label="换地砖" width="80" height="25" click="ShowScale()" skinClass="zszh_WorkSpace2D.Skin_PopupMenuBt"/>
+	<s:Button id="myButton3" x="20" y="-50"  label="换地砖" width="80" height="25" click="ChangeFloorTile()" skinClass="zszh_WorkSpace2D.Skin_PopupMenuBt"/>
 	
-	<s:Button id="myButton4" x="40" y="-10"  label="添加家具" width="80" height="25" click="ShowScale()" skinClass="zszh_WorkSpace2D.Skin_PopupMenuBt"/>
+	<s:Button id="myButton4" x="40" y="-10"  label="添加家具" width="80" height="25" click="AddFurniture()" skinClass="zszh_WorkSpace2D.Skin_PopupMenuBt"/>
 	
 	<s:Button id="myButton5" x="-40"  y="30"  label="删除房间" width="80" height="25" click="Delete()" skinClass="zszh_WorkSpace2D.Skin_PopupMenuBt"/>
 	

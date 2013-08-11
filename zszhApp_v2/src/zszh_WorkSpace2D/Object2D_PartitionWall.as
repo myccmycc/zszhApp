@@ -6,7 +6,7 @@ package zszh_WorkSpace2D
 	import mx.events.FlexEvent;
 
 
-	public class Wall_2D extends UIComponent
+	public class Object2D_PartitionWall extends UIComponent
 	{
 		public  var _vertexVec1:Vector.<Number>;
 				
@@ -26,7 +26,7 @@ package zszh_WorkSpace2D
 		private var _wallCornerVec:Vector.<Wall_2DCorner>;
 		
 
-		public function Wall_2D(type:String,vec:Vector.<Number>=null)
+		public function Object2D_PartitionWall(type:String,vec:Vector.<Number>=null)
 		{
 			super();
 			_vertexVec1=new Vector.<Number>();
