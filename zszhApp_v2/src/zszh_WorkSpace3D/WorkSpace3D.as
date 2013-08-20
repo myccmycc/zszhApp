@@ -20,6 +20,7 @@ package zszh_WorkSpace3D
 	import away3d.controllers.HoverController;
 	import away3d.core.base.SubMesh;
 	import away3d.core.math.MathConsts;
+	import away3d.core.math.Plane3D;
 	import away3d.debug.AwayStats;
 	import away3d.debug.Trident;
 	import away3d.entities.Entity;
@@ -46,12 +47,14 @@ package zszh_WorkSpace3D
 	import away3d.primitives.PlaneGeometry;
 	import away3d.primitives.WireframeCube;
 	import away3d.textures.Texture2DBase;
+	import away3d.tools.utils.Ray;
 	import away3d.utils.Cast;
 	
 	import zszh_WorkSpace2D.Object2D_PartitionWall;
 	
 	public class WorkSpace3D extends UIComponent
 	{
+		public static var gCurrentObj3D:ObjectContainer3D;
 		//engine variables
 		private var _view3d:View3D;
 		private var _camera:Camera3D;
@@ -82,6 +85,10 @@ package zszh_WorkSpace3D
 		private var _wallInsideContainer3D:ObjectContainer3D;
 		//models
 		public var _modelsContainer3D:ObjectContainer3D;
+		
+		//Center 
+		public var _cameraCenter:ObjectContainer3D;
+		public var _centerPos:Vector3D;
 		
 		private var _meshArray:Array;
 		
@@ -152,7 +159,7 @@ package zszh_WorkSpace3D
 			//var modelFile:String=resPath+modelName+".awd";
 			//AssetLibrary.load(new URLRequest(modelFile));
 			
-			var model:Model_3D=new Model_3D(resPath,modelName,pos);
+			var model:Model_3D=new Model_3D(resPath,modelName,pos,_lightPicker);
 			model.name=name;
 			_modelsContainer3D.addChild(model);
 		}
@@ -167,26 +174,22 @@ package zszh_WorkSpace3D
 			_view3d.backgroundColor=0x303344;
 			_view3d.antiAlias=4;
 			addChild(_view3d);
-
 			
 			addEventListener(Event.ENTER_FRAME,OnFrameEnter);
-			
-		
-			
+						
 			//setup debuh info
 			//_debug=new AwayStats(_view3d);
 			//addChild(_debug);
-			
-			//setup the camera
-			//_view3d.camera.z = -800;
-			//_view3d.camera.y = 800;
-			//_view3d.camera.lookAt(new Vector3D());
 			
 			_camera = new Camera3D();
 			_view3d.camera = _camera;
 
 			//setup controller to be used on the camera
-			_cameraController = new HoverController(_camera, null, 180,60, 800);
+			_cameraCenter=new ObjectContainer3D();
+			_cameraCenter.addChild(new Trident(50));
+			_view3d.scene.addChild(_cameraCenter);
+			
+			_cameraController = new HoverController(_camera,_cameraCenter, 180,60, 800);
 			_cameraController.maxTiltAngle=45;
 			_cameraController.minTiltAngle=25;
 			
@@ -198,7 +201,8 @@ package zszh_WorkSpace3D
 			_directionLight.diffuse = 0.2;
 			
 			_pointLight = new PointLight();
-			_pointLight.y=300;
+			_pointLight.y=500;
+			_pointLight.x=500;
 			_pointLight.color=0xFFFFFF;
 			_pointLight.ambient=0.2;
 			_pointLight.diffuse=0.8;
@@ -209,13 +213,8 @@ package zszh_WorkSpace3D
 			_lightPicker = new StaticLightPicker([_pointLight,_directionLight]);
 			
 							
-			
-			
-			addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN,MOUSE_MDOWN_view3d);
-			addEventListener(MouseEvent.MIDDLE_MOUSE_UP,MOUSE_MUP_view3d);
-			
-			
-			addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_view3d);
+			_view3d.addEventListener(MouseEvent.MOUSE_DOWN,MOUSE_DOWN_view3d);
+			_view3d.addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_view3d);
 			
 			//setup the scene
 			_roomContainer3D = new ObjectContainer3D();
@@ -225,7 +224,6 @@ package zszh_WorkSpace3D
 			_view3d.scene.addChild(_roomContainer3D);
 			_view3d.scene.addChild(_wallInsideContainer3D);
 			_view3d.scene.addChild(_modelsContainer3D);
-			_view3d.scene.addChild(new Trident(50));
 			
 			InitView3dSmall();
 			
@@ -237,14 +235,12 @@ package zszh_WorkSpace3D
 			
 			_view3d2=new View3D();
 			_view3d2.backgroundAlpha=0;
-			//_view3d2.backgroundColor=0x303344;
+			_view3d2.backgroundColor=0x303344;
 			_view3d2.antiAlias=4;
 			_view3d2.width=150;
 			_view3d2.height=150;
 			addChild(_view3d2);
-			
-
-			
+				
 			// cubes
 			var cubeGeometry:CubeGeometry = new CubeGeometry(200,200,200, 10, 10, 10);
 			var cubeMaterial:ColorMaterial = new ColorMaterial( 0x535564 );
@@ -341,9 +337,7 @@ package zszh_WorkSpace3D
 		}
 		private function MOUSE_UP_view3d2(ev:MouseEvent) : void
 		{
-			_bMDown_view3d=false;
-			_bMMDown_view3d=false;
-			
+			_bMDown_view3d=false;			
 			_cameraMove = false;
 			removeEventListener(MouseEvent.MOUSE_OUT,MOUSE_UP_view3d2);
 			removeEventListener(MouseEvent.MOUSE_UP,MOUSE_UP_view3d2);
@@ -363,51 +357,80 @@ package zszh_WorkSpace3D
 		private var _MMDownPos:Point=new Point(0,0);
 		private var _MMDownCameraPos:Point=new Point(0,0);
 		
-		private function MOUSE_MDOWN_view3d(ev:MouseEvent):void
+		private function MOUSE_DOWN_view3d(event:MouseEvent):void
 		{
+			var screenX:Number=this.mouseX/this.unscaledWidth-0.5;
+			var screenY:Number=this.mouseY/this.unscaledHeight-0.5;
+			_MMDownPos.x=screenX;
+			_MMDownPos.y=screenY;
+			_bMMDown_view3d=true;
+			gCurrentObj3D=null;
+			
+		
+			this._view3d.addEventListener(MouseEvent.MOUSE_MOVE,MOUSE_MOVE_view3d);
+			this._view3d.addEventListener(MouseEvent.MOUSE_OUT,MOUSE_UP_view3d);
+			this._view3d.addEventListener(MouseEvent.MOUSE_UP,MOUSE_UP_view3d);
 
 		}
-		
-		private function MOUSE_MUP_view3d(ev:MouseEvent):void
-		{
-		
-		}
-		
-	
-		
-		
 		private function MOUSE_MOVE_view3d(ev:MouseEvent) : void
 		{
-			if(_bMMDown_view3d)
+			if(_bMMDown_view3d&&gCurrentObj3D)
 			{
-				var dx:int = ev.localX -_MMDownPos.x;
-				var dz:int = ev.localY -_MMDownPos.y;
-			
-				_view3d.camera.x=_MMDownCameraPos.x-dx*5;
-				_view3d.camera.z=_MMDownCameraPos.y+dz*5;
+				var screenX:Number=2*this.mouseX/this.unscaledWidth-1;
+				var screenY:Number=2*this.mouseY/this.unscaledHeight-1;
+				var cameraRay:Vector3D=_camera.getRay(screenX,screenY,100);
 				
-			}
-			
-			//左键 旋转 
-			else if(_bMDown_view3d)
-			{
-				
-				var dy:Number = ev.localX -_MDownPos.x;//y轴转动
-				
-				var angy:Number=dy/31.4;
-				
-				dx = ev.localY -_MDownPos.y;//x轴转动
-				
-				var angx:int=dx/31.4;
+				trace(_camera.scenePosition);
+				trace(cameraRay);
 
-				for(var i:int=0;i<_view3d.scene.numChildren;i++)
-				{
-					_view3d.scene.getChildAt(i).rotate(new Vector3D(0,1,0),-angy);
-					//_view3d.scene.getChildAt(i).rotate(new Vector3D(1,0,0),-angx);
-				}
+				var plane:Plane3D=new Plane3D();
+				plane.fromNormalAndPoint(new Vector3D(0,1,0),new Vector3D(0,gCurrentObj3D.y,0) );
 				
+				
+				
+				/*var dest:Vector3D=this._camera.unproject(screenX,screenY,100);
+				
+				var dest2:Vector3D=new Vector3D(_camera.scenePosition.x+cameraRay.x,_camera.scenePosition.y+cameraRay.y,_camera.scenePosition.z+cameraRay.z);
+				
+				var plane:Plane3D=new Plane3D();
+				plane.fromNormalAndPoint(new Vector3D(0,1,0),new Vector3D(0,gCurrentObj3D.y,0) );
+				
+				var ray:Ray=new Ray;
+				var v0:Vector3D = new Vector3D(1,gCurrentObj3D.y,0);
+				var v1:Vector3D = new Vector3D(0,gCurrentObj3D.y,1);
+				var v2:Vector3D = new Vector3D(0,gCurrentObj3D.y,0);
+				
+				
+				var intersect:Vector3D = ray.getRayToTriangleIntersection(this._camera.position, dest, v0, v1, v2 );
+				trace("intersect ray: "+intersect);
+				
+				
+				var p1:Vector3D=this._camera.project(gCurrentObj3D.scenePosition);
+				
+				trace(gCurrentObj3D.position);
+				trace(gCurrentObj3D.scenePosition);
+				
+				var p2:Vector3D=this._camera.unproject(p1.x,p1.y,p1.z);
+				
+				trace(p2);
+				
+				var intersect2:Vector3D = ray.getRayToTriangleIntersection(this._camera.scenePosition, new Vector3D(0,0,0), v0, v1, v2 );
+				
+				var v0:Vector3D = new Vector3D(1,0,0);
+				var v1:Vector3D = new Vector3D(0,0,1);
+				var v2:Vector3D = new Vector3D(0,0,0);
+				var intersect2:Vector3D = ray.getRayToTriangleIntersection(this._camera.scenePosition, new Vector3D(0,1,0), v0, v1, v2 );
+				//gCurrentObj3D.x=intersect.x;
+				//gCurrentObj3D.y=intersection.y;
+				//gCurrentObj3D.z=intersect.z;*/
 			}
 		}
+		
+		private function MOUSE_UP_view3d(event:MouseEvent):void
+		{
+		
+		}
+		
 		
 		private function MOUSE_WHEEL_view3d(ev:MouseEvent) : void
 		{

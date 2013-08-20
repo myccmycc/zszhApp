@@ -7,22 +7,37 @@ package zszh_WorkSpace2D
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
+	import mx.core.UIComponent;
+	import mx.events.FlexEvent;
 	import mx.managers.CursorManager;
 	import mx.managers.PopUpManager;
 	
 	import zszh_WorkSpace2D.PopupMenu_Room2D_Wall;
 	
-	public class Room_2DWindows extends Sprite
+	public class Room_2DWindows extends UIComponent
 	{
 		private var _popupWindowMenu:PopupMenu_Room2D_Wall;
 		
 		private var _selected:Boolean;
 		
-		public function Room_2DWindows()
+		private var _P0:Point;
+		private var _P1:Point;
+		
+		private var _lineColor:uint;
+		private var _lineColorSelected:uint;
+		private var _windowColor:uint;
+		
+		public function Room_2DWindows(p0:Point,p1:Point)
 		{
 			super();
-		
+			_P0=p0;
+			_P1=p1;
 			
+			_lineColor=0xff0000;
+			_lineColorSelected=0x00ff00;
+			_windowColor=0xffff00;
+			
+			addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 			addEventListener(MouseEvent.RIGHT_CLICK,WallCLICK);
 			addEventListener(MouseEvent.MOUSE_OVER,WallMouseOver);
 			addEventListener(MouseEvent.MOUSE_OUT,WallMouseOut);
@@ -42,38 +57,18 @@ package zszh_WorkSpace2D
 		}
 		
 
-		
+		private function OnCreation_Complete(e:FlexEvent):void
+		{
+			Update();
+		}
 		private function Update():void
 		{
-			/*graphics.clear();
+			graphics.clear();
 			graphics.lineStyle(1,_lineColor);//白线
-			
-			if(_selected)
-				graphics.beginFill(_wallColorSelected,0.8);
-			else
-				graphics.beginFill(_wallColor,0.8);
-			
-			graphics.moveTo(_wallPos[0],-_wallPos[1]);
-			graphics.lineTo(_wallPos[2],-_wallPos[3]);
-			graphics.lineTo(_wallPos[6],-_wallPos[7]);
-			graphics.lineTo(_wallPos[4],-_wallPos[5]);
+			graphics.beginFill(_windowColor,0.8);
+			graphics.moveTo(_P0.x,_P0.y);
+			graphics.lineTo(_P1.x,_P1.y);
 			graphics.endFill();
-			
-			if(_popupWindowMenu)
-			{
-				PopUpManager.removePopUp(_popupWindowMenu);
-				_popupWindowMenu=null;
-			}
-			
-			var p1:Point=new Point(_wallPos[2]-_wallPos[0],_wallPos[3]-_wallPos[1]);
-			var p2:Point=new Point(1,0);
-			var d:Number=p1.x*p2.x+p1.y*p2.y;
-			var d1:Number=Math.sqrt(p1.x*p1.x+p1.y*p1.y) * Math.sqrt(p2.x*p2.x+p2.y*p2.y);
-			_rotation= Math.acos(d/d1)/Math.PI *180;
-			
-			var sind:Number=p1.x*p2.y-p1.y*p2.x;
-			if(sind<0)
-				_rotation=360-_rotation;*/
 		}
 		
 		

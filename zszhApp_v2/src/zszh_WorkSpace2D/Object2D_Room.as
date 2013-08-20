@@ -185,12 +185,18 @@ package zszh_WorkSpace2D
 			
 				 //求P1P2平移线 和P2P3平移线 交点
 				var p:Point=intersection(A1,B1,C1_1,A2,B2,C2_1);
-				_vertexVec3[i]=p.x;
-				_vertexVec3[i+1]=p.y;
+				if(p.x!=Number.POSITIVE_INFINITY&& p.y!=Number.POSITIVE_INFINITY)
+				{
+					_vertexVec3[i]=p.x;
+					_vertexVec3[i+1]=p.y;
+				}
 				
 				var p:Point=intersection(A1,B1,C1_2,A2,B2,C2_2);
-				_vertexVec2[i]=p.x;
-				_vertexVec2[i+1]=p.y;
+				if(p.x!=Number.POSITIVE_INFINITY&& p.y!=Number.POSITIVE_INFINITY)
+				{
+					_vertexVec2[i]=p.x;
+					_vertexVec2[i+1]=p.y;
+				}
 			}
 		}
 		

@@ -21,11 +21,6 @@
 			<fx:Object labelText="竖墙"   imgThumbnail="{imageRoomShu}" className="Wall_2D" classArgument="2" resourcePath=""/>
 			
 			<!--fx:Object labelText="房型"   imgThumbnail="{imageRoomHeng}" className="Room_2D" classArgument="3" resourcePath=""/-->
-			
-			
-			
-			
-			
 			<!--fx:Object labelText="床00001" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/beds/bed00001/" objectName="bed00001"/>
 			<fx:Object labelText="浴缸00001" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/yugangs/yugang00001/" objectName="yugang00001"/>
 			<fx:Object labelText="椅子" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/yi_zi_di/" objectName="yi_zi_di"/>

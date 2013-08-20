@@ -2,6 +2,7 @@ package zszh_WorkSpace2D
 {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
@@ -30,6 +31,12 @@ package zszh_WorkSpace2D
 		public var _room2DVec:Vector.<Object2D_Room>;
 		public var _wall2DVec:Vector.<Object2D_PartitionWall>;
 		public var _modelsVec:Vector.<Object2D_Model>;
+		
+		
+		public var _xMin:Number;
+		public var _yMin:Number;
+		public var _xMax:Number;
+		public var _yMax:Number;
 		
 		public function WorkSpace2D()
 		{
@@ -216,6 +223,41 @@ package zszh_WorkSpace2D
 			_grid.y=-(_grid.height*_grid.scaleY)/2+this.unscaledHeight/2;
 		}
 		
+		public function GetBounds():void
+		{
+			_xMin=Number.MAX_VALUE;
+			_yMin=Number.MAX_VALUE;
+			_xMax=Number.MIN_VALUE;
+			_yMax=Number.MIN_VALUE;
+			
+			for(var i:int=0;i<_room2DVec.length;i++)
+			{
+				for(var j:int=0;j<_room2DVec[i]._vertexVec1.length;j+=2)
+				{
+					var x1:Number=_room2DVec[i].x+_room2DVec[i]._vertexVec1[j];
+					var y1:Number=_room2DVec[i].y-_room2DVec[i]._vertexVec1[j+1];
+					
+					if(_xMin>x1)
+						_xMin=x1;
+					if(_yMin>y1)
+						_yMin=y1;			
+					if(_xMax<x1)
+						_xMax=x1;
+					if(_yMax<y1)
+						_yMax=y1;
+				}	
+			}
+			
+			/*
+			_grid.graphics.clear();
+			_grid.graphics.lineStyle(1,0xff0000);//白线
+			_grid.graphics.beginFill(0xff00ff,0.8);
+			_grid.graphics.moveTo(_xMin,_yMin);
+			_grid.graphics.lineTo(_xMin,_yMax);
+			_grid.graphics.lineTo(_xMax,_yMax);
+			_grid.graphics.lineTo(_xMax,_yMin);
+			_grid.graphics.endFill();*/
+		}
 		private function OnResize(e:ResizeEvent):void
 		{
 			if(_grid)
@@ -323,6 +365,20 @@ package zszh_WorkSpace2D
 				_objects.push(wall);
 				
 				current_object=wall as Object;
+			}
+			
+			else if(className=="window")
+			{
+				var window:Room_2DWindows =new Room_2DWindows(new Point(-100,0),new Point(100,0));
+				window.x=event.localX;
+				window.y=event.localY;
+				
+				window.name=window.className+room_number;
+				room_number++;
+				_grid.addChild(window);
+				_objects.push(window);
+				
+				current_object=window as Object;
 			}
 		}
 	}

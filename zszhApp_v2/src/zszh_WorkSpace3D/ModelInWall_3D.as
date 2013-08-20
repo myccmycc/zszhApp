@@ -7,7 +7,10 @@ package zszh_WorkSpace3D
 	import flash.net.URLRequest;
 	
 	import away3d.containers.ObjectContainer3D;
+	import away3d.core.base.Geometry;
+	import away3d.core.base.SubGeometry;
 	import away3d.core.data.EntityListItem;
+	import away3d.core.pick.PickingColliderType;
 	import away3d.entities.Entity;
 	import away3d.entities.Mesh;
 	import away3d.events.AssetEvent;
@@ -22,10 +25,11 @@ package zszh_WorkSpace3D
 	
 	import zszh_WorkSpace3D.WorkSpace3D;
 	
-	public class Model_3D extends ObjectContainer3D
+	public class ModelInWall_3D extends ObjectContainer3D
 	{
 		public var _resPath:String;
 		public var _modelName:String;
+		public var _dirction:Vector3D;
 		
 		public var _loaderModel:Loader3D;
 		//WorkSpace3D _lightPicker
@@ -33,77 +37,89 @@ package zszh_WorkSpace3D
 		
 		private var _mesh:Mesh;
 		
-		private var _specularTex:String;
-		private var _normalTex:String;
+		private var _frontTex:String;
+		private var _backTex:String;
+		private var _frontLoader:Loader;
+		private var _backLoader:Loader;
 		
-		private var _speculaLoader:Loader;
-		private var _normalLoader:Loader;
+		//material objects
+		private var _frontMaterial:TextureMaterial;
+		private var _backMaterial:TextureMaterial;
 		
-		public function Model_3D(path:String,name:String,pos:Vector3D,lightPick:StaticLightPicker)
+		public function ModelInWall_3D(path:String,name:String,pos:Vector3D,dir:Vector3D,lightPick:StaticLightPicker)
 		{
 			super();
-			
 			_resPath=path;
 			_modelName=name;
 			position=pos;
+			_dirction=dir;
 			_lightPicker=lightPick;
-			//Loader3D to load the asset
-			Loader3D.enableParser(AWD2Parser);
-			_loaderModel= new Loader3D();
-			var modelFile:String=_resPath+_modelName+".awd";
-			_loaderModel.load(new URLRequest(modelFile));
-		
-			_loaderModel.addEventListener(AssetEvent.MESH_COMPLETE,OnMeshAssetComplete);
-			_loaderModel.addEventListener(LoaderEvent.LOAD_ERROR,ModelLoadError);
 			
+			_frontTex=_resPath+"front.png";
+			_backTex=_resPath+"back.png";
 			
-			_specularTex=_resPath+"texture_specular.jpg";
-			_normalTex=_resPath+"texture_normal.jpg";
+			_frontLoader=new Loader;
+			_frontLoader.load(new URLRequest(_frontTex));
+			_frontLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onCompleteFront);
 			
-
+			_backLoader=new Loader;
+			_backLoader.load(new URLRequest(_backTex));
+			_backLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onCompleteBack);
 		}
 		
-		private function onCompleteSpecular(e:Event):void
+		private function onCompleteFront(e:Event):void
 		{
-			var mat:TextureMaterial=_mesh.material as TextureMaterial;
-			mat.specularMap=Cast.bitmapTexture(_speculaLoader.content);
+			_frontMaterial = new TextureMaterial(Cast.bitmapTexture(_frontLoader.content));
 		}
 		
-		private function onCompleteNormal(e:Event):void
+		private function onCompleteBack(e:Event):void
 		{
-			var mat:TextureMaterial=_mesh.material as TextureMaterial;
-			mat.normalMap=Cast.bitmapTexture(_normalLoader.content);
+			_backMaterial = new TextureMaterial(Cast.bitmapTexture(_backLoader.content));
 		}
 		
-		private function OnMeshAssetComplete(event:AssetEvent):void
+		private function Update():void
 		{
-			if(event.asset.assetType==AssetType.MESH)
+			if(_frontMaterial&&_backMaterial)
 			{
-				_mesh = event.asset as Mesh;
-				_mesh.mouseEnabled = true;
-				_mesh.addEventListener(MouseEvent3D.MOUSE_DOWN, MeshMouseDown);
-				_mesh.addEventListener(MouseEvent3D.MOUSE_OUT, MeshMouseUp);
-				_mesh.addEventListener(MouseEvent3D.MOUSE_UP, MeshMouseUp);
+				var gem:Geometry=new Geometry();
+				var subGeom : SubGeometry = new SubGeometry;
+				
+				var vertex : Vector.<Number> = new Vector.<Number>;
+				var index : Vector.<uint> = new Vector.<uint>;
+				var uv : Vector.<Number> = new Vector.<Number>;
+				
+				//p0  pi pi+1 顺时针方向 三角形
+				vertex.push(-100,50,0,
+					100,50,0,
+					100,-50,0,
+					-100,-50, 0);
+				
+				index.push(0,1,2,0,2,3);
+				
+
+				
+				uv.push(0, 0,
+					0, 1,
+					1, 0,
+					1, 1);
+				
+				subGeom.updateVertexData(vertex);
+				subGeom.updateIndexData(index);
+				subGeom.updateUVData(uv);
+				gem.addSubGeometry(subGeom);
+				
+				
+				_mesh=new Mesh(gem,_frontMaterial);
 				addChild(_mesh);
 				
-				var mat:TextureMaterial=_mesh.material as TextureMaterial;
-				mat.lightPicker=_lightPicker;
+				_mesh.mouseEnabled=true;
+				_mesh.pickingCollider=PickingColliderType.AS3_BEST_HIT;
 				
-				_speculaLoader=new Loader;
-				_speculaLoader.load(new URLRequest(_specularTex));
-				_speculaLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onCompleteSpecular);
-				
-				_normalLoader=new Loader;
-				_normalLoader.load(new URLRequest(_normalTex));
-				_normalLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onCompleteNormal);
+				_mesh.addEventListener(MouseEvent3D.MOUSE_DOWN,MeshMouseDown);
+				//_mesh.addEventListener(MouseEvent3D.MOUSE_OVER,MeshMouseMove);
+				_mesh.addEventListener(MouseEvent3D.MOUSE_OUT,MeshMouseUp);
 			}
 		}
-	
-		private function ModelLoadError(event:LoaderEvent):void
-		{
-			trace("ERROR:ModelLoadError "+event.url);
-		}
-
 		
 		private var startPoint:Point;
 		private var bStart:Boolean=false;

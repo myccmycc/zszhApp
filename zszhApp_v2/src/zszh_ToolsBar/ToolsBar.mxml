@@ -143,15 +143,20 @@
 				{
 					var mbed:Object2D_Model = modelBed as Object2D_Model;
 					var mPos:Vector3D=new Vector3D();
-					mPos.x=mbed.x-3200;
+					mPos.x=mbed.x+mbed.width/2-3200;
 					mPos.y=0;
-					mPos.z=-mbed.y+3200;
+					mPos.z=-mbed.y-mbed.height/2+3200;
 					parentApplication.WorkSpace3D.AddModels(mbed._resourcePath,mbed._modelName,mPos,mbed.name);    
 				}
 			}
 			
 			parentApplication.WorkSpace3D.visible=true;
 			parentApplication.WorkSpace2D.WorkSpace2D.SetAllNoSelected();
+			parentApplication.WorkSpace2D.WorkSpace2D.GetBounds();
+			parentApplication.WorkSpace3D._cameraCenter.x=(parentApplication.WorkSpace2D.WorkSpace2D._xMax-parentApplication.WorkSpace2D.WorkSpace2D._xMin)/2+parentApplication.WorkSpace2D.WorkSpace2D._xMin-3200;
+			parentApplication.WorkSpace3D._cameraCenter.z=-(parentApplication.WorkSpace2D.WorkSpace2D._yMax-parentApplication.WorkSpace2D.WorkSpace2D._yMin)/2-parentApplication.WorkSpace2D.WorkSpace2D._yMin+3200;
+				
+				
 			parentApplication.WorkSpace2D.visible=false;
 			
 		}
