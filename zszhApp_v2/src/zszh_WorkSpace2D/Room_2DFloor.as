@@ -17,6 +17,8 @@ package zszh_WorkSpace2D
 	import mx.managers.DragManager;
 	import mx.managers.PopUpManager;
 	
+	import zszh_Core.CommandManager;
+	
 	public class Room_2DFloor extends UIComponent
 	{
 		public var _floorTex:String="zszh_res/basic/wall/TextureFloor.jpg";
@@ -229,6 +231,7 @@ package zszh_WorkSpace2D
 			CursorManager.removeAllCursors();
 		}
 		
+		private var _oldPos:Point;
 		private function FloorMouseDown(e:MouseEvent):void
 		{
 			SetSelected(false);
@@ -236,6 +239,7 @@ package zszh_WorkSpace2D
 			if(room_2d.GetSelected())
 			{
 				room_2d.startDrag();
+				_oldPos=new Point(room_2d.x,room_2d.y);
 				e.stopPropagation();
 			}
 			
@@ -247,6 +251,11 @@ package zszh_WorkSpace2D
 			if(room_2d.GetSelected())
 			{
 				room_2d.stopDrag();
+				
+				if(_oldPos.x!=room_2d.x || _oldPos.y!=room_2d.y)
+				{
+					CommandManager.Instance.Move(room_2d,_oldPos,new Point(room_2d.x,room_2d.y));
+				}
 				//e.stopPropagation();
 			}
 			else room_2d.SetSelected(true);

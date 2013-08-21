@@ -1,5 +1,6 @@
 package zszh_WorkSpace2D
 {
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
@@ -21,17 +22,11 @@ package zszh_WorkSpace2D
 	
 	import spark.components.Image;
 	
+	import zszh_Core.CommandManager;
 	
 	public class WorkSpace2D extends UIComponent
 	{
 		public var _grid:Grid;
-		public var _objects:Array;
-		
-		//---for create 3d space-------------------
-		public var _room2DVec:Vector.<Object2D_Room>;
-		public var _wall2DVec:Vector.<Object2D_PartitionWall>;
-		public var _modelsVec:Vector.<Object2D_Model>;
-		
 		
 		public var _xMin:Number;
 		public var _yMin:Number;
@@ -41,7 +36,7 @@ package zszh_WorkSpace2D
 		public function WorkSpace2D()
 		{
 			super();
-			_objects=new Array;
+			
 			this.addEventListener(MouseEvent.MOUSE_DOWN,MouseDown);
 			this.addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 			this.addEventListener(ResizeEvent.RESIZE,OnResize);
@@ -206,11 +201,11 @@ package zszh_WorkSpace2D
 		}
 		public function SetAllNoSelected():void
 		{
-			for(var i:int=0;i<_objects.length;i++)
+			for(var i:int=0;i<_grid.numChildren;i++)
 			{
-				if(_objects[i].visible==true)
-					_objects[i].SetSelected(false);
-				else _objects.splice(i,1);//删除
+				var dis:DisplayObject=_grid.getChildAt(i);
+				if(dis is Object2D_Base)
+					(dis as Object2D_Base).SetSelected(false);
 			}
 		}
 		
@@ -230,26 +225,33 @@ package zszh_WorkSpace2D
 			_xMax=Number.MIN_VALUE;
 			_yMax=Number.MIN_VALUE;
 			
-			for(var i:int=0;i<_room2DVec.length;i++)
+			for(var i:int=0;i<_grid.numChildren;i++)
 			{
-				for(var j:int=0;j<_room2DVec[i]._vertexVec1.length;j+=2)
+				var obj:DisplayObject =_grid.getChildAt(i);
+				
+				if(obj is Object2D_Room)
 				{
-					var x1:Number=_room2DVec[i].x+_room2DVec[i]._vertexVec1[j];
-					var y1:Number=_room2DVec[i].y-_room2DVec[i]._vertexVec1[j+1];
+					var room2d:Object2D_Room=obj as Object2D_Room;
 					
-					if(_xMin>x1)
-						_xMin=x1;
-					if(_yMin>y1)
-						_yMin=y1;			
-					if(_xMax<x1)
-						_xMax=x1;
-					if(_yMax<y1)
-						_yMax=y1;
-				}	
+					for(var j:int=0;j<room2d._vertexVec1.length;j+=2)
+					{
+						var x1:Number=room2d.x+room2d._vertexVec1[j];
+						var y1:Number=room2d.y-room2d._vertexVec1[j+1];
+					
+						if(_xMin>x1)
+							_xMin=x1;
+						if(_yMin>y1)
+							_yMin=y1;			
+						if(_xMax<x1)
+							_xMax=x1;
+						if(_yMax<y1)
+							_yMax=y1;
+					}	
+				}
 			}
 			
-			/*
-			_grid.graphics.clear();
+			
+			/*_grid.graphics.clear();
 			_grid.graphics.lineStyle(1,0xff0000);//白线
 			_grid.graphics.beginFill(0xff00ff,0.8);
 			_grid.graphics.moveTo(_xMin,_yMin);
@@ -269,11 +271,7 @@ package zszh_WorkSpace2D
 		
 		
 		private function OnCreation_Complete(e:FlexEvent):void
-		{
-			_room2DVec=new Vector.<Object2D_Room>();
-			_wall2DVec=new Vector.<Object2D_PartitionWall>();
-			_modelsVec=new Vector.<Object2D_Model>();
-			
+		{			
 			_grid=new Grid();
 			_grid.scaleX=0.5;
 			_grid.scaleY=0.5;
@@ -298,13 +296,6 @@ package zszh_WorkSpace2D
 		
 		private function DragEnter2D(event:DragEvent):void
 		{
-			
-			var className:String=String(event.dragSource.dataForFormat("className"));
-			var classArgument:String=String(event.dragSource.dataForFormat("classArgument"));
-			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
-			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
-			
-			
 			DragManager.acceptDragDrop(event.target as UIComponent);
 		}
 		private function DragOver2D(event:DragEvent):void
@@ -319,8 +310,19 @@ package zszh_WorkSpace2D
 			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
 			
 			current_object=null;
-
-			if(className=="model")
+			
+			if(className=="Room_2D")
+			{
+				var room:Object2D_Room=new Object2D_Room(classArgument);
+				room.x=event.localX;
+				room.y=event.localY;
+				room.name=room.className+room_number++;
+				CommandManager.Instance.Add(_grid,room);
+				_grid.setChildIndex(room,0);
+				
+				current_object=room as Object;
+			}
+			else if(className=="model")
 			{
 				var model:Object2D_Model=new Object2D_Model(resourcePath,objectName);
 				model.x=event.localX;
@@ -328,30 +330,9 @@ package zszh_WorkSpace2D
 				model.name=model.className+room_number;
 				room_number++;
 				_grid.addChild(model);
-				_modelsVec.push(model);
-				_objects.push(model);
+			 
 				
 				current_object=model as Object;
-			}
-			
-			
-			else if(className=="Room_2D")
-			{
-				
-				var room:Object2D_Room=new Object2D_Room(classArgument);
-				trace("DragEnter2D");
-				trace(room.width);
-				trace(room.height);
-				room.x=event.localX;
-				room.y=event.localY;
-				room.name=room.className+room_number;
-				room_number++;
-				_grid.addChild(room);
-				_grid.setChildIndex(room,0);
-				_room2DVec.push(room);
-				_objects.push(room);
-				
-				current_object=room as Object;
 			}
 			else if(className=="Wall_2D")
 			{
@@ -361,8 +342,7 @@ package zszh_WorkSpace2D
 				wall.name=wall.className+room_number;
 				room_number++;
 				_grid.addChild(wall);
-				_wall2DVec.push(wall);
-				_objects.push(wall);
+			 
 				
 				current_object=wall as Object;
 			}
@@ -376,7 +356,6 @@ package zszh_WorkSpace2D
 				window.name=window.className+room_number;
 				room_number++;
 				_grid.addChild(window);
-				_objects.push(window);
 				
 				current_object=window as Object;
 			}

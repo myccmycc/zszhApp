@@ -13,8 +13,8 @@
 		import away3d.containers.ObjectContainer3D;
 		
 		import zszh_WorkSpace2D.Object2D_Model;
-		import zszh_WorkSpace2D.Object2D_Room;
 		import zszh_WorkSpace2D.Object2D_PartitionWall;
+		import zszh_WorkSpace2D.Object2D_Room;
 		
 		import zszh_WorkSpace3D.Model_3D;
 		[Embed(source="embeds/ToolsBar/toolbar_1.png")]
@@ -83,32 +83,38 @@
 			parentApplication.WorkspaceBack.visible=false;
 				parentApplication.WorkSpace3D.ClearRoom();
 			
-			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._room2DVec.length;i++)
+			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._grid.numChildren;i++)
 			{
-				var room2d:Object2D_Room=parentApplication.WorkSpace2D.WorkSpace2D._room2DVec[i] as Object2D_Room;		
-				var vertex_old:Vector.<Number>= (room2d as Object2D_Room)._vertexVec1;
+				var obj:DisplayObject=parentApplication.WorkSpace2D.WorkSpace2D._grid.getChildAt(i);
 				
-				var vertex_old2:Vector.<Number>= (room2d as Object2D_Room)._vertexVec2;
-				var vertex_old3:Vector.<Number>= (room2d as Object2D_Room)._vertexVec3;
-				
-				var vertex_new:Vector.<Number>=new Vector.<Number>;
-				var vertex_new2:Vector.<Number>=new Vector.<Number>;
-				var vertex_new3:Vector.<Number>=new Vector.<Number>;
-				
-				if(room2d.className=="Object2D_Room"&&room2d.visible)
+				if(obj is Object2D_Room)
+					
 				{
-					for(var j:int=0;j<vertex_old.length;j+=2)
+					var room2d:Object2D_Room= obj as Object2D_Room;		
+					var vertex_old:Vector.<Number>= (room2d as Object2D_Room)._vertexVec1;
+				
+					var vertex_old2:Vector.<Number>= (room2d as Object2D_Room)._vertexVec2;
+					var vertex_old3:Vector.<Number>= (room2d as Object2D_Room)._vertexVec3;
+				
+					var vertex_new:Vector.<Number>=new Vector.<Number>;
+					var vertex_new2:Vector.<Number>=new Vector.<Number>;
+					var vertex_new3:Vector.<Number>=new Vector.<Number>;
+					
+					if(room2d.className=="Object2D_Room"&&room2d.visible)
 					{
-						vertex_new.push(room2d.x+vertex_old[j]-3200);
-						vertex_new.push(-room2d.y+vertex_old[j+1]+3200);
+						for(var j:int=0;j<vertex_old.length;j+=2)
+						{
+							vertex_new.push(room2d.x+vertex_old[j]-3200);
+							vertex_new.push(-room2d.y+vertex_old[j+1]+3200);
 						
-						vertex_new2.push(room2d.x+vertex_old2[j]-3200);
-						vertex_new2.push(-room2d.y+vertex_old2[j+1]+3200);
+							vertex_new2.push(room2d.x+vertex_old2[j]-3200);
+							vertex_new2.push(-room2d.y+vertex_old2[j+1]+3200);
 						
-						vertex_new3.push(room2d.x+vertex_old3[j]-3200);
-						vertex_new3.push(-room2d.y+vertex_old3[j+1]+3200);
+							vertex_new3.push(room2d.x+vertex_old3[j]-3200);
+							vertex_new3.push(-room2d.y+vertex_old3[j+1]+3200);
+						}
+						parentApplication.WorkSpace3D.AddRoom(vertex_new,vertex_new2,vertex_new3,room2d._floor._floorTex, room2d.name);				    
 					}
-					parentApplication.WorkSpace3D.AddRoom(vertex_new,vertex_new2,vertex_new3,room2d._floor._floorTex, room2d.name);				    
 				}
 			}
 			//隔墙 
@@ -166,12 +172,22 @@
 			parentApplication.WorkSpace2D.WorkSpace2D.ShowCenter();
 		}
 		
+		import zszh_Core.CommandManager;
+		private function UnDo(event:MouseEvent):void
+		{
+			CommandManager.Instance.Undo();
+		}
+		
+		private function ReDo(event:MouseEvent):void
+		{
+			CommandManager.Instance.Redo();
+		}
 	]]>
 	</fx:Script>
 	
 	<s:Image source="@Embed('embeds/ToolsBar/toolBar_Bg.png')"  />
-	<s:Button id="Button1" name="Button1" x="35" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button1_down}" buttonMode="true" />
-	<s:Button id="Button2" name="Button2" x="70" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button2_down}" buttonMode="true" />
+	<s:Button id="Button1" name="Button1" x="35" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button1_down}" buttonMode="true" click="UnDo(event)" />
+	<s:Button id="Button2" name="Button2" x="70" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button2_down}" buttonMode="true" click="ReDo(event)" />
 	
 	<s:Button id="Button3" name="Button3" x="125" verticalCenter="0" width="25" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button3_down}" buttonMode="true" click="SaveToXML(event)"/>
 	<s:Button id="Button4" name="Button4" x="170" verticalCenter="0" width="30" height="25" skinClass="zszh_ToolsBar.Skin_ToolsBarBt" icon="{Button4_down}" buttonMode="true" />

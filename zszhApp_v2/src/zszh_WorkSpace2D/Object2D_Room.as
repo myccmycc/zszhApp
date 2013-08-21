@@ -1,8 +1,11 @@
 package zszh_WorkSpace2D
 {
 	import flash.geom.Point;
+	
+	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
-
+	
+	import zszh_Core.CommandManager;
 
 	public class Object2D_Room extends Object2D_Base
 	{
@@ -33,7 +36,7 @@ package zszh_WorkSpace2D
 		
 		public function DeleteThisRoom():void
 		{
-			this.visible=false;
+			CommandManager.Instance.Delete(this.parent as UIComponent,this);
 		}
 		
 		public function SetAllSelected(b:Boolean):void
