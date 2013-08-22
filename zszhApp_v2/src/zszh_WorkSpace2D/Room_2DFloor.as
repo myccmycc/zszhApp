@@ -135,9 +135,9 @@ package zszh_WorkSpace2D
 			for(var i:int=0;i<vectex.length;i+=2)
 			{
 				var p1:Point=new Point(vectex[i],vectex[i+1]);
-				var p2:Point=new Point(vectex[(i+2)%vectex.length],vectex[(i+3)%vectex.length]);
-				var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
-				points.push(p1p2);
+				//var p2:Point=new Point(vectex[(i+2)%vectex.length],vectex[(i+3)%vectex.length]);
+				//var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
+				points.push(p1);
 			}
 			
 			var mArea:int=GetPolygonArea(points);
@@ -148,61 +148,59 @@ package zszh_WorkSpace2D
 			var iPos:int=0;
 			while(vectex.length>=6)
 			{
-				var p1:Point=new Point(vectex[iPos%vectex.length],vectex[(iPos+1)%vectex.length]);
-				var p2:Point=new Point(vectex[(iPos+2)%vectex.length],vectex[(iPos+3)%vectex.length]);
-				var p3:Point=new Point(vectex[(iPos+4)%vectex.length],vectex[(iPos+5)%vectex.length]);
-					 
-				var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
-				var p2p3:Point=new Point(p3.x-p2.x,p3.y-p2.y);
-				var p3p1:Point=new Point(p1.x-p3.x,p1.y-p3.y);
+				var index11:int=iPos%vectex.length;
+				var index12:int=(iPos+1)%vectex.length;
+				var index21:int=(iPos+2)%vectex.length;
+				var index22:int=(iPos+3)%vectex.length;
+				var index31:int=(iPos+4)%vectex.length;
+				var index32:int=(iPos+5)%vectex.length;
+				
+				var p1:Point=new Point(vectex[index11],vectex[index12]);
+				var p2:Point=new Point(vectex[index21],vectex[index22]);
+				var p3:Point=new Point(vectex[index31],vectex[index32]);
 					 
 				var points:Vector.<Point>=new Vector.<Point>;
-				points.push(p1p2);
-				points.push(p2p3);
-				points.push(p3p1);
+				points.push(p1);
+				points.push(p2);
+				points.push(p3);
 					 
-				var test:Number = GetPolygonArea(points);
+				var area:Number = GetPolygonArea(points);  //area==0 it is mean that the points on the same line
 				
-				//test==0 it is mean that the points on the same line
-					 
-				if(test>0||vectex.length==6)
-				{     
-					var bCover:Boolean=false;//是否有其他 顶点在三角形中。。。
-					/*for(var i:int=0;i<vectex.length;i+=2)
+				var bCover:Boolean=false;//是否有其他 顶点在三角形中。。。
+				for(var i:int=0;i<vectex.length;i+=2)
+				{
+					if(i!=index11&&i!=index21&&i!=index31)
 					{
-						if(!b&&i<iPos||i>iPos+5)
-						{
-							b=PointinTriangle(p1,p2,p3,new Point(vectex[i],vectex[i+1]));
-						}
-					}*/
-						 
-						 
-					if(!bCover)//凸点
-					{
-						mArea-=test;
-						vectex.splice((iPos+2)%vectex.length,2);
-						
-						graphics.lineStyle(1,0x00ff00);
-							 
-						graphics.moveTo(p1.x,-p1.y);
-						graphics.lineTo(p3.x,-p3.y);
-		 
-						//graphics.endFill();
-
-						//vertex
-						var vertexVec:Vector.<Number>=new Vector.<Number>();
-						vertexVec.push(p1.x,-p1.y,p2.x,-p2.y,p3.x,-p3.y);
-						//indice
-						var indiceVec:Vector.<int>=new Vector.<int>();
-						indiceVec.push(0,1,2);
-						//uv
-						var uvVec:Vector.<Number>=new Vector.<Number>();
-						uvVec.push(p1.x/_uvScale,-p1.y/_uvScale,p2.x/_uvScale,-p2.y/_uvScale,p3.x/_uvScale,-p3.y/_uvScale);
-
-						graphics.drawTriangles(vertexVec,indiceVec,uvVec);
-						
-						continue;
+						bCover=PointinTriangle(p1,p2,p3,new Point(vectex[i],vectex[i+1]));
+						if(bCover)
+							break;
 					}
+				}
+					 
+				if(!bCover && area>=0||vectex.length==6)
+				{     
+					vectex.splice((iPos+2)%vectex.length,2);
+					graphics.lineStyle(1,0xffff00);
+							 
+					graphics.moveTo(p1.x,-p1.y);
+					graphics.lineTo(p3.x,-p3.y);
+		 
+					//graphics.endFill();
+
+					//vertex
+					var vertexVec:Vector.<Number>=new Vector.<Number>();
+					vertexVec.push(p1.x,-p1.y,p2.x,-p2.y,p3.x,-p3.y);
+					//indice
+					var indiceVec:Vector.<int>=new Vector.<int>();
+					indiceVec.push(0,1,2);
+					//uv
+					var uvVec:Vector.<Number>=new Vector.<Number>();
+					uvVec.push(p1.x/_uvScale,-p1.y/_uvScale,p2.x/_uvScale,-p2.y/_uvScale,p3.x/_uvScale,-p3.y/_uvScale);
+
+					graphics.drawTriangles(vertexVec,indiceVec,uvVec);
+						
+					continue;
+					 
 				}
 				
 				iPos+=2;
@@ -304,18 +302,18 @@ package zszh_WorkSpace2D
 			var inverDeno = 1 / (dot00 * dot11 - dot01 * dot01) ;
 			
 			var u = (dot11 * dot02 - dot01 * dot12) * inverDeno ;
-			if (u < 0 || u > 1) // if u out of range, return directly
+			if (u <= 0 || u >=1) // if u out of range, return directly  =0在A点，1在B点
 			{
 				return false ;
 			}
 			
 			var v = (dot00 * dot12 - dot01 * dot02) * inverDeno ;
-			if (v < 0 || v > 1) // if v out of range, return directly
+			if (v <=0 || v >= 1) // if v out of range, return directly  =0在A点，1在C点
 			{
 				return false ;
 			}
 			
-			return u + v <= 1 ;
+			return u + v < 1 ; //u+v ==1 是在线上，在这里不算在三角形内。
 		}
 
 		public static function GetPolygonArea(points:Vector.<Point>):Number
@@ -324,19 +322,15 @@ package zszh_WorkSpace2D
 				return 0;
 			}
 			var result:Number = 0;
-			for (var i:int = 0; i < points.length - 1; i++) {//见任意多边形的面积公式
-				var a:Point = points[i];
-				var b:Point = points[i+1];
-				var d:Number=b.x*a.y-b.y*a.x;
+			for (var i:int = 1; i < points.length - 1; i++) {
 				
-				result += b.x*a.y-b.y*a.x;
-				
+				var p0:Point = points[0];
+				var pi1:Point = points[i];
+				var pi2:Point = points[i+1];
+				var area:Number=-(pi1.x-p0.x)*(pi2.y-p0.y)+(pi2.x-p0.x)*(pi1.y-p0.y);
+				result += area;
 			}
-			var begin:Point = points[0];//特殊处理最后一条边,避免在循环中使用if
-			var end:Point   = points[points.length - 1];
-			
-			result += end.x*begin.y-end.y*begin.x;
-			result *= 0.5;//记得取一半
+			result *= 0.5;
 			return result;
 		}
 	}

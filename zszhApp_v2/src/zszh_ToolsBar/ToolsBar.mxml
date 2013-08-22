@@ -15,8 +15,11 @@
 		import zszh_WorkSpace2D.Object2D_Model;
 		import zszh_WorkSpace2D.Object2D_PartitionWall;
 		import zszh_WorkSpace2D.Object2D_Room;
+		import zszh_WorkSpace2D.WorkSpace2DContainer;
+		import zszh_WorkSpace2D.WorkSpace2D;
 		
 		import zszh_WorkSpace3D.Model_3D;
+		import zszh_WorkSpace3D.WorkSpace3D;
 		[Embed(source="embeds/ToolsBar/toolbar_1.png")]
 		public var Button1_down:Class;
 		[Embed(source="embeds/ToolsBar/toolbar_2.png")]
@@ -40,20 +43,25 @@
 		[Embed(source="embeds/ToolsBar/toolbar_11.png")]
 		public var Button11_down:Class;
 
+		private var _work2D:WorkSpace2D;
+		private var _work3D:WorkSpace3D;
+		private var _work2DContainer:WorkSpace2DContainer;
+		
 		protected function skinnablecontainer_initializeHandler(event:FlexEvent):void
 		{
-			// TODO Auto-generated method stub
-			
+			_work2D=parentApplication.WorkSpace2DContainer.WorkSpace2D;
+			_work3D=parentApplication.WorkSpace3D;
+			_work2DContainer=parentApplication.WorkSpace2DContainer;
 		}
 		
 		protected function SaveToXML(event:MouseEvent):void
 		{
-			parentApplication.WorkSpace2D.WorkSpace2D.SaveToXML("SaveTest.xml");
+			_work2D.SaveToXML("SaveTest.xml");
 		}
 		protected function ShowWorkspace2D(event:MouseEvent):void
 		{
 			//updata 2d model position
-			var _models3D:ObjectContainer3D=parentApplication.WorkSpace3D._modelsContainer3D;
+			/*var _models3D:ObjectContainer3D=parentApplication.WorkSpace3D._modelsContainer3D;
 			for(var i:int=0;i<_models3D.numChildren;i++)
 			{
 				var model3d:Model_3D = _models3D.getChildAt(i) as Model_3D;
@@ -71,99 +79,68 @@
 						break;
 					}
 				}
-			}	
+			}	*/
 				
 			parentApplication.WorkspaceBack.visible=true;
-			parentApplication.WorkSpace3D.visible=false;
-			parentApplication.WorkSpace2D.visible=true;
+			_work3D.visible=false;
+			_work2DContainer.visible=true;
 		}
 		
 		protected function ShowWorkspace3D(event:MouseEvent):void
 		{
 			parentApplication.WorkspaceBack.visible=false;
-				parentApplication.WorkSpace3D.ClearRoom();
 			
-			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._grid.numChildren;i++)
-			{
-				var obj:DisplayObject=parentApplication.WorkSpace2D.WorkSpace2D._grid.getChildAt(i);
+			Show3DRooms();
+			
+
+			_work3D.visible=true;
+			_work2D.SetAllNoSelected();
+			_work2D.GetBounds();
+			_work3D._cameraCenter.x=(_work2D._xMax-_work2D._xMin)/2+_work2D._xMin-3200;
+			_work3D._cameraCenter.z=-(_work2D._yMax-_work2D._yMin)/2-_work2D._yMin+3200;
 				
-				if(obj is Object2D_Room)
-					
-				{
-					var room2d:Object2D_Room= obj as Object2D_Room;		
-					var vertex_old:Vector.<Number>= (room2d as Object2D_Room)._vertexVec1;
 				
-					var vertex_old2:Vector.<Number>= (room2d as Object2D_Room)._vertexVec2;
-					var vertex_old3:Vector.<Number>= (room2d as Object2D_Room)._vertexVec3;
-				
-					var vertex_new:Vector.<Number>=new Vector.<Number>;
-					var vertex_new2:Vector.<Number>=new Vector.<Number>;
-					var vertex_new3:Vector.<Number>=new Vector.<Number>;
-					
-					if(room2d.className=="Object2D_Room"&&room2d.visible)
-					{
-						for(var j:int=0;j<vertex_old.length;j+=2)
-						{
-							vertex_new.push(room2d.x+vertex_old[j]-3200);
-							vertex_new.push(-room2d.y+vertex_old[j+1]+3200);
-						
-							vertex_new2.push(room2d.x+vertex_old2[j]-3200);
-							vertex_new2.push(-room2d.y+vertex_old2[j+1]+3200);
-						
-							vertex_new3.push(room2d.x+vertex_old3[j]-3200);
-							vertex_new3.push(-room2d.y+vertex_old3[j+1]+3200);
-						}
-						parentApplication.WorkSpace3D.AddRoom(vertex_new,vertex_new2,vertex_new3,room2d._floor._floorTex, room2d.name);				    
-					}
-				}
-			}
+			_work2DContainer.visible=false;
+			
 			//隔墙 
-		parentApplication.WorkSpace3D.ClearWallInside();
+			/*parentApplication.WorkSpace3D.ClearWallInside();
 			
 			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._wall2DVec.length;i++)
 			{
-				var wallInside:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._wall2DVec[i] as UIComponent;					
-				if(wallInside.className=="Wall_2D")
-				{
-					var pos:Array=new Array;
-					var vertex_old:Vector.<Number>= (wallInside as Object2D_PartitionWall)._vertexVec;
-					var vertex_new:Vector.<Number>=new Vector.<Number>;
-					
-					for(var j:int=0;j<vertex_old.length;j+=2)
-					{
-						vertex_new.push(wallInside.x+vertex_old[j]-3200);
-						vertex_new.push(-wallInside.y-vertex_old[j+1]+3200);
-					}
-					parentApplication.WorkSpace3D.AddWallInside(vertex_new,wallInside.name);	 
-				}
-				
-				
+			var wallInside:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._wall2DVec[i] as UIComponent;					
+			if(wallInside.className=="Wall_2D")
+			{
+			var pos:Array=new Array;
+			var vertex_old:Vector.<Number>= (wallInside as Object2D_PartitionWall)._vertexVec;
+			var vertex_new:Vector.<Number>=new Vector.<Number>;
+			
+			for(var j:int=0;j<vertex_old.length;j+=2)
+			{
+			vertex_new.push(wallInside.x+vertex_old[j]-3200);
+			vertex_new.push(-wallInside.y-vertex_old[j+1]+3200);
 			}
-						
+			parentApplication.WorkSpace3D.AddWallInside(vertex_new,wallInside.name);	 
+			}
+			
+			
+			}
+			
 			//模型创建
 			parentApplication.WorkSpace3D.ClearModels();
 			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._modelsVec.length;i++)
 			{
-				var modelBed:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._modelsVec[i] as UIComponent;					
-				if(modelBed.className=="Object2D_Model")
-				{
-					var mbed:Object2D_Model = modelBed as Object2D_Model;
-					var mPos:Vector3D=new Vector3D();
-					mPos.x=mbed.x+mbed.width/2-3200;
-					mPos.y=0;
-					mPos.z=-mbed.y-mbed.height/2+3200;
-					parentApplication.WorkSpace3D.AddModels(mbed._resourcePath,mbed._modelName,mPos,mbed.name);    
-				}
+			var modelBed:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._modelsVec[i] as UIComponent;					
+			if(modelBed.className=="Object2D_Model")
+			{
+			var mbed:Object2D_Model = modelBed as Object2D_Model;
+			var mPos:Vector3D=new Vector3D();
+			mPos.x=mbed.x+mbed.width/2-3200;
+			mPos.y=0;
+			mPos.z=-mbed.y-mbed.height/2+3200;
+			parentApplication.WorkSpace3D.AddModels(mbed._resourcePath,mbed._modelName,mPos,mbed.name);    
 			}
+			}*/
 			
-			parentApplication.WorkSpace3D.visible=true;
-			parentApplication.WorkSpace2D.WorkSpace2D.SetAllNoSelected();
-			parentApplication.WorkSpace2D.WorkSpace2D.GetBounds();
-			parentApplication.WorkSpace3D._cameraCenter.x=(parentApplication.WorkSpace2D.WorkSpace2D._xMax-parentApplication.WorkSpace2D.WorkSpace2D._xMin)/2+parentApplication.WorkSpace2D.WorkSpace2D._xMin-3200;
-			parentApplication.WorkSpace3D._cameraCenter.z=-(parentApplication.WorkSpace2D.WorkSpace2D._yMax-parentApplication.WorkSpace2D.WorkSpace2D._yMin)/2-parentApplication.WorkSpace2D.WorkSpace2D._yMin+3200;
-				
-				
-			parentApplication.WorkSpace2D.visible=false;
 			
 		}
 		
@@ -181,6 +158,47 @@
 		private function ReDo(event:MouseEvent):void
 		{
 			CommandManager.Instance.Redo();
+		}
+		
+		private function Show3DRooms():void
+		{
+			_work3D.ClearRoom();
+			
+			
+			for(var i:int=0;i<_work2D._grid.numChildren;i++)
+			{
+				var obj:DisplayObject=_work2D._grid.getChildAt(i);
+				
+				if(obj is Object2D_Room)
+					
+				{
+					var room2d:Object2D_Room= obj as Object2D_Room;		
+					var vertex_old:Vector.<Number>= (room2d as Object2D_Room)._vertexVec1;
+					
+					var vertex_old2:Vector.<Number>= (room2d as Object2D_Room)._vertexVec2;
+					var vertex_old3:Vector.<Number>= (room2d as Object2D_Room)._vertexVec3;
+					
+					var vertex_new:Vector.<Number>=new Vector.<Number>;
+					var vertex_new2:Vector.<Number>=new Vector.<Number>;
+					var vertex_new3:Vector.<Number>=new Vector.<Number>;
+					
+					if(room2d.className=="Object2D_Room"&&room2d.visible)
+					{
+						for(var j:int=0;j<vertex_old.length;j+=2)
+						{
+							vertex_new.push(room2d.x+vertex_old[j]-3200);
+							vertex_new.push(-room2d.y+vertex_old[j+1]+3200);
+							
+							vertex_new2.push(room2d.x+vertex_old2[j]-3200);
+							vertex_new2.push(-room2d.y+vertex_old2[j+1]+3200);
+							
+							vertex_new3.push(room2d.x+vertex_old3[j]-3200);
+							vertex_new3.push(-room2d.y+vertex_old3[j+1]+3200);
+						}
+						_work3D.AddRoom(vertex_new,vertex_new2,vertex_new3,room2d._floor._floorTex, room2d.name);				    
+					}
+				}
+			}
 		}
 	]]>
 	</fx:Script>

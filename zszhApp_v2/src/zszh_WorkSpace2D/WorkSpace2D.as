@@ -36,7 +36,6 @@ package zszh_WorkSpace2D
 		public function WorkSpace2D()
 		{
 			super();
-			
 			this.addEventListener(MouseEvent.MOUSE_DOWN,MouseDown);
 			this.addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
 			this.addEventListener(ResizeEvent.RESIZE,OnResize);
@@ -44,7 +43,7 @@ package zszh_WorkSpace2D
 		
 		public function SaveToXML(strPath:String):void
 		{	
-			var xml:XML = <Root></Root>;
+			/*var xml:XML = <Root></Root>;
 			{
 				for(var i:int=0;i<_room2DVec.length;i++)
 				{
@@ -110,12 +109,12 @@ package zszh_WorkSpace2D
 			httpPost.resultFormat="xml";
 			//httpPost.contentType="application/xml";
 			//httpPost.request=data;
-			httpPost.send(data);
+			httpPost.send(data);*/
 			
 		}
 		public function LoadFromXML(strPath:String):void
 		{
-			var myXML:XML=new XML();
+			/*var myXML:XML=new XML();
 			var myURLLoader:URLLoader = new URLLoader(new URLRequest(strPath));
 			myURLLoader.addEventListener("complete", xmlLoaded);
 			
@@ -193,8 +192,10 @@ package zszh_WorkSpace2D
 					}
 				}
 				
-			}
+			}*/
 		}
+		
+		
 		private function MouseDown(e:MouseEvent):void
 		{
 			SetAllNoSelected();
@@ -203,9 +204,9 @@ package zszh_WorkSpace2D
 		{
 			for(var i:int=0;i<_grid.numChildren;i++)
 			{
-				var dis:DisplayObject=_grid.getChildAt(i);
-				if(dis is Object2D_Base)
-					(dis as Object2D_Base).SetSelected(false);
+				var obj:DisplayObject=_grid.getChildAt(i);
+				if(obj is Object2D_Base)
+					(obj as Object2D_Base).SetSelected(false);
 			}
 		}
 		

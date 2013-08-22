@@ -5,8 +5,8 @@
 			   backgroundAlpha="0" xmlns:ns5="zszh_Products_old.*" xmlns:ns2="zszh_WorkSpace2D.*"  xmlns:ns6="zszh_Products_new.*" preloader="zszh_Loading" initialize="application1_initializeHandler(event)" xmlns:ns4="zszh_ToolsBar.*" resize="application_resizeHandler(event)">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		<s:Fade id="fadein" alphaFrom="0" alphaTo="1" duration="1000"/>
-		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0" duration="1000"/>
+		<s:Fade id="fadein" alphaFrom="0" alphaTo="1" duration="500"/>
+		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0" duration="500"/>
 	</fx:Declarations>
 	
 	<fx:Style>
@@ -156,7 +156,7 @@
 					if(currentDoc)
 					{
 						//保存现有文件
-						WorkSpace2D.WorkSpace2D.SaveToXML(currentDoc);
+						WorkSpace2DContainer.WorkSpace2D.SaveToXML(currentDoc);
 					}
 					else 
 					{
@@ -254,7 +254,7 @@
 		<s:SkinnableContainer id="WorkSpaceContainer"   depth="7" x="0" width="100%" height="100%" backgroundColor="#000000"  backgroundAlpha="0">
 			<ns:WorkSpace3D id="WorkSpace3D" width="100%" height="100%" visible="false"/>
 			
-			<ns2:WS2D_MainContainer  id="WorkSpace2D" backgroundAlpha="0"  backgroundColor="0x2f3243" width="100%" height="100%" visible="true"/>
+			<ns2:WorkSpace2DContainer  id="WorkSpace2DContainer" backgroundAlpha="0"  backgroundColor="0x2f3243" width="100%" height="100%" visible="true"/>
 			
 			<ns4:ToolsBar id="ToolsBar" top="1" horizontalCenter="0"/>
 			
