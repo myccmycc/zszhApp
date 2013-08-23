@@ -226,13 +226,15 @@ package zszh_WorkSpace2D
 			if(!bStart)
 				return;
 			ShowCursorCorner(new Point(this.mouseX,this.mouseY),_rotation);
-			MoveWall(_postionInRoom);
-			startPoint.x=this.mouseX;
-			startPoint.y=this.mouseY;
+			if(MoveWall(_postionInRoom))
+			{
+				startPoint.x=this.mouseX;
+				startPoint.y=this.mouseY;
+			}
 		}
 		
 		
-		private function MoveWall(i:int):void
+		private function MoveWall(i:int):Boolean
 		{
 			var thisRoom:Object2D_Room=(this.parent as Object2D_Room);
 			
@@ -308,25 +310,22 @@ package zszh_WorkSpace2D
 			
 			
 			//求POP1，P3P2和  AX+BY+C2 两个交点
-			
-			
-			
 			var i1:Point=intersection(P0,P1,A,B,C2);
 			
 			var i2:Point=intersection(P3,P2,A,B,C2);
 			
-			
-			
-			trace("i1"+i1);
-			
-			trace("i2"+i2);
+		
 			
 			if(i1.x!=Number.POSITIVE_INFINITY && i2.x!=Number.POSITIVE_INFINITY)
 			{
-				trace("i1g"+i1);
+				var vertex:Vector.<Number>=new Vector.<Number>;
+				for(var j:int=0;j<thisRoom._vertexVec1.length;j++)
+					vertex.push(thisRoom._vertexVec1[j]);
 				
-				trace("i2g"+i2);
-				
+				var isInter:Boolean=Object2D_Room.SelfIntersection(vertex,i+2);
+				if(isInter)
+					return false;
+								
 				thisRoom._vertexVec1[(i+2)%vecLen]=(int)(i1.x);
 				
 				thisRoom._vertexVec1[(i+3)%vecLen]=(int)(-i1.y);
@@ -335,9 +334,13 @@ package zszh_WorkSpace2D
 				
 				thisRoom._vertexVec1[(i+5)%vecLen]=(int)(-i2.y);
 				
+				thisRoom.Object2DUpdate();
+				
+				return true;
+				
 			}
 			
-			thisRoom.Object2DUpdate();
+			return false;
 		}
 		
 		private static function intersection( a:Point, b:Point, A2:Number, B2:Number, C2:Number ):Point
@@ -347,6 +350,14 @@ package zszh_WorkSpace2D
 			A1 = b.y - a.y;
 			B1 = a.x - b.x;
 			C1 = b.x * a.y - a.x * b.y;
+			
+			//当两个点为同一个点的时候
+			if(a.x==b.x&&a.y==b.y)
+			{
+				A1 = B2;
+				B1 = -A2;
+				C1 = -A1*a.x-B1*a.y;
+			}
 
 			if (A1 * B2 == B1 * A2)    {
 				if ((A1 + B1) * C2==(A2 + B2) * C1 ) {

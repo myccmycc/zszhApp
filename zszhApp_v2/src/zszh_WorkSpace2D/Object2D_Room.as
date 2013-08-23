@@ -221,6 +221,72 @@ package zszh_WorkSpace2D
 			}
 		}
 		
+		private static function Direction(p0:Point,p1:Point,p2:Point):int
+		{
+			var p0p1:Point=new Point(p1.x-p0.x,p1.y-p0.y);
+			var p0p2:Point=new Point(p2.x-p0.x,p2.y-p0.y);
+			
+			var cross:int=p0p1.x*p0p2.y-p0p1.y*p0p2.x;
+			return cross;
+		}
+		
+		private static function IsSegmentIntersection( p0:Point,p1:Point,p2:Point,p3:Point ):Boolean
+		{
+			var d1:int=Direction(p0,p1,p2);var d2:int=Direction(p0,p1,p3);
+			var t1:int=Direction(p2,p3,p0);var t2:int=Direction(p2,p3,p1);
+			if(d1*d2<0&&t1*t2<0) return true;
+			return false;
+			//if(!d1&&OnSegment();)
+		}
+		
+		//多边形自相交检测
+		public static function SelfIntersection(vertex:Vector.<Number>,pos:int):Boolean
+		{
+			
+			var len:int=vertex.length;
+			var P0:Point=new Point(vertex[(pos)%len],vertex[(pos+1)%len]);
+			var P1:Point=new Point(vertex[(pos+2)%len],vertex[(pos+3)%len]);
+			
+			for(var i:int=4;i<len-2;i+=2)
+			{
+				var P2:Point=new Point(vertex[(pos+i)%len],vertex[(pos+i+1)%len]);
+				var P3:Point=new Point(vertex[(pos+i+2)%len],vertex[(pos+i+3)%len]);
+				
+				//被包含1
+				if(P1.x==P2.x&&P1.y==P2.y)
+				{
+					if(Direction(P2,P3,P0)==0)
+					{
+						var minX:Number=Math.min(P2.x,P3.x);
+						var minY:Number=Math.min(P2.y,P3.y);
+						var maxX:Number=Math.max(P2.x,P3.x);
+						var maxY:Number=Math.max(P2.y,P3.y);
+						if(P0.x>=minX&&P0.x<=maxX&&P0.y>=minY&&P0.y<=maxY)
+							return true;
+					}
+				}	
+				
+				//被包含2
+				if(P0.x==P3.x&&P0.y==P3.y)
+				{
+					if(Direction(P2,P3,P1)==0)
+					{
+						var minX:Number=Math.min(P2.x,P3.x);
+						var minY:Number=Math.min(P2.y,P3.y);
+						var maxX:Number=Math.max(P2.x,P3.x);
+						var maxY:Number=Math.max(P2.y,P3.y);
+						if(P1.x>=minX&&P1.x<=maxX&&P1.y>=minY&&P1.y<=maxY)
+							return true;
+					}
+				}
+				
+				var isInter:Boolean=IsSegmentIntersection(P0,P1,P2,P3);
+				if(isInter)
+					return true;
+			}
+			
+			return false;
+		}
 
 	}
 }
