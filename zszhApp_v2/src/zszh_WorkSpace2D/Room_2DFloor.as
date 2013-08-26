@@ -52,6 +52,8 @@ package zszh_WorkSpace2D
 			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
 			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
 			
+			var room_2d:Object2D_Room=this.parent as Object2D_Room;
+			
 			if(className=="diban")
 			{
 				_floorTex=resourcePath+"texture.jpg";
@@ -65,11 +67,28 @@ package zszh_WorkSpace2D
 					Update();
 				}
 			}
+			
+			else if(className=="Wall_2D")
+			{
+				var wall:Object2D_PartitionWall =new Object2D_PartitionWall(classArgument);
+				wall.x=event.localX;
+				wall.y=event.localY;
+				wall.name=wall.className+room_2d.numChildren;
+				CommandManager.Instance.Add(room_2d,wall);
+			}
+			
+			else if(className=="model")
+			{
+				var model:Object2D_Model=new Object2D_Model(resourcePath,objectName);
+				model.x=event.localX;
+				model.y=event.localY;
+				model.name=model.className+room_2d.numChildren;
+				CommandManager.Instance.Add(room_2d,model);
+			}
 		}
 		public function SetSelected(b:Boolean):void
 		{
 			_selected=b;
-			Update();
 		}
 		public function GetSelected():Boolean
 		{
@@ -130,24 +149,20 @@ package zszh_WorkSpace2D
 				vectex.push(room_2d._vertexVec1[i]);
 			}
 			
-			//多边形面积
-			var points:Vector.<Point>=new Vector.<Point>;
-			for(var i:int=0;i<vectex.length;i+=2)
-			{
-				var p1:Point=new Point(vectex[i],vectex[i+1]);
-				//var p2:Point=new Point(vectex[(i+2)%vectex.length],vectex[(i+3)%vectex.length]);
-				//var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
-				points.push(p1);
-			}
-			
-			var mArea:int=GetPolygonArea(points);
-			trace("面积：",mArea);
-			 
-			
 			//三角分解
 			var iPos:int=0;
 			while(vectex.length>=6)
 			{
+				//多边形面积
+				var testPoints:Vector.<Point>=new Vector.<Point>;
+				for(i=0;i<vectex.length;i+=2)
+					testPoints.push(new Point(vectex[i],vectex[i+1]));
+				
+				var testArea:Number = GetPolygonArea(testPoints);
+				
+				if(testArea<=0)
+					break;
+				
 				var index11:int=iPos%vectex.length;
 				var index12:int=(iPos+1)%vectex.length;
 				var index21:int=(iPos+2)%vectex.length;
@@ -167,7 +182,7 @@ package zszh_WorkSpace2D
 				var area:Number = GetPolygonArea(points);  //area==0 it is mean that the points on the same line
 				
 				var bCover:Boolean=false;//是否有其他 顶点在三角形中。。。
-				for(var i:int=0;i<vectex.length;i+=2)
+				for(i=0;i<vectex.length;i+=2)
 				{
 					if(i!=index11&&i!=index21&&i!=index31)
 					{
@@ -227,12 +242,15 @@ package zszh_WorkSpace2D
 		private function FloorMouseOut(e:MouseEvent):void
 		{
 			CursorManager.removeAllCursors();
+			_bMouseDow=false;
 		}
 		
 		private var _oldPos:Point;
+		private var _bMouseDow:Boolean=false;
 		private function FloorMouseDown(e:MouseEvent):void
 		{
 			SetSelected(false);
+			_bMouseDow=true;
 			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			if(room_2d.GetSelected())
 			{
@@ -245,18 +263,24 @@ package zszh_WorkSpace2D
 		
 		private function FloorMouseUp(e:MouseEvent):void
 		{
+			if(!_bMouseDow)
+				return ;
+			
 			var room_2d:Object2D_Room=(this.parent as Object2D_Room);
 			if(room_2d.GetSelected())
 			{
 				room_2d.stopDrag();
 				
-				if(_oldPos.x!=room_2d.x || _oldPos.y!=room_2d.y)
+				//jl.hu not fixed 
+				if(_oldPos!=null && (_oldPos.x!=room_2d.x || _oldPos.y!=room_2d.y))
 				{
 					CommandManager.Instance.Move(room_2d,_oldPos,new Point(room_2d.x,room_2d.y));
 				}
 				//e.stopPropagation();
 			}
 			else room_2d.SetSelected(true);
+			
+			_bMouseDow=false;
 		}
 		private function FloorMouseClick(e:MouseEvent):void
 		{
@@ -287,27 +311,27 @@ package zszh_WorkSpace2D
 		
 		
 		//--------------some private function----------------------------------------
-		private function PointinTriangle( A:Point, B:Point, C:Point, P:Point):Boolean
+		public static function PointinTriangle( A:Point, B:Point, C:Point, P:Point):Boolean
 		{
 			var  v0:Point =new Point(C.x - A.x,C.y-A.y) ;
 			var  v1:Point =new Point(B.x - A.x,B.y-A.y) ;
 			var  v2:Point =new Point(P.x - A.x,P.y-A.y) ;
 			
-			var dot00 = v0.x*v0.x+v0.y*v0.y;
-			var dot01 = v0.x*v1.x+v0.y*v1.y;
-			var dot02 = v0.x*v2.x+v0.y*v2.y;
-			var dot11 = v1.x*v1.x+v1.y*v1.y;
-			var dot12 = v1.x*v2.x+v1.y*v2.y;
+			var dot00:Number = v0.x*v0.x+v0.y*v0.y;
+			var dot01:Number = v0.x*v1.x+v0.y*v1.y;
+			var dot02:Number = v0.x*v2.x+v0.y*v2.y;
+			var dot11:Number = v1.x*v1.x+v1.y*v1.y;
+			var dot12:Number = v1.x*v2.x+v1.y*v2.y;
 			
-			var inverDeno = 1 / (dot00 * dot11 - dot01 * dot01) ;
+			var inverDeno:Number = 1 / (dot00 * dot11 - dot01 * dot01) ;
 			
-			var u = (dot11 * dot02 - dot01 * dot12) * inverDeno ;
+			var u:Number = (dot11 * dot02 - dot01 * dot12) * inverDeno ;
 			if (u <= 0 || u >=1) // if u out of range, return directly  =0在A点，1在B点
 			{
 				return false ;
 			}
 			
-			var v = (dot00 * dot12 - dot01 * dot02) * inverDeno ;
+			var v:Number = (dot00 * dot12 - dot01 * dot02) * inverDeno ;
 			if (v <=0 || v >= 1) // if v out of range, return directly  =0在A点，1在C点
 			{
 				return false ;

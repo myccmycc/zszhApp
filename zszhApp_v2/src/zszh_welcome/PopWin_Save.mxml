@@ -68,7 +68,7 @@
 			}
 			
 			
-			public function GetSnapshot()
+			public function GetSnapshot():void
 			{
 				/*var imageSnap:ImageSnapshot = ImageSnapshot.captureImage(text1); 
 				var imageByteArray:ByteArray = imageSnap.data as ByteArray; 

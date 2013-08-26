@@ -26,7 +26,7 @@ package zszh_WorkSpace2D
 		public  var _postionInRoom:int;
 		public  var _rotation:Number;
 		
-		
+		[Bindable]
 		[Embed(source="../embeds/rooms/cursor_wall.png")]
 		public var _cursorWall:Class;
 		private var _cursorSprite:Sprite;
@@ -322,9 +322,20 @@ package zszh_WorkSpace2D
 				for(var j:int=0;j<thisRoom._vertexVec1.length;j++)
 					vertex.push(thisRoom._vertexVec1[j]);
 				
-				var isInter:Boolean=Object2D_Room.SelfIntersection(vertex,i+2);
-				if(isInter)
-					return false;
+				vertex[(i+2)%vecLen]=(int)(i1.x);
+				
+				vertex[(i+3)%vecLen]=(int)(-i1.y);
+				
+				vertex[(i+4)%vecLen]=(int)(i2.x);
+				
+				vertex[(i+5)%vecLen]=(int)(-i2.y);
+				
+				for(j=0;j<vertex.length;j+=2)
+				{
+					var isInter:Boolean=Object2D_Room.SelfIntersection(vertex,j);
+					if(isInter)
+						return false;
+				}
 								
 				thisRoom._vertexVec1[(i+2)%vecLen]=(int)(i1.x);
 				

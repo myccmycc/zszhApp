@@ -13,9 +13,9 @@
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
-			var pagesTotal:int;
-			var startPage:int;
-			var endPage:int;
+			private var pagesTotal:int;
+			private var startPage:int;
+			private var endPage:int;
 			
 			
 			protected function skinnablecontainer_initializeHandler(event:FlexEvent):void

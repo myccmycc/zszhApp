@@ -15,7 +15,7 @@ package zszh_WorkSpace2D
 
 	public class Object2D_Model extends Object2D_Base
 	{
-		private var _topImage:Image;
+		public var _topImage:Image;
 		private var _topImageLoader:Loader;
 		
 		private var _boundsColor:uint;

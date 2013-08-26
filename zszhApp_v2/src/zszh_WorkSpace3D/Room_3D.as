@@ -241,76 +241,81 @@ package zszh_WorkSpace3D
 			var iPos:int=0;
 			while(vertexTmp.length>=6)
 			{
-				var len:int=vertexTmp.length;
+				//多边形面积
+				var testPoints:Vector.<Point>=new Vector.<Point>;
+				for(i=0;i<vertexTmp.length;i+=2)
+					testPoints.push(new Point(vertexTmp[i],vertexTmp[i+1]));
 				
-				var p1:Point=new Point(vertexTmp[iPos%len],vertexTmp[(iPos+1)%len]);
-				var p2:Point=new Point(vertexTmp[(iPos+2)%len],vertexTmp[(iPos+3)%len]);
-				var p3:Point=new Point(vertexTmp[(iPos+4)%len],vertexTmp[(iPos+5)%len]);
+				var testArea:Number = Room_2DFloor.GetPolygonArea(testPoints);
 				
-				var p1p2:Point=new Point(p2.x-p1.x,p2.y-p1.y);
-				var p2p3:Point=new Point(p3.x-p2.x,p3.y-p2.y);
-				var p3p1:Point=new Point(p1.x-p3.x,p1.y-p3.y);
+				if(testArea<=0)
+					break;
+				
+				
+				var index11:int=iPos%vertexTmp.length;
+				var index12:int=(iPos+1)%vertexTmp.length;
+				var index21:int=(iPos+2)%vertexTmp.length;
+				var index22:int=(iPos+3)%vertexTmp.length;
+				var index31:int=(iPos+4)%vertexTmp.length;
+				var index32:int=(iPos+5)%vertexTmp.length;
+				
+				var p1:Point=new Point(vertexTmp[index11],vertexTmp[index12]);
+				var p2:Point=new Point(vertexTmp[index21],vertexTmp[index22]);
+				var p3:Point=new Point(vertexTmp[index31],vertexTmp[index32]);
 				
 				var points:Vector.<Point>=new Vector.<Point>;
-				points.push(p1p2);
-				points.push(p2p3);
-				points.push(p3p1);
+				points.push(p1);
+				points.push(p2);
+				points.push(p3);
 				
-				var test:Number = Room_2DFloor.GetPolygonArea(points);
+				var area:Number = Room_2DFloor.GetPolygonArea(points);  //area==0 it is mean that the points on the same line
 				
-				//test==0 it is mean that the points on the same line
+				var bCover:Boolean=false;//是否有其他 顶点在三角形中。。。
+				for(i=0;i<vertexTmp.length;i+=2)
+				{
+					if(i!=index11&&i!=index21&&i!=index31)
+					{
+						bCover=Room_2DFloor.PointinTriangle(p1,p2,p3,new Point(vertexTmp[i],vertexTmp[i+1]));
+						if(bCover)
+							break;
+					}
+				}
 				
-				if(test>0||vertexTmp.length==6)
+				
+				
+				if(!bCover && area>=0||vertexTmp.length==6)
 				{     
-					var bCover:Boolean=false;//是否有其他 顶点在三角形中。。。
-					/*for(var i:int=0;i<vectex.length;i+=2)
-					{
-					if(!b&&i<iPos||i>iPos+5)
-					{
-					b=PointinTriangle(p1,p2,p3,new Point(vectex[i],vectex[i+1]));
-					}
-					}*/
+					var vertex : Vector.<Number> = new Vector.<Number>;
+					var index : Vector.<uint> = new Vector.<uint>;
+					var uv : Vector.<Number> = new Vector.<Number>;
+					
+					var tmpLen:int=vertexTmp.length;
+					
+					vertex.push(vertexTmp[iPos%tmpLen],floorY-1,vertexTmp[(iPos+1)%tmpLen],
+						vertexTmp[(iPos+2)%tmpLen],floorY-1,vertexTmp[(iPos+3)%tmpLen],
+						vertexTmp[(iPos+4)%tmpLen],floorY-1,vertexTmp[(iPos+5)%tmpLen]);//floorY-1 is necessary
+					
+					uv.push(vertexTmp[iPos%tmpLen]/uvScale,vertexTmp[(iPos+1)%tmpLen]/uvScale,
+						vertexTmp[(iPos+2)%tmpLen]/uvScale,vertexTmp[(iPos+3)%tmpLen]/uvScale,
+						vertexTmp[(iPos+4)%tmpLen]/uvScale,vertexTmp[(iPos+5)%tmpLen]/uvScale);
 					
 					
-					if(!bCover)//凸点
-					{
-						
-						
-						var vertex : Vector.<Number> = new Vector.<Number>;
-						var index : Vector.<uint> = new Vector.<uint>;
-						var uv : Vector.<Number> = new Vector.<Number>;
-						
-						var tmpLen:int=vertexTmp.length;
-						
-						vertex.push(vertexTmp[iPos%tmpLen],floorY-1,vertexTmp[(iPos+1)%tmpLen],
-							vertexTmp[(iPos+2)%tmpLen],floorY-1,vertexTmp[(iPos+3)%tmpLen],
-							vertexTmp[(iPos+4)%tmpLen],floorY-1,vertexTmp[(iPos+5)%tmpLen]);//floorY-1 is necessary
-						
-						uv.push(vertexTmp[iPos%tmpLen]/uvScale,vertexTmp[(iPos+1)%tmpLen]/uvScale,
-							vertexTmp[(iPos+2)%tmpLen]/uvScale,vertexTmp[(iPos+3)%tmpLen]/uvScale,
-							vertexTmp[(iPos+4)%tmpLen]/uvScale,vertexTmp[(iPos+5)%tmpLen]/uvScale);
-						
-						
-				 
-						index.push(0,1,2);
-						
-						var subGeom : SubGeometry = new SubGeometry;
-						subGeom.updateVertexData(vertex);
-						subGeom.updateIndexData(index);
-						subGeom.updateUVData(uv);
-						gem.addSubGeometry(subGeom);
-						
-						vertexTmp.splice((iPos+2)%vertexTmp.length,2);
-						continue;
-					}
+					
+					index.push(0,1,2);
+					
+					var subGeom : SubGeometry = new SubGeometry;
+					subGeom.updateVertexData(vertex);
+					subGeom.updateIndexData(index);
+					subGeom.updateUVData(uv);
+					gem.addSubGeometry(subGeom);
+					
+					vertexTmp.splice((iPos+2)%vertexTmp.length,2);
+					
+					continue;
 				}
 				
 				iPos+=2;
 			}
-		
-			
-			
-
 			addChild(new Mesh(gem,material));	
 		}
 		

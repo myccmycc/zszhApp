@@ -172,15 +172,15 @@ package zszh_WorkSpace2D
 			
 				//2求平移后的直线  |C1-C0|/sqrt（A*A+B*B）=DIS
 			
-				var aabb:Number=Math.sqrt(A2*A2+B2*B2);
+				var aabb2:Number=Math.sqrt(A2*A2+B2*B2);
 			
-				var dis:Number=10;
+				var dis2:Number=10;
 			
 			
-				var s:Number=dis*aabb;
+				var s2:Number=dis2*aabb2;
 			
-				var C2_1:Number=C2+s;
-				var C2_2:Number=C2-s;
+				var C2_1:Number=C2+s2;
+				var C2_2:Number=C2-s2;
 				//trace("C2_1:"+C2_1);
 				//trace("C2_2:"+C2_2);
 			
@@ -194,7 +194,7 @@ package zszh_WorkSpace2D
 					_vertexVec3[i+1]=p.y;
 				}
 				
-				var p:Point=intersection(A1,B1,C1_2,A2,B2,C2_2);
+				p=intersection(A1,B1,C1_2,A2,B2,C2_2);
 				if(p.x!=Number.POSITIVE_INFINITY&& p.y!=Number.POSITIVE_INFINITY)
 				{
 					_vertexVec2[i]=p.x;
@@ -230,13 +230,34 @@ package zszh_WorkSpace2D
 			return cross;
 		}
 		
+		private static function OnSegment(p0:Point,p1:Point,p2:Point):Boolean
+		{
+			var minx:Number=Math.min(p0.x,p1.x);
+			var miny:Number=Math.min(p0.y,p1.y);
+			
+			var maxx:Number=Math.max(p0.x,p1.x);
+			var maxy:Number=Math.max(p0.y,p1.y);
+			
+			if(p2.x>=minx&&p2.x<=maxx&&p2.y>=miny&&p2.y<=maxy)
+				return true;
+			return false;
+		}
+		
 		private static function IsSegmentIntersection( p0:Point,p1:Point,p2:Point,p3:Point ):Boolean
 		{
 			var d1:int=Direction(p0,p1,p2);var d2:int=Direction(p0,p1,p3);
 			var t1:int=Direction(p2,p3,p0);var t2:int=Direction(p2,p3,p1);
 			if(d1*d2<0&&t1*t2<0) return true;
+			 
+			if(!d1&&OnSegment(p0,p1,p2))
+				return true;
+			if(!d2&&OnSegment(p0,p1,p3))
+				return true;
+			if(!t1&&OnSegment(p2,p3,p0))
+				return true;
+			if(!t2&&OnSegment(p2,p3,p1))
+				return true;
 			return false;
-			//if(!d1&&OnSegment();)
 		}
 		
 		//多边形自相交检测
@@ -252,37 +273,15 @@ package zszh_WorkSpace2D
 				var P2:Point=new Point(vertex[(pos+i)%len],vertex[(pos+i+1)%len]);
 				var P3:Point=new Point(vertex[(pos+i+2)%len],vertex[(pos+i+3)%len]);
 				
-				//被包含1
-				if(P1.x==P2.x&&P1.y==P2.y)
-				{
-					if(Direction(P2,P3,P0)==0)
-					{
-						var minX:Number=Math.min(P2.x,P3.x);
-						var minY:Number=Math.min(P2.y,P3.y);
-						var maxX:Number=Math.max(P2.x,P3.x);
-						var maxY:Number=Math.max(P2.y,P3.y);
-						if(P0.x>=minX&&P0.x<=maxX&&P0.y>=minY&&P0.y<=maxY)
-							return true;
-					}
-				}	
-				
-				//被包含2
-				if(P0.x==P3.x&&P0.y==P3.y)
-				{
-					if(Direction(P2,P3,P1)==0)
-					{
-						var minX:Number=Math.min(P2.x,P3.x);
-						var minY:Number=Math.min(P2.y,P3.y);
-						var maxX:Number=Math.max(P2.x,P3.x);
-						var maxY:Number=Math.max(P2.y,P3.y);
-						if(P1.x>=minX&&P1.x<=maxX&&P1.y>=minY&&P1.y<=maxY)
-							return true;
-					}
-				}
-				
 				var isInter:Boolean=IsSegmentIntersection(P0,P1,P2,P3);
 				if(isInter)
+				{
+					if(P1.x==P2.x&&P1.y==P2.y&&!OnSegment(P2,P3,P0))
+						return false;
+					if(P0.x==P3.x&&P0.y==P3.y&&!OnSegment(P2,P3,P1))
+						return false;
 					return true;
+				}
 			}
 			
 			return false;

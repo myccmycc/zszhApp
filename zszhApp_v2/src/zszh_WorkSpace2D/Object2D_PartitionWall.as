@@ -1,9 +1,14 @@
 package zszh_WorkSpace2D
 {
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
+	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
+	import mx.managers.CursorManager;
+	
+	import zszh_Core.CommandManager;
 
 
 	public class Object2D_PartitionWall extends UIComponent
@@ -46,6 +51,11 @@ package zszh_WorkSpace2D
 			_lineColor=0xffffff;
 			_wallColor=0x7c7e89;
 			_wallColorSelected=0xff6666;
+			
+			addEventListener(MouseEvent.MOUSE_DOWN,MouseDown);
+			
+			addEventListener(MouseEvent.MOUSE_OVER,MouseOver);
+			addEventListener(MouseEvent.MOUSE_OUT,MouseOut);
 		}
 		
 		public function SetAllNoSelected():void
@@ -64,6 +74,40 @@ package zszh_WorkSpace2D
 		{
 			return _selected;
 		}
+		
+		//--------------mouse event----------------------------------------
+		private function MouseOver(e:MouseEvent):void
+		{
+			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
+		}
+		private function MouseOut(e:MouseEvent):void
+		{
+			CursorManager.removeAllCursors();
+		}
+		
+		private var _oldPos:Point;
+		private function MouseDown(e:MouseEvent):void
+		{
+			SetSelected(false);
+			startDrag();
+			stage.addEventListener(MouseEvent.MOUSE_UP,MouseUp);
+			_oldPos=new Point(x,y);
+			e.stopPropagation();
+		}
+		
+		private function MouseUp(e:MouseEvent):void
+		{
+			stopDrag();
+			if(_oldPos.x!=x || _oldPos.y!=y)
+			{
+				CommandManager.Instance.Move(this,_oldPos,new Point(x,y));
+			}
+			stage.removeEventListener(MouseEvent.MOUSE_UP,MouseUp);
+			SetSelected(true);
+			e.stopPropagation();
+		}
+		
+		
 		
 
 		public function Update():void

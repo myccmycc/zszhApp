@@ -81,34 +81,64 @@
 		<![CDATA[
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
+
 			[Embed(source="embeds/Products/1.png")]
+			[Bindable]
 			public var Button1_down:Class;
-			[Embed(source="embeds/Products/2.png")]
-			public var Button2_down:Class;
-			[Embed(source="embeds/Products/3.png")]
-			public var Button3_down:Class;
-			[Embed(source="embeds/Products/4.png")]
-			public var Button4_down:Class;
-			[Embed(source="embeds/Products/5.png")]
-			public var Button5_down:Class;
-			[Embed(source="embeds/Products/6.png")]
-			public var Button6_down:Class;
-			[Embed(source="embeds/Products/7.png")]
-			public var Button7_down:Class;
 			
+
+			[Embed(source="embeds/Products/2.png")]
+			[Bindable]
+			public var Button2_down:Class;
+			
+
+			[Embed(source="embeds/Products/3.png")]
+			[Bindable]
+			public var Button3_down:Class;
+			
+
+			[Embed(source="embeds/Products/4.png")]
+			[Bindable]
+			public var Button4_down:Class;
+			
+		
+			[Embed(source="embeds/Products/5.png")]
+			[Bindable]
+			public var Button5_down:Class;
+			
+	
+			[Embed(source="embeds/Products/6.png")]
+			[Bindable]
+			public var Button6_down:Class;
+			
+		
+			[Embed(source="embeds/Products/7.png")]
+			[Bindable]
+			public var Button7_down:Class;
+
 			[Embed(source="embeds/Products/1_.png")]
+			[Bindable]
 			public var Button1_over:Class;
+
 			[Embed(source="embeds/Products/2_.png")]
+			[Bindable]
 			public var Button2_over:Class;
+			
 			[Embed(source="embeds/Products/3_.png")]
+			[Bindable]
 			public var Button3_over:Class;
+			
 			[Embed(source="embeds/Products/4_.png")]
+			[Bindable]
 			public var Button4_over:Class;
 			[Embed(source="embeds/Products/5_.png")]
+			[Bindable]
 			public var Button5_over:Class;
 			[Embed(source="embeds/Products/6_.png")]
+			[Bindable]
 			public var Button6_over:Class;
 			[Embed(source="embeds/Products/7_.png")]
+			[Bindable]
 			public var Button7_over:Class;
 			
 			public var TextArray:Array;

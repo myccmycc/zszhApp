@@ -14,24 +14,28 @@
 		
 		<s:ArrayCollection id="product11">
 			
-			<fx:Object labelText="大房间" 	 imgThumbnail="{imageRoomBig}"  className="Room_2D" classArgument="1" resourcePath=""/>
-			<fx:Object labelText="小房间"  imgThumbnail="{imageRoomSmall}" className="Room_2D" classArgument="4" resourcePath=""/>
-			<fx:Object labelText="L型房间" imgThumbnail="{imageRoomL}"  className="Room_2D" classArgument="2" resourcePath=""/>
-			<fx:Object labelText="横墙"   imgThumbnail="{imageRoomHeng}" className="Wall_2D" classArgument="1" resourcePath=""/>
-			<fx:Object labelText="竖墙"   imgThumbnail="{imageRoomShu}" className="Wall_2D" classArgument="2" resourcePath=""/>
+			<fx:Object labelText="大房间" 	 imgThumbnail="{imageRoomBig}"    className="Room_2D" classArgument="1" resourcePath=""/>
+			<fx:Object labelText="小房间"  imgThumbnail="{imageRoomSmall}"  className="Room_2D" classArgument="4" resourcePath=""/>
+			<fx:Object labelText="L型房间" imgThumbnail="{imageRoomL}"      className="Room_2D" classArgument="2" resourcePath=""/>
+			<fx:Object labelText="横墙"   imgThumbnail="{imageRoomHeng}"    className="Wall_2D" classArgument="1" resourcePath=""/>
+			<fx:Object labelText="竖墙"   imgThumbnail="{imageRoomShu}"     className="Wall_2D" classArgument="2" resourcePath=""/>
 			
-			<!--fx:Object labelText="房型"   imgThumbnail="{imageRoomHeng}" className="Room_2D" classArgument="3" resourcePath=""/-->
-			<!--fx:Object labelText="床00001" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/beds/bed00001/" objectName="bed00001"/>
-			<fx:Object labelText="浴缸00001" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/yugangs/yugang00001/" objectName="yugang00001"/>
-			<fx:Object labelText="椅子" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/yi_zi_di/" objectName="yi_zi_di"/>
 			
-			<fx:Object labelText="灶台" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/zao_tai_di/" objectName="zao_tai_di"/>
+			<fx:Object labelText="灶台" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/test/test00001/" objectName="bed00001"/>
+			<fx:Object labelText="沙发3" imgThumbnail="preview.jpg" className="model" resourcePath="zszh_res/models/test/test00007/" objectName="test00007"/>
 			
-			<fx:Object labelText="沙发1" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/sha_fa_01_di/" objectName="sha_fa_01_di"/>
+			<fx:Object labelText="沙发1" imgThumbnail="preview.jpg" className="model" resourcePath="zszh_res/models/test/test00002/" objectName="test00002"/>
 			
-			<fx:Object labelText="沙发2" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/sha_fa_02_di/" objectName="sha_fa_02_di"/>
+			<fx:Object labelText="沙发2" imgThumbnail="preview.jpg" className="model" resourcePath="zszh_res/models/test/test00003/" objectName="test00003"/>
 			
-			<fx:Object labelText="沙发3" imgThumbnail="preview.png" className="model" resourcePath="zszh_res/models/sha_fa_03_di/" objectName="sha_fa_03_di"/-->
+			<fx:Object labelText="沙发3" imgThumbnail="preview.jpg" className="model" resourcePath="zszh_res/models/test/test00004/" objectName="test00004"/>
+			
+			<fx:Object labelText="沙发3" imgThumbnail="preview.jpg" className="model" resourcePath="zszh_res/models/test/test00005/" objectName="test00005"/>
+			
+			<fx:Object labelText="沙发3" imgThumbnail="preview.jpg" className="model" resourcePath="zszh_res/models/test/test00006/" objectName="test00006"/>
+			
+			
+			
 		</s:ArrayCollection>
 		
 		
@@ -111,24 +115,31 @@
 			
 			import services.mysqlcon.Mysqlcon;
 			
+			[Bindable]
 			[Embed(source="../embeds/rooms/room_big.png")]
 			public var imageRoomBig:Class;
 			
+			[Bindable]
 			[Embed(source="../embeds/rooms/room_small.png")]
 			public var imageRoomSmall:Class;
 			
+			[Bindable]
 			[Embed(source="../embeds/rooms/room_L.png")]
 			public var imageRoomL:Class;
 			
+			[Bindable]
 			[Embed(source="../embeds/rooms/room_heng.png")]
 			public var imageRoomHeng:Class;
 			
+			[Bindable]
 			[Embed(source="../embeds/rooms/room_shu.png")]
 			public var imageRoomShu:Class;
 			
+			[Bindable]
 			[Embed(source="../embeds/rooms/room_banyuan.png")]
 			public var imageRoomBanyuan:Class;
 			
+			[Bindable]
 			[Embed(source="../embeds/rooms/room_banyuan2.png")]
 			public var imageRoomBanyuan2:Class;
 			

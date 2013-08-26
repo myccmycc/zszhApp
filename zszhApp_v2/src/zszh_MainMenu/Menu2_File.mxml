@@ -17,9 +17,11 @@
 			import zszh_welcome.PopWin_Save;
 			import zszh_welcome.PopWin_Welcome;
 			
+			[Bindable]
 			[Embed(source="embeds/MainMenu/icon_menu21.png")]
 			public var icon_menu21:Class;
 			
+			[Bindable]
 			[Embed(source="embeds/MainMenu/icon_menu22.png")]
 			public var icon_menu22:Class;
 			

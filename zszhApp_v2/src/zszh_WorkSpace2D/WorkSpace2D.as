@@ -325,7 +325,7 @@ package zszh_WorkSpace2D
 			}
 			else if(className=="model")
 			{
-				var model:Object2D_Model=new Object2D_Model(resourcePath,objectName);
+				/*var model:Object2D_Model=new Object2D_Model(resourcePath,objectName);
 				model.x=event.localX;
 				model.y=event.localY;
 				model.name=model.className+room_number;
@@ -333,19 +333,19 @@ package zszh_WorkSpace2D
 				_grid.addChild(model);
 			 
 				
-				current_object=model as Object;
+				current_object=model as Object;*/
 			}
 			else if(className=="Wall_2D")
 			{
-				var wall:Object2D_PartitionWall =new Object2D_PartitionWall(classArgument);
+				/*var wall:Object2D_PartitionWall =new Object2D_PartitionWall(classArgument);
 				wall.x=event.localX;
 				wall.y=event.localY;
 				wall.name=wall.className+room_number;
 				room_number++;
 				_grid.addChild(wall);
 			 
-				
-				current_object=wall as Object;
+				CommandManager.Instance.Add(_grid,wall);
+				current_object=wall as Object;*/
 			}
 			
 			else if(className=="window")

@@ -47,6 +47,7 @@ package zszh_WorkSpace3D
 	import away3d.primitives.PlaneGeometry;
 	import away3d.primitives.WireframeCube;
 	import away3d.textures.Texture2DBase;
+	import away3d.tools.utils.Bounds;
 	import away3d.tools.utils.Ray;
 	import away3d.utils.Cast;
 	
@@ -198,14 +199,15 @@ package zszh_WorkSpace3D
 			_directionLight.direction = _view3d.camera.forwardVector;
 			_directionLight.color = 0xFFFFFF;
 			_directionLight.ambient = 0.2;
-			_directionLight.diffuse = 0.2;
+			_directionLight.diffuse = 0.1;
 			
 			_pointLight = new PointLight();
 			_pointLight.y=500;
 			_pointLight.x=500;
 			_pointLight.color=0xFFFFFF;
 			_pointLight.ambient=0.2;
-			_pointLight.diffuse=0.8;
+			_pointLight.diffuse=0.5;
+			_pointLight.specular=0.5;
 			
 			_view3d.scene.addChild(_directionLight);
 			_view3d.scene.addChild(_pointLight);
@@ -214,6 +216,7 @@ package zszh_WorkSpace3D
 			
 							
 			_view3d.addEventListener(MouseEvent.MOUSE_DOWN,MOUSE_DOWN_view3d);
+			_view3d.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN,MIDDLE_MOUSE_DOWN_view3d);
 			_view3d.addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_view3d);
 			
 			//setup the scene
@@ -266,7 +269,10 @@ package zszh_WorkSpace3D
 		}
 		
 	
-		
+		public function ShowCenter3D():void
+		{
+			
+		}
 		
 		private function OnFrameEnter(e:Event):void
 		{
@@ -352,39 +358,78 @@ package zszh_WorkSpace3D
 			removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
 		}
 		
-		//右键
-		private var _bMMDown_view3d:Boolean=false;
+		//左键
+		private var _bMouseDown:Boolean=false;
+		private var _bFirstIn:Boolean=true;
+		private var _MouseDownPos:Vector3D=new Vector3D;
+		
+		private var _bMidMouseDown:Boolean=false;
+		
 		private var _MMDownPos:Point=new Point(0,0);
 		private var _MMDownCameraPos:Point=new Point(0,0);
 		
 		private function MOUSE_DOWN_view3d(event:MouseEvent):void
 		{
-			var screenX:Number=this.mouseX/this.unscaledWidth-0.5;
-			var screenY:Number=this.mouseY/this.unscaledHeight-0.5;
-			_MMDownPos.x=screenX;
-			_MMDownPos.y=screenY;
-			_bMMDown_view3d=true;
+			_bMouseDown=true;
 			gCurrentObj3D=null;
+			_bFirstIn=true;
 			
-		
-			this._view3d.addEventListener(MouseEvent.MOUSE_MOVE,MOUSE_MOVE_view3d);
-			this._view3d.addEventListener(MouseEvent.MOUSE_OUT,MOUSE_UP_view3d);
-			this._view3d.addEventListener(MouseEvent.MOUSE_UP,MOUSE_UP_view3d);
+			_view3d.addEventListener(MouseEvent.MOUSE_MOVE,MOUSE_MOVE_view3d);
+			_view3d.addEventListener(MouseEvent.MOUSE_OUT,MOUSE_UP_view3d);
+			_view3d.addEventListener(MouseEvent.MOUSE_UP,MOUSE_UP_view3d);
 
 		}
-		private function MOUSE_MOVE_view3d(ev:MouseEvent) : void
+		
+		//中键
+		
+		private function MIDDLE_MOUSE_DOWN_view3d(event:MouseEvent):void
 		{
-			if(_bMMDown_view3d&&gCurrentObj3D)
+			_bMidMouseDown=true;
+			_MMDownPos.x=event.localX;
+			_MMDownPos.y=event.localY;
+			
+			_view3d.addEventListener(MouseEvent.MOUSE_MOVE,MOUSE_MOVE_view3d);
+			_view3d.addEventListener(MouseEvent.MOUSE_OUT,MOUSE_UP_view3d);
+			_view3d.addEventListener(MouseEvent.MIDDLE_MOUSE_UP,MOUSE_UP_view3d);
+			
+		}
+		
+		private function MOUSE_MOVE_view3d(event:MouseEvent) : void
+		{
+			if(_bMouseDown&&gCurrentObj3D)
 			{
 				var screenX:Number=2*this.mouseX/this.unscaledWidth-1;
 				var screenY:Number=2*this.mouseY/this.unscaledHeight-1;
-				var cameraRay:Vector3D=_camera.getRay(screenX,screenY,100);
-				
+				var cameraRay:Vector3D=_camera.getRay(screenX,screenY,1);
 				trace(_camera.scenePosition);
 				trace(cameraRay);
 
-				var plane:Plane3D=new Plane3D();
-				plane.fromNormalAndPoint(new Vector3D(0,1,0),new Vector3D(0,gCurrentObj3D.y,0) );
+				var planeNormal:Vector3D=new Vector3D(0,1,0);
+				
+				var bound:Bounds=new Bounds;
+				Bounds.getObjectContainerBounds(gCurrentObj3D)
+				var planePos:Vector3D=new Vector3D(0,gCurrentObj3D.y+Bounds.height,0);
+				var t:Number=(planeNormal.dotProduct(planePos)-planeNormal.dotProduct(_camera.scenePosition))/planeNormal.dotProduct(cameraRay);
+
+				var interP:Vector3D=new Vector3D;
+				interP.x=_camera.scenePosition.x+cameraRay.x*t;
+				interP.y=_camera.scenePosition.y+cameraRay.y*t;
+				interP.z=_camera.scenePosition.z+cameraRay.z*t;
+				
+				if(_bFirstIn)
+				{
+					_bFirstIn=false;
+					_MouseDownPos=interP;
+				}
+				else 
+				{
+					gCurrentObj3D.x+=interP.x-_MouseDownPos.x;
+					gCurrentObj3D.z+=interP.z-_MouseDownPos.z;
+					_MouseDownPos=interP;
+				}
+				
+				//var plane:Plane3D=new Plane3D();
+				//plane.fromNormalAndPoint(new Vector3D(0,1,0),new Vector3D(0,gCurrentObj3D.y,0) );
 				
 				
 				
@@ -424,14 +469,33 @@ package zszh_WorkSpace3D
 				//gCurrentObj3D.y=intersection.y;
 				//gCurrentObj3D.z=intersect.z;*/
 			}
+			
+			else if(_bMidMouseDown)
+			{
+				
+				_cameraCenter.x-=(event.localX-_MMDownPos.x)*10;
+				_cameraCenter.z+=(event.localY-_MMDownPos.y)*10;
+				
+				_MMDownPos.x=event.localX;
+				_MMDownPos.y=event.localY;
+			}
 		}
+		
 		
 		private function MOUSE_UP_view3d(event:MouseEvent):void
 		{
-		
+			_bMouseDown=false;
+			_bMidMouseDown=false;
+			
+			_view3d.removeEventListener(MouseEvent.MOUSE_MOVE,MOUSE_MOVE_view3d);
+			_view3d.removeEventListener(MouseEvent.MOUSE_OUT,MOUSE_UP_view3d);
+			_view3d.removeEventListener(MouseEvent.MIDDLE_MOUSE_UP,MOUSE_UP_view3d);
+			_view3d.removeEventListener(MouseEvent.MOUSE_UP,MOUSE_UP_view3d);
 		}
 		
 		
+	
+			
 		private function MOUSE_WHEEL_view3d(ev:MouseEvent) : void
 		{
 			if(ev.delta<0&&_cameraController.distance<1200)

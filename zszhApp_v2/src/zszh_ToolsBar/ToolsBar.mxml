@@ -7,40 +7,68 @@
 	</fx:Declarations>
 	<fx:Script>
 	<![CDATA[
-		import mx.core.UIComponent;
 		import mx.events.FlexEvent;
-		
-		import away3d.containers.ObjectContainer3D;
 		
 		import zszh_WorkSpace2D.Object2D_Model;
 		import zszh_WorkSpace2D.Object2D_PartitionWall;
 		import zszh_WorkSpace2D.Object2D_Room;
-		import zszh_WorkSpace2D.WorkSpace2DContainer;
 		import zszh_WorkSpace2D.WorkSpace2D;
-		
-		import zszh_WorkSpace3D.Model_3D;
+		import zszh_WorkSpace2D.WorkSpace2DContainer;
 		import zszh_WorkSpace3D.WorkSpace3D;
+		
+
 		[Embed(source="embeds/ToolsBar/toolbar_1.png")]
+		[Bindable]
 		public var Button1_down:Class;
+		
+		
 		[Embed(source="embeds/ToolsBar/toolbar_2.png")]
+		[Bindable]
 		public var Button2_down:Class;
+		
+
 		[Embed(source="embeds/ToolsBar/toolbar_3.png")]
+		[Bindable]
 		public var Button3_down:Class;
+		
+		
 		[Embed(source="embeds/ToolsBar/toolbar_4.png")]
+		[Bindable]
 		public var Button4_down:Class;
+		
+		
 		[Embed(source="embeds/ToolsBar/toolbar_5.png")]
+		[Bindable]
 		public var Button5_down:Class;
+		
+		
 		[Embed(source="embeds/ToolsBar/toolbar_6.png")]
+		[Bindable]
 		public var Button6_down:Class;
+		
+		
 		[Embed(source="embeds/ToolsBar/toolbar_7.png")]
+		[Bindable]
 		public var Button7_down:Class;
+		
+		
 		[Embed(source="embeds/ToolsBar/toolbar_8.png")]
+		[Bindable]
 		public var Button8_down:Class;
+		
+
 		[Embed(source="embeds/ToolsBar/toolbar_9.png")]
+		[Bindable]
 		public var Button9_down:Class;
+		
+
 		[Embed(source="embeds/ToolsBar/toolbar_10.png")]
+		[Bindable]
 		public var Button10_down:Class;
+		
+
 		[Embed(source="embeds/ToolsBar/toolbar_11.png")]
+		[Bindable]
 		public var Button11_down:Class;
 
 		private var _work2D:WorkSpace2D;
@@ -91,62 +119,25 @@
 			parentApplication.WorkspaceBack.visible=false;
 			
 			Show3DRooms();
-			
 
 			_work3D.visible=true;
 			_work2D.SetAllNoSelected();
 			_work2D.GetBounds();
 			_work3D._cameraCenter.x=(_work2D._xMax-_work2D._xMin)/2+_work2D._xMin-3200;
 			_work3D._cameraCenter.z=-(_work2D._yMax-_work2D._yMin)/2-_work2D._yMin+3200;
-				
-				
 			_work2DContainer.visible=false;
-			
-			//隔墙 
-			/*parentApplication.WorkSpace3D.ClearWallInside();
-			
-			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._wall2DVec.length;i++)
-			{
-			var wallInside:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._wall2DVec[i] as UIComponent;					
-			if(wallInside.className=="Wall_2D")
-			{
-			var pos:Array=new Array;
-			var vertex_old:Vector.<Number>= (wallInside as Object2D_PartitionWall)._vertexVec;
-			var vertex_new:Vector.<Number>=new Vector.<Number>;
-			
-			for(var j:int=0;j<vertex_old.length;j+=2)
-			{
-			vertex_new.push(wallInside.x+vertex_old[j]-3200);
-			vertex_new.push(-wallInside.y-vertex_old[j+1]+3200);
-			}
-			parentApplication.WorkSpace3D.AddWallInside(vertex_new,wallInside.name);	 
-			}
-			
-			
-			}
-			
-			//模型创建
-			parentApplication.WorkSpace3D.ClearModels();
-			for(var i:int=0;i<parentApplication.WorkSpace2D.WorkSpace2D._modelsVec.length;i++)
-			{
-			var modelBed:UIComponent=parentApplication.WorkSpace2D.WorkSpace2D._modelsVec[i] as UIComponent;					
-			if(modelBed.className=="Object2D_Model")
-			{
-			var mbed:Object2D_Model = modelBed as Object2D_Model;
-			var mPos:Vector3D=new Vector3D();
-			mPos.x=mbed.x+mbed.width/2-3200;
-			mPos.y=0;
-			mPos.z=-mbed.y-mbed.height/2+3200;
-			parentApplication.WorkSpace3D.AddModels(mbed._resourcePath,mbed._modelName,mPos,mbed.name);    
-			}
-			}*/
-			
 			
 		}
 		
 		protected function ShowCenter(event:MouseEvent):void
 		{
-			parentApplication.WorkSpace2D.WorkSpace2D.ShowCenter();
+			if(_work2DContainer.visible)
+				_work2D.ShowCenter();
+			else if(_work3D.visible)
+			{
+				_work3D._cameraCenter.x=(_work2D._xMax-_work2D._xMin)/2+_work2D._xMin-3200;
+				_work3D._cameraCenter.z=-(_work2D._yMax-_work2D._yMin)/2-_work2D._yMin+3200;
+			}
 		}
 		
 		import zszh_Core.CommandManager;
@@ -163,8 +154,8 @@
 		private function Show3DRooms():void
 		{
 			_work3D.ClearRoom();
-			
-			
+			_work3D.ClearWallInside();
+			_work3D.ClearModels();
 			for(var i:int=0;i<_work2D._grid.numChildren;i++)
 			{
 				var obj:DisplayObject=_work2D._grid.getChildAt(i);
@@ -195,9 +186,50 @@
 							vertex_new3.push(room2d.x+vertex_old3[j]-3200);
 							vertex_new3.push(-room2d.y+vertex_old3[j+1]+3200);
 						}
-						_work3D.AddRoom(vertex_new,vertex_new2,vertex_new3,room2d._floor._floorTex, room2d.name);				    
+						_work3D.AddRoom(vertex_new,vertex_new2,vertex_new3,room2d._floor._floorTex, room2d.name);
+						
+						Show3DWallsInRoom(room2d);
+						Show3DModelInRoom(room2d);
 					}
 				}
+			}
+		}
+		
+		private function Show3DWallsInRoom(room:Object2D_Room):void
+		{
+			for(var i:int=0;i<room.numChildren;i++)
+			{
+				var obj:DisplayObject=room.getChildAt(i);
+				if(obj is Object2D_PartitionWall)
+				{
+					var pos:Array=new Array;
+					var vertex_old:Vector.<Number>= (obj as Object2D_PartitionWall)._vertexVec;
+					var vertex_new:Vector.<Number>=new Vector.<Number>;
+					
+					for(var j:int=0;j<vertex_old.length;j+=2)
+					{
+						vertex_new.push(room.x+obj.x+vertex_old[j]-3200);
+						vertex_new.push(-room.y-obj.y-vertex_old[j+1]+3200);
+					}
+					_work3D.AddWallInside(vertex_new,obj.name);	 
+				}	
+			}
+		}
+		
+		private function Show3DModelInRoom(room:Object2D_Room):void
+		{
+			for(var i:int=0;i<room.numChildren;i++)
+			{
+				var obj:DisplayObject=room.getChildAt(i);
+				if(obj is Object2D_Model)
+				{
+					var model:Object2D_Model = obj as Object2D_Model;
+					var mPos:Vector3D=new Vector3D();
+					mPos.x=room.x+model.x+model._topImage.bitmapData.width/2-3200;
+					mPos.y=0;
+					mPos.z=-room.y-model.y-model._topImage.bitmapData.height/2+3200;
+					_work3D.AddModels(model._resourcePath,model._modelName,mPos,model.name); 
+				}	
 			}
 		}
 	]]>

@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:local="*" xmlns:ns="zszh_WorkSpace3D.*" addedEffect="{fadein}"
-			   backgroundAlpha="0" xmlns:ns5="zszh_Products_old.*" xmlns:ns2="zszh_WorkSpace2D.*"  xmlns:ns6="zszh_Products_new.*" preloader="zszh_Loading" initialize="application1_initializeHandler(event)" xmlns:ns4="zszh_ToolsBar.*" resize="application_resizeHandler(event)">
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:local="*"
+			   xmlns:ns="zszh_WorkSpace3D.*"
+			   xmlns:ns5="zszh_Products_old.*"
+			   xmlns:ns2="zszh_WorkSpace2D.*"
+			   xmlns:ns6="zszh_Products_new.*"
+			   xmlns:ns4="zszh_ToolsBar.*"
+			   minWidth="955" minHeight="600" addedEffect="{fadein}" backgroundAlpha="0"
+			   initialize="application1_initializeHandler(event)" preloader="zszh_Loading"
+			   resize="application_resizeHandler(event)">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 		<s:Fade id="fadein" alphaFrom="0" alphaTo="1" duration="500"/>
@@ -180,7 +188,7 @@
 			}
 			
 			//初始化完毕后 welcome 界面
-			var welcomeWindow:PopWin_Welcome;
+			private var welcomeWindow:PopWin_Welcome;
 			protected function application1_initializeHandler(event:FlexEvent):void
 			{		
 				welcomeWindow=new PopWin_Welcome();

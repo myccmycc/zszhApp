@@ -2,15 +2,14 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				autoDrawBackground="true" click="itemrenderer1_clickHandler(event)" mouseMove="itemrenderer1_mouseDownHandler(event)" dataChange="itemrenderer1_dataChangeHandler(event)">
+				autoDrawBackground="true" click="itemrenderer1_clickHandler(event)" mouseDown="itemrenderer1_mouseDownHandler(event)" dataChange="itemrenderer1_dataChangeHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import mx.core.DragSource;
-			import mx.core.FlexGlobals;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			import mx.events.ItemClickEvent;
-			import mx.managers.CursorManager;
+
 			import mx.managers.DragManager;
 			
 			import spark.components.Image;
@@ -43,7 +42,7 @@
 					loader.load(new URLRequest(data.resourcePath+"top.png"));
 					loader.contentLoaderInfo.addEventListener(Event.COMPLETE, OnComplete);
 				}
-				else if(data.className=="Room_2D")
+				else if(data.className=="Room_2D"||data.className=="Wall_2D")
 				{
 					dragProxy.source=img.source;
 					dragProxy.width=120;
@@ -68,7 +67,7 @@
 					DragManager.doDrag(dragInitiator, ds,event,dragProxy,0,0);
 				}
 				
-				else if(data.className="window")
+				else if(data.className=="window")
 				{
 					//need fixed
 					dragProxy.source=img.source;
@@ -80,8 +79,8 @@
 				function OnComplete(e:Event):void
 				{
 					dragProxy.source=loader.content;
-					var w:int=loader.content.width*parentApplication.WorkSpace2D.WorkSpace2D._grid.scaleX;
-					var h:int=loader.content.height*parentApplication.WorkSpace2D.WorkSpace2D._grid.scaleY;
+					var w:int=loader.content.width*parentApplication.WorkSpace2DContainer.WorkSpace2D._grid.scaleX;
+					var h:int=loader.content.height*parentApplication.WorkSpace2DContainer.WorkSpace2D._grid.scaleY;
 					dragProxy.width=w;
 					dragProxy.height=h;
 					var dw:int=-w/2;
