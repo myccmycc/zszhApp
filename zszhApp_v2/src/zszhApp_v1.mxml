@@ -57,11 +57,8 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.core.UIComponent;
-			import mx.managers.DragManager;
-			import mx.events.DragEvent;
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
-			import mx.events.IndexChangedEvent;
 			import mx.events.ResizeEvent;
 			import mx.managers.PopUpManager;
 			
@@ -69,9 +66,8 @@
 			import zszh_MainMenu.Menu5_Help;
 			import zszh_MainMenu.Skin_MainMenuBt;
 			
-			import zszh_WorkSpace2D.Object2D_Model;
-			
-			import zszh_WorkSpace3D.Room_3D;
+			import zszh_WorkSpace2D.WorkSpace2D;
+			import zszh_WorkSpace3D.WorkSpace3D;
 			
 			import zszh_welcome.PopWin_MyDoc;
 			import zszh_welcome.PopWin_Save;
@@ -79,13 +75,31 @@
 			
 	
 			
+			//-------全局方法-------------
+			public function GetWorkSpace2D():WorkSpace2D
+			{
+				return _work2dContainer.WorkSpace2D;
+			}
+			
+			public function GetWorkSpace3D():WorkSpace3D
+			{
+				return _work3d;
+			}
+			
+			public function GetWorkSpace2DContainer():WorkSpace2DContainer
+			{
+				return _work2dContainer;
+			}
+			
+			
+			
+			
+			//-------------主菜单--end-------------------
+			
 			[Embed(source="../embeds/mouse01.png")]
 			public var imageCursor:Class;
 			
 
-			
-			
-			
 			private var _menu2:Menu2_File=new Menu2_File;
 			private var _menu5:Menu5_Help=new Menu5_Help;
 			public var _currentMenu:String=null;
@@ -138,9 +152,9 @@
 				_currentMenu=null;				
 			}
 		
-			//-------------主菜单--end-------------------
 			
-			//PopWindows 
+			
+			//-------------PopWindows ---------
 			private var currentDoc:String=null;
 			
 			public function ShowPopWindow(window:String):void
@@ -164,10 +178,16 @@
 					if(currentDoc)
 					{
 						//保存现有文件
-						WorkSpace2DContainer.WorkSpace2D.SaveToXML(currentDoc);
+						GetWorkSpace2D().SaveToXML(currentDoc);
 					}
 					else 
 					{
+						var objectsNum:int=GetWorkSpace2D().GetObject2D().numChildren;
+						if(objectsNum==0)
+						{
+							Alert.show("请先设计设计内容！");
+							return;
+						}
 						var saveWindow:PopWin_Save=new PopWin_Save();
 						PopUpManager.addPopUp(saveWindow,this,true);
 					
@@ -179,15 +199,9 @@
 				}
 			}
 			
-			[Embed(source="embeds/Products/icon_AccHeader1d.png")]
-			private var StarIcon:Class
 			
-			private function init():void {
-				
 			
-			}
-			
-			//初始化完毕后 welcome 界面
+			//-----------欢迎界面---------------------
 			private var welcomeWindow:PopWin_Welcome;
 			protected function application1_initializeHandler(event:FlexEvent):void
 			{		
@@ -201,7 +215,6 @@
 			
 			protected function application_resizeHandler(event:ResizeEvent):void
 			{
-				// TODO Auto-generated method stub
 				if(welcomeWindow)
 				{
 					var x1:int=(this.width-welcomeWindow.width)/2;
@@ -234,41 +247,21 @@
 	</s:SkinnableContainer>
 	
 	
-	<s:SkinnableContainer id="WorkSpace" depth="9" y="59" width="100%" height="100%" backgroundColor="#000000"  backgroundAlpha="0" >
-		
-		
-		
-		<!--左侧物品栏/-->
-		<!--s:SkinnableContainer id="Objects" depth="8" width="310" height="100%" backgroundColor="#000000"  backgroundAlpha="0">
-			
-			<s:SkinnableContainer backgroundColor="#1abc9c" width="310" height="75" >
-				<s:Label text="Search" x="10" verticalCenter="5" styleName="customFontStyles" />
-				<s:ComboBox x="75" width="170" verticalCenter="5" styleName="customTextInput" />
-				<s:Image  buttonMode="true" x="262" source="@Embed('embeds/MainMenu/icon_search.png')" verticalCenter="5"/>
-			</s:SkinnableContainer>
-			
-			<mx:Accordion selectedIndex="-1" backgroundAlpha="0"  id="ProductsAccordion" y="75" width="310" height="200" headerStyleName="customAccordionHeadStyles" creationComplete="init()">
-				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
-				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
-				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
-				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>	
-				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
-				<ns1:Navigator_BasicTab width="100%" height="100%"  backgroundColor="#2c3e50" icon="@Embed('embeds/Products/icon_AccHeader1.png')"/>
-			</mx:Accordion>
-			
-		</s:SkinnableContainer-->
-		
+	<s:SkinnableContainer id="WorkSpace" depth="9" y="59" width="100%" height="100%" backgroundColor="#000000"  backgroundAlpha="0" >	
 		<!--工作区/-->
 		<s:SkinnableContainer id="WorkSpaceContainer"   depth="7" x="0" width="100%" height="100%" backgroundColor="#000000"  backgroundAlpha="0">
-			<ns:WorkSpace3D id="WorkSpace3D" width="100%" height="100%" visible="false"/>
 			
-			<ns2:WorkSpace2DContainer  id="WorkSpace2DContainer" backgroundAlpha="0"  backgroundColor="0x2f3243" width="100%" height="100%" visible="true"/>
+			<ns:WorkSpace3D id="_work3d" width="100%" height="100%" visible="false"/>
+			
+			<ns2:WorkSpace2DContainer  id="_work2dContainer" backgroundAlpha="0"  backgroundColor="0x2f3243" width="100%" height="100%" visible="true"/>
 			
 			<ns4:ToolsBar id="ToolsBar" top="1" horizontalCenter="0"/>
 			
 			<ns6:ProductsMainMenu id="ProductsMenuMain"  backgroundAlpha="0" top="0" height="100%"/>
 
 		</s:SkinnableContainer>
+		
+		
 		
 		<s:Group id="WorkspaceBack" width="100%" height="100%" showEffect="{fadein}" hideEffect="{fadeout}" > 
 			<s:Rect width="100%" height="100%"> 

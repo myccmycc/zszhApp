@@ -22,11 +22,13 @@ package zszh_WorkSpace2D
 	
 	import spark.components.Image;
 	
+	import away3d.tools.utils.Grid;
+	
 	import zszh_Core.CommandManager;
 	
 	public class WorkSpace2D extends UIComponent
 	{
-		public var _grid:Grid;
+		private var _grid:WorkSpace2D_Grid;
 		
 		public var _xMin:Number;
 		public var _yMin:Number;
@@ -202,9 +204,9 @@ package zszh_WorkSpace2D
 		}
 		public function SetAllNoSelected():void
 		{
-			for(var i:int=0;i<_grid.numChildren;i++)
+			for(var i:int=0;i<_grid._objects2D.numChildren;i++)
 			{
-				var obj:DisplayObject=_grid.getChildAt(i);
+				var obj:DisplayObject=_grid._objects2D.getChildAt(i);
 				if(obj is Object2D_Base)
 					(obj as Object2D_Base).SetSelected(false);
 			}
@@ -219,6 +221,14 @@ package zszh_WorkSpace2D
 			_grid.y=-(_grid.height*_grid.scaleY)/2+this.unscaledHeight/2;
 		}
 		
+		public function GetGrid():zszh_WorkSpace2D.WorkSpace2D_Grid
+		{
+			return _grid;
+		}
+		public function GetObject2D():UIComponent
+		{
+			return _grid._objects2D;
+		}
 		public function GetBounds():void
 		{
 			_xMin=Number.MAX_VALUE;
@@ -226,9 +236,9 @@ package zszh_WorkSpace2D
 			_xMax=Number.MIN_VALUE;
 			_yMax=Number.MIN_VALUE;
 			
-			for(var i:int=0;i<_grid.numChildren;i++)
+			for(var i:int=0;i<_grid._objects2D.numChildren;i++)
 			{
-				var obj:DisplayObject =_grid.getChildAt(i);
+				var obj:DisplayObject =_grid._objects2D.getChildAt(i);
 				
 				if(obj is Object2D_Room)
 				{
@@ -273,7 +283,7 @@ package zszh_WorkSpace2D
 		
 		private function OnCreation_Complete(e:FlexEvent):void
 		{			
-			_grid=new Grid();
+			_grid=new WorkSpace2D_Grid();
 			_grid.scaleX=0.5;
 			_grid.scaleY=0.5;
 			
@@ -318,8 +328,7 @@ package zszh_WorkSpace2D
 				room.x=event.localX;
 				room.y=event.localY;
 				room.name=room.className+room_number++;
-				CommandManager.Instance.Add(_grid,room);
-				_grid.setChildIndex(room,0);
+				CommandManager.Instance.Add(_grid._objects2D,room);
 				
 				current_object=room as Object;
 			}

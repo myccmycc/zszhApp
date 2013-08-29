@@ -8,8 +8,8 @@
 			
 			protected function skinnablecontainer_enterFrameHandler(event:Event):void
 			{
-				if(scaleBt&&WorkSpace2D&&WorkSpace2D._grid)
-					scaleBt.label=WorkSpace2D._grid.scaleX.toString();
+				if(scaleBt&&WorkSpace2D&&WorkSpace2D.GetGrid())
+					scaleBt.label=WorkSpace2D.GetGrid().scaleX.toString();
 			}
 			
 		]]>

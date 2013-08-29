@@ -13,7 +13,7 @@ package zszh_WorkSpace2D
 	
 	import zszh_WorkSpace2D.PopupMenu_Room2D_Wall;
 	
-	public class Room_2DWall extends UIComponent
+	public class Room_2DWall extends Object2D_Base
 	{
 		private var _popupWindowMenu:PopupMenu_Room2D_Wall;
 		private var _lineColor:uint;
@@ -21,7 +21,6 @@ package zszh_WorkSpace2D
 		private var _wallColorSelected:uint;
 		
 		private var _wallPos:Vector.<Number>;
-		private var _selected:Boolean;
 		
 		public  var _postionInRoom:int;
 		public  var _rotation:Number;
@@ -68,16 +67,7 @@ package zszh_WorkSpace2D
 			Update();
 		}
 		
-		public function SetSelected(b:Boolean):void
-		{
-			_selected=b;
-			Update();
-			
-		}
-		public function GetSelected():Boolean
-		{
-			return _selected;
-		}
+ 
 		
 	
 		private function ShowCursorCorner(postion:Point,rotation:Number):void
@@ -193,6 +183,8 @@ package zszh_WorkSpace2D
 		private var startPoint:Point=new Point;
 		private var bStart:Boolean=false;
 		
+		override public function Draw():void
+		{}
 
 		private function WallMouseDown(e:MouseEvent):void
 		{
@@ -310,9 +302,9 @@ package zszh_WorkSpace2D
 			
 			
 			//求POP1，P3P2和  AX+BY+C2 两个交点
-			var i1:Point=intersection(P0,P1,A,B,C2);
+			var i1:Point=Object2D_Utility.Intersection2(P0,P1,A,B,C2);
 			
-			var i2:Point=intersection(P3,P2,A,B,C2);
+			var i2:Point=Object2D_Utility.Intersection2(P3,P2,A,B,C2);
 			
 		
 			
@@ -332,7 +324,7 @@ package zszh_WorkSpace2D
 				
 				for(j=0;j<vertex.length;j+=2)
 				{
-					var isInter:Boolean=Object2D_Room.SelfIntersection(vertex,j);
+					var isInter:Boolean=Object2D_Utility.SelfIntersection(vertex,j);
 					if(isInter)
 						return false;
 				}
@@ -354,37 +346,7 @@ package zszh_WorkSpace2D
 			return false;
 		}
 		
-		private static function intersection( a:Point, b:Point, A2:Number, B2:Number, C2:Number ):Point
-		{
-			var  A1:Number, B1:Number, C1:Number;
-			
-			A1 = b.y - a.y;
-			B1 = a.x - b.x;
-			C1 = b.x * a.y - a.x * b.y;
-			
-			//当两个点为同一个点的时候
-			if(a.x==b.x&&a.y==b.y)
-			{
-				A1 = B2;
-				B1 = -A2;
-				C1 = -A1*a.x-B1*a.y;
-			}
 
-			if (A1 * B2 == B1 * A2)    {
-				if ((A1 + B1) * C2==(A2 + B2) * C1 ) {
-					return new Point(Number.POSITIVE_INFINITY,0);
-				} else {
-					return new Point(Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY);
-				}
-			} 
-				
-			else {
-				var result:Point=new Point;
-				result.x = (B2 * C1 - B1 * C2) / (A2 * B1 - A1 * B2);
-				result.y = (A1 * C2 - A2 * C1) / (A2 * B1 - A1 * B2);
-				return result;
-			}
-		}
 		
 		
 	}

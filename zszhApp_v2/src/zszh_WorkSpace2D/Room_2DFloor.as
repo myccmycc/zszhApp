@@ -2,14 +2,12 @@ package zszh_WorkSpace2D
 {
 	import flash.display.Bitmap;
 	import flash.display.Loader;
-	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.net.URLRequest;
 	
 	import mx.core.FlexGlobals;
-	import mx.core.INavigatorContent;
 	import mx.core.UIComponent;
 	import mx.events.DragEvent;
 	import mx.events.FlexEvent;
@@ -19,16 +17,16 @@ package zszh_WorkSpace2D
 	
 	import zszh_Core.CommandManager;
 	
-	public class Room_2DFloor extends UIComponent
+	public class Room_2DFloor extends Object2D_Base
 	{
-		public var _floorTex:String="zszh_res/basic/wall/TextureFloor.jpg";
+		public  var _floorTex:String="zszh_res/basic/wall/TextureFloor.jpg";
 		private var _floorTexLoader:Loader;
 		private var _floorBitmap:Bitmap;
 		private var _uvVec:Vector.<Number>;
 		private var _uvScale:int;
 		
 		private var _popupWindowMenu:PopupMenu_Room2D_Floor;
-		private var _selected:Boolean;
+
 		
 		public function Room_2DFloor()
 		{
@@ -37,80 +35,8 @@ package zszh_WorkSpace2D
 			this.addEventListener(DragEvent.DRAG_ENTER,DragEnter2D);
 			this.addEventListener(DragEvent.DRAG_DROP,OnDrap);
 			this.addEventListener(FlexEvent.CREATION_COMPLETE,OnCreation_Complete);
-			
 		}
 		
-		private function DragEnter2D(event:DragEvent):void
-		{			
-			DragManager.acceptDragDrop(event.target as UIComponent);
-		}
-		
-	    public function OnDrap(event:DragEvent):void
-		{
-			var className:String=String(event.dragSource.dataForFormat("className"));
-			var classArgument:String=String(event.dragSource.dataForFormat("classArgument"));
-			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
-			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
-			
-			var room_2d:Object2D_Room=this.parent as Object2D_Room;
-			
-			if(className=="diban")
-			{
-				_floorTex=resourcePath+"texture.jpg";
-				_floorTexLoader = new Loader();
-				_floorTexLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onComplete);
-				_floorTexLoader.load(new URLRequest(_floorTex));
-				
-				function onComplete(e:Event):void
-				{
-					_floorBitmap = Bitmap(_floorTexLoader.content);
-					Update();
-				}
-			}
-			
-			else if(className=="Wall_2D")
-			{
-				var wall:Object2D_PartitionWall =new Object2D_PartitionWall(classArgument);
-				wall.x=event.localX;
-				wall.y=event.localY;
-				wall.name=wall.className+room_2d.numChildren;
-				CommandManager.Instance.Add(room_2d,wall);
-			}
-			
-			else if(className=="model")
-			{
-				var model:Object2D_Model=new Object2D_Model(resourcePath,objectName);
-				model.x=event.localX;
-				model.y=event.localY;
-				model.name=model.className+room_2d.numChildren;
-				CommandManager.Instance.Add(room_2d,model);
-			}
-		}
-		public function SetSelected(b:Boolean):void
-		{
-			_selected=b;
-		}
-		public function GetSelected():Boolean
-		{
-			return _selected;
-		}
-		
-		private function OnDeleteThisRoom(e:Event):void
-		{
-			var room_2d:Object2D_Room=this.parent as Object2D_Room;
-			room_2d.DeleteThisRoom();
-		}
-		
-		private function OnChangeFloor(e:Event):void
-		{
-			
-		}
-		private function OnChangeFloorTile(e:Event):void
-		{}
-			
-		private function OnAddFurniture(e:Event):void	
-		{}
-			
 		private function OnCreation_Complete(e:FlexEvent):void
 		{
 			addEventListener(MouseEvent.MOUSE_OVER,FloorMouseOver);
@@ -127,11 +53,11 @@ package zszh_WorkSpace2D
 			function onComplete(e:Event):void
 			{
 				_floorBitmap = Bitmap(_floorTexLoader.content);
-				Update();
+				Draw();
 			}
 		}
 		
-		public function Update():void
+		override public function Draw():void
 		{
 			graphics.clear();
 			graphics.lineStyle(0, 0, 0);
@@ -158,7 +84,7 @@ package zszh_WorkSpace2D
 				for(i=0;i<vectex.length;i+=2)
 					testPoints.push(new Point(vectex[i],vectex[i+1]));
 				
-				var testArea:Number = GetPolygonArea(testPoints);
+				var testArea:Number = Object2D_Utility.GetPolygonArea(testPoints);
 				
 				if(testArea<=0)
 					break;
@@ -179,14 +105,14 @@ package zszh_WorkSpace2D
 				points.push(p2);
 				points.push(p3);
 					 
-				var area:Number = GetPolygonArea(points);  //area==0 it is mean that the points on the same line
+				var area:Number = Object2D_Utility.GetPolygonArea(points);  //area==0 it is mean that the points on the same line
 				
 				var bCover:Boolean=false;//是否有其他 顶点在三角形中。。。
 				for(i=0;i<vectex.length;i+=2)
 				{
 					if(i!=index11&&i!=index21&&i!=index31)
 					{
-						bCover=PointinTriangle(p1,p2,p3,new Point(vectex[i],vectex[i+1]));
+						bCover=Object2D_Utility.PointinTriangle(p1,p2,p3,new Point(vectex[i],vectex[i+1]));
 						if(bCover)
 							break;
 					}
@@ -233,8 +159,22 @@ package zszh_WorkSpace2D
 
 		
 		
+		//----popup window menu function-----------------
+		private function OnDeleteThisRoom(e:Event):void
+		{
+			var room_2d:Object2D_Room=this.parent as Object2D_Room;
+			room_2d.DeleteThisRoom();
+		}
 		
-		//--------------floor mouse event----------------------------------------
+		private function OnChangeFloor(e:Event):void
+		{}
+		private function OnChangeFloorTile(e:Event):void
+		{}
+		
+		private function OnAddFurniture(e:Event):void	
+		{}
+		
+		//--------------floor mouse event---------------------------
 		private function FloorMouseOver(e:MouseEvent):void
 		{
 			CursorManager.setCursor(FlexGlobals.topLevelApplication.imageCursor);
@@ -307,55 +247,54 @@ package zszh_WorkSpace2D
 			
 		}
 		
-		
-		
-		
-		//--------------some private function----------------------------------------
-		public static function PointinTriangle( A:Point, B:Point, C:Point, P:Point):Boolean
-		{
-			var  v0:Point =new Point(C.x - A.x,C.y-A.y) ;
-			var  v1:Point =new Point(B.x - A.x,B.y-A.y) ;
-			var  v2:Point =new Point(P.x - A.x,P.y-A.y) ;
-			
-			var dot00:Number = v0.x*v0.x+v0.y*v0.y;
-			var dot01:Number = v0.x*v1.x+v0.y*v1.y;
-			var dot02:Number = v0.x*v2.x+v0.y*v2.y;
-			var dot11:Number = v1.x*v1.x+v1.y*v1.y;
-			var dot12:Number = v1.x*v2.x+v1.y*v2.y;
-			
-			var inverDeno:Number = 1 / (dot00 * dot11 - dot01 * dot01) ;
-			
-			var u:Number = (dot11 * dot02 - dot01 * dot12) * inverDeno ;
-			if (u <= 0 || u >=1) // if u out of range, return directly  =0在A点，1在B点
-			{
-				return false ;
-			}
-			
-			var v:Number = (dot00 * dot12 - dot01 * dot02) * inverDeno ;
-			if (v <=0 || v >= 1) // if v out of range, return directly  =0在A点，1在C点
-			{
-				return false ;
-			}
-			
-			return u + v < 1 ; //u+v ==1 是在线上，在这里不算在三角形内。
+		//---------------Drag and Drop--------------------------------
+		private function DragEnter2D(event:DragEvent):void
+		{			
+			DragManager.acceptDragDrop(event.target as UIComponent);
 		}
-
-		public static function GetPolygonArea(points:Vector.<Point>):Number
+		
+		public function OnDrap(event:DragEvent):void
 		{
-			if (points.length < 3) {//至少是三角形
-				return 0;
-			}
-			var result:Number = 0;
-			for (var i:int = 1; i < points.length - 1; i++) {
+			var className:String=String(event.dragSource.dataForFormat("className"));
+			var classArgument:String=String(event.dragSource.dataForFormat("classArgument"));
+			var resourcePath:String=String(event.dragSource.dataForFormat("resourcePath"));
+			var objectName:String=String(event.dragSource.dataForFormat("objectName"));
+			
+			var room_2d:Object2D_Room=this.parent as Object2D_Room;
+			
+			if(className=="diban")
+			{
+				_floorTex=resourcePath+"texture.jpg";
+				_floorTexLoader = new Loader();
+				_floorTexLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onComplete);
+				_floorTexLoader.load(new URLRequest(_floorTex));
 				
-				var p0:Point = points[0];
-				var pi1:Point = points[i];
-				var pi2:Point = points[i+1];
-				var area:Number=-(pi1.x-p0.x)*(pi2.y-p0.y)+(pi2.x-p0.x)*(pi1.y-p0.y);
-				result += area;
+				function onComplete(e:Event):void
+				{
+					_floorBitmap = Bitmap(_floorTexLoader.content);
+					Draw();
+				}
 			}
-			result *= 0.5;
-			return result;
+				
+			else if(className=="Wall_2D")
+			{
+				var wall:Object2D_PartitionWall =new Object2D_PartitionWall(classArgument);
+				wall.x=event.localX;
+				wall.y=event.localY;
+				wall.name=wall.className+room_2d.numChildren;
+				CommandManager.Instance.Add(room_2d,wall);
+			}
+				
+			else if(className=="model")
+			{
+				var model:Object2D_Model=new Object2D_Model(resourcePath,objectName);
+				model.x=event.localX;
+				model.y=event.localY;
+				model.name=model.className+room_2d.numChildren;
+				CommandManager.Instance.Add(room_2d,model);
+			}
 		}
+		
+
 	}
 }

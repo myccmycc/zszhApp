@@ -9,10 +9,11 @@
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			import mx.events.ItemClickEvent;
-
 			import mx.managers.DragManager;
 			
 			import spark.components.Image;
+			
+			import zszh_WorkSpace2D.WorkSpace2D;
 			protected function itemrenderer1_clickHandler(event:MouseEvent):void
 			{
 				var e:ItemClickEvent = new ItemClickEvent(ItemClickEvent.ITEM_CLICK, true);
@@ -79,8 +80,10 @@
 				function OnComplete(e:Event):void
 				{
 					dragProxy.source=loader.content;
-					var w:int=loader.content.width*parentApplication.WorkSpace2DContainer.WorkSpace2D._grid.scaleX;
-					var h:int=loader.content.height*parentApplication.WorkSpace2DContainer.WorkSpace2D._grid.scaleY;
+					var work2d:WorkSpace2D=parentApplication.GetWorkSpace2D();
+					
+					var w:int=loader.content.width*work2d.GetGrid().scaleX;
+					var h:int=loader.content.height*work2d.GetGrid().scaleY;
 					dragProxy.width=w;
 					dragProxy.height=h;
 					var dw:int=-w/2;

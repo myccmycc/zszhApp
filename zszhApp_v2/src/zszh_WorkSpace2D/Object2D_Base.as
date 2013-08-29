@@ -1,8 +1,5 @@
 package zszh_WorkSpace2D
 {
-
-	import flash.events.MouseEvent;
-	
 	import mx.core.UIComponent;
 
 	public class Object2D_Base extends UIComponent
@@ -29,6 +26,11 @@ package zszh_WorkSpace2D
 		
 		public function  Object2DUpdate():void
 		{
+		}
+		
+		public function Draw():void
+		{
+			
 		}
 
 	}

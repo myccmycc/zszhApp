@@ -8,19 +8,21 @@ package zszh_WorkSpace2D
 	import mx.managers.CursorManager;
 	
 	
-	public class Grid extends UIComponent
+	public class WorkSpace2D_Grid extends UIComponent
 	{
-		public var _lineColor:uint = 0x3d4051; //网格线颜色
-		public var _gridFillColor:uint = 0xff0000; //网格背景色 0x303344
+		private var _lineColor:uint = 0x3d4051; //网格线颜色
+		private var _gridFillColor:uint = 0xff0000; //网格背景色 0x303344
 		
 		
-		public var _lineThickness:Number = 1; //网格线粗细
-		public var _gridSize:Number = 64; //64*64
-		public var _gridWidth:int=6400;
-		public var _gridHeight:int=6400;
+		private var _lineThickness:Number = 1; //网格线粗细
+		private var _gridSize:Number = 64; //64*64
+		private var _gridWidth:int=6400;
+		private var _gridHeight:int=6400;
+		
+		public var _objects2D:UIComponent;
 		
 		
-		public function Grid()
+		public function WorkSpace2D_Grid()
 		{
 			super();
 			this.width=_gridWidth;
@@ -35,10 +37,15 @@ package zszh_WorkSpace2D
 			addEventListener(MouseEvent.MOUSE_OUT,MOUSE_OUT_grid);
 			
 			addEventListener(MouseEvent.MOUSE_WHEEL,MOUSE_WHEEL_grid);
-			
+			_objects2D=new UIComponent;
+			addChild(_objects2D);
 			drawGird();
 		}
 		
+		public function clearGird():void
+		{
+			this.graphics.clear();
+		}
 	    public function drawGird():void
 		{
 			this.graphics.clear();

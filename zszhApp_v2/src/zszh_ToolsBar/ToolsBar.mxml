@@ -77,9 +77,9 @@
 		
 		protected function skinnablecontainer_initializeHandler(event:FlexEvent):void
 		{
-			_work2D=parentApplication.WorkSpace2DContainer.WorkSpace2D;
-			_work3D=parentApplication.WorkSpace3D;
-			_work2DContainer=parentApplication.WorkSpace2DContainer;
+			_work2D=parentApplication.GetWorkSpace2D();
+			_work3D=parentApplication.GetWorkSpace3D();
+			_work2DContainer=parentApplication.GetWorkSpace2DContainer();
 		}
 		
 		protected function SaveToXML(event:MouseEvent):void
@@ -156,9 +156,9 @@
 			_work3D.ClearRoom();
 			_work3D.ClearWallInside();
 			_work3D.ClearModels();
-			for(var i:int=0;i<_work2D._grid.numChildren;i++)
+			for(var i:int=0;i<_work2D.GetObject2D().numChildren;i++)
 			{
-				var obj:DisplayObject=_work2D._grid.getChildAt(i);
+				var obj:DisplayObject=_work2D.GetObject2D().getChildAt(i);
 				
 				if(obj is Object2D_Room)
 					

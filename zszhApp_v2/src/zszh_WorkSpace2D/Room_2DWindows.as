@@ -14,11 +14,10 @@ package zszh_WorkSpace2D
 	
 	import zszh_WorkSpace2D.PopupMenu_Room2D_Wall;
 	
-	public class Room_2DWindows extends UIComponent
+	public class Room_2DWindows extends Object2D_Base
 	{
 		private var _popupWindowMenu:PopupMenu_Room2D_Wall;
 		
-		private var _selected:Boolean;
 		
 		private var _P0:Point;
 		private var _P1:Point;
@@ -45,16 +44,7 @@ package zszh_WorkSpace2D
 		}
 		
 		
-		public function SetSelected(b:Boolean):void
-		{
-			_selected=b;
-			Update();
-			
-		}
-		public function GetSelected():Boolean
-		{
-			return _selected;
-		}
+ 
 		
 
 		private function OnCreation_Complete(e:FlexEvent):void

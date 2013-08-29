@@ -1,21 +1,16 @@
 package zszh_WorkSpace2D
 {
 	import flash.display.Sprite;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
-	
-	import mx.core.UIComponent;
 	import mx.managers.CursorManager;
 
-	public class Room_2DCorner extends UIComponent
+	public class Room_2DCorner extends Object2D_Base
 	{
 		[Embed(source="../embeds/rooms/cursor_corner.png")]
-		public var _cursorCorner:Class;
-		
-		
+		private var _cursorCorner:Class;
 		private var _cursorSprite:Sprite;
-		private var _selected:Boolean;
+		
 		public  var _posInRoom:int;
 		private var _postion:Point;
 		
@@ -32,10 +27,12 @@ package zszh_WorkSpace2D
 			InitListener();
 		}
 		
-		public function Draw(px:Number,py:Number):void
+		override public function Draw():void
 		{
-			_postion.x=px;
-			_postion.y=-py;
+			
+			var room_2d:Object2D_Room=this.parent as Object2D_Room;
+			_postion.x=room_2d._vertexVec1[_posInRoom];
+			_postion.y=-room_2d._vertexVec1[_posInRoom+1];
 			
 			if(_selected)
 			{
@@ -47,17 +44,6 @@ package zszh_WorkSpace2D
 			}
 			else graphics.clear();
 		}
-		
-		
-		public function SetSelected(b:Boolean):void
-		{
-			_selected=b;
-		}
-		public function GetSelected():Boolean
-		{
-			return _selected;
-		}
-		
 		
 	    private function InitListener():void
 		{
@@ -82,7 +68,7 @@ package zszh_WorkSpace2D
 		}
 		
 		
-		//---------------corner mouse event---------------------------------------------
+		//---------------corner mouse event OVER OUT---------------------------------------------
 		private function CornerMouseOVER(e:MouseEvent):void
 		{
 			if(!_selected)
@@ -98,7 +84,7 @@ package zszh_WorkSpace2D
 		
 		
 		
-		//---------------corner mouse event---------------------------------------------
+		//---------------corner mouse event DOWN UP MOVE---------------------------------------------
 		private var startPoint:Point=new Point;
 		private var bStart:Boolean=false;
 		

@@ -30,6 +30,7 @@ package zszh_WorkSpace3D
 	
 	import zszh_WorkSpace2D.Room_2DFloor;
 	import zszh_WorkSpace3D.WorkSpace3D;
+	import zszh_WorkSpace2D.Object2D_Utility;
 	
 	public class Room_3D extends ObjectContainer3D
 	{
@@ -246,7 +247,7 @@ package zszh_WorkSpace3D
 				for(i=0;i<vertexTmp.length;i+=2)
 					testPoints.push(new Point(vertexTmp[i],vertexTmp[i+1]));
 				
-				var testArea:Number = Room_2DFloor.GetPolygonArea(testPoints);
+				var testArea:Number = Object2D_Utility.GetPolygonArea(testPoints);
 				
 				if(testArea<=0)
 					break;
@@ -268,14 +269,14 @@ package zszh_WorkSpace3D
 				points.push(p2);
 				points.push(p3);
 				
-				var area:Number = Room_2DFloor.GetPolygonArea(points);  //area==0 it is mean that the points on the same line
+				var area:Number = Object2D_Utility.GetPolygonArea(points);  //area==0 it is mean that the points on the same line
 				
 				var bCover:Boolean=false;//是否有其他 顶点在三角形中。。。
 				for(i=0;i<vertexTmp.length;i+=2)
 				{
 					if(i!=index11&&i!=index21&&i!=index31)
 					{
-						bCover=Room_2DFloor.PointinTriangle(p1,p2,p3,new Point(vertexTmp[i],vertexTmp[i+1]));
+						bCover=Object2D_Utility.PointinTriangle(p1,p2,p3,new Point(vertexTmp[i],vertexTmp[i+1]));
 						if(bCover)
 							break;
 					}
