@@ -4,7 +4,6 @@ package zszh_WorkSpace2D
 
 	public class Object2D_Base extends UIComponent
 	{
-
 		protected var _selected:Boolean;
 		
 		public function Object2D_Base()
@@ -30,8 +29,6 @@ package zszh_WorkSpace2D
 		
 		public function Draw():void
 		{
-			
 		}
-
 	}
 }

@@ -14,7 +14,6 @@ package zszh_WorkSpace2D
 		public  var _vertexVec3:Vector.<Number>;
 		
 		public  var _floor:Room_2DFloor;
-		
 		private var _roomType:String;//0小,1大,2L,3room
 		
 		public function Object2D_Room(roomType:String,_vertexData:Vector.<Number>=null)
@@ -61,15 +60,14 @@ package zszh_WorkSpace2D
 				(getChildAt(i) as Object2D_Base).Draw();
 			
 			
-			//floor
-			//_floor.Draw();
+ 
 			
 			//walls and corners
 		/*	var len:int=_vertexVec1.length;
 			for(var i:int=0;i<len;i+=2)
 			{
 				_wallVec[i/2].UpdateVertex(_vertexVec2[i],_vertexVec2[i+1],_vertexVec2[(i+2)%len],_vertexVec2[(i+3)%len],_vertexVec3[i],_vertexVec3[i+1],_vertexVec3[(i+2)%len],_vertexVec3[(i+3)%len]);
-				_wallCornerVec[i/2].Draw(_vertexVec1[i],_vertexVec1[i+1]);
+		 
 			}*/
 		}
 		

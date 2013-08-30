@@ -22,12 +22,12 @@ package zszh_WorkSpace2D
 		
 		private var _wallPos:Vector.<Number>;
 		
-		public  var _postionInRoom:int;
-		public  var _rotation:Number;
+		private  var _postionInRoom:int;
+		private  var _rotation:Number;
 		
 		[Bindable]
 		[Embed(source="../embeds/rooms/cursor_wall.png")]
-		public var _cursorWall:Class;
+		private var _cursorWall:Class;
 		private var _cursorSprite:Sprite;
 		
 		
@@ -39,7 +39,7 @@ package zszh_WorkSpace2D
 			_wallColor=0x7c7e89;
 			_wallColorSelected=0xff6666;
 			_wallPos=new Vector.<Number>;
-			_selected=true;
+			_wallPos.
 			
 			_cursorSprite=new Sprite();
 			var img:Bitmap=new _cursorWall();
@@ -55,56 +55,30 @@ package zszh_WorkSpace2D
 			addEventListener(MouseEvent.MOUSE_OUT,WallMouseOut);
 			addEventListener(MouseEvent.MOUSE_DOWN,WallMouseDown);
 		}
-		
-		public function UpdateVertex(p1x:Number,p1y:Number,p2x:Number,p2y:Number,p3x:Number,p3y:Number,p4x:Number,p4y:Number):void
-		{
-
-			_wallPos[0]=p1x;_wallPos[1]=p1y;
-			_wallPos[2]=p2x;_wallPos[3]=p2y;
-			_wallPos[4]=p3x;_wallPos[5]=p3y;
-			_wallPos[6]=p4x;_wallPos[7]=p4y;
-			
-			Update();
-		}
-		
- 
-		
 	
-		private function ShowCursorCorner(postion:Point,rotation:Number):void
+		
+
+		
+		
+		
+		override public function Draw():void
 		{
-			CursorManager.hideCursor();
+			var room_2d:Object2D_Room=this.parent as Object2D_Room;
+			var len:int=room_2d._vertexVec1.length;
 			
-			_cursorSprite.rotation=rotation+90;
-			_cursorSprite.visible=true;
-			_cursorSprite.x=postion.x;
-			_cursorSprite.y=postion.y;
-		}
+ 			if(_postionInRoom+1>=len || _postionInRoom<0)
+ 				trace("error:wall postion in room is out of index.");
+			
+			_wallPos[0]=room_2d._vertexVec2[_postionInRoom];
+			_wallPos[1]=room_2d._vertexVec2[_postionInRoom+1];
+			_wallPos[2]=room_2d._vertexVec2[(_postionInRoom+2)%len];
+			_wallPos[3]=room_2d._vertexVec2[(_postionInRoom+3)%len];
+			_wallPos[4]=room_2d._vertexVec3[_postionInRoom];
+			_wallPos[5]=room_2d._vertexVec3[_postionInRoom+1];
+			_wallPos[6]=room_2d._vertexVec3[(_postionInRoom+2)%len];
+			_wallPos[7]=room_2d._vertexVec3[(_postionInRoom+3)%len];
+			
 		
-		private function HideCursorCorner():void
-		{
-			CursorManager.showCursor();
-			_cursorSprite.visible=false;
-		}
-		
-		
-		private function OnDeleteWall(e:Event):void
-		{
-			trace("OnDeleteWall");
-			this.visible=false;
-		}
-		
-		private function OnSplitWall(e:Event):void
-		{
-			trace("OnSplitWall");
-		}
-		
-		private function OnHoleWall(e:Event):void
-		{
-			trace("OnHoleWall");
-		}
-		
-		private function Update():void
-		{
 			graphics.clear();
 			graphics.lineStyle(1,_lineColor);//白线
 			
@@ -137,9 +111,8 @@ package zszh_WorkSpace2D
 		}
 		
 		
-		//----------------wall mouse move event ---------------------------------------
-		
-		private function WallMouseOver(e:MouseEvent):void
+		//----------------Mouse event OVER OUT---------------------------------------
+		private function MouseOver(e:MouseEvent):void
 		{
 			if(!_selected)
 				return;
@@ -147,7 +120,7 @@ package zszh_WorkSpace2D
 			ShowCursorCorner(new Point(this.mouseX,this.mouseY),_rotation);
 			e.stopPropagation();
 		}
-		private function WallMouseOut(e:MouseEvent):void
+		private function MouseOut(e:MouseEvent):void
 		{
 			if(!_selected)
 				return;
@@ -156,7 +129,7 @@ package zszh_WorkSpace2D
 			e.stopPropagation();
 		}
 		
-		private function WallCLICK(e:MouseEvent):void
+		private function RightMouseClick(e:MouseEvent):void
 		{
 			if(!_selected)
 				return;
@@ -182,11 +155,8 @@ package zszh_WorkSpace2D
 	
 		private var startPoint:Point=new Point;
 		private var bStart:Boolean=false;
-		
-		override public function Draw():void
-		{}
 
-		private function WallMouseDown(e:MouseEvent):void
+		private function LeftMouseDown(e:MouseEvent):void
 		{
 			if(!_selected)
 				return;
@@ -202,27 +172,61 @@ package zszh_WorkSpace2D
 			e.stopPropagation();
 		}
 		
-		private function WallMouseUp(e:MouseEvent):void
+		private function LeftMouseUp(e:MouseEvent):void
 		{
-		  	SetSelected(true);
+			if(!_selected)
+				return;
+				
+		  SetSelected(true);
 			bStart=false;
 			HideCursorCorner();
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE,WallMouseMove);
 			this.stage.removeEventListener(MouseEvent.MOUSE_UP,WallMouseUp);
 		}
-		private function WallMouseMove(e:MouseEvent):void
+		private function LeftMouseMove(e:MouseEvent):void
 		{
-			if(!_selected)
+			if(!_selected || !bStart)
 				return;
-			
-			if(!bStart)
-				return;
+
 			ShowCursorCorner(new Point(this.mouseX,this.mouseY),_rotation);
 			if(MoveWall(_postionInRoom))
 			{
 				startPoint.x=this.mouseX;
 				startPoint.y=this.mouseY;
 			}
+		}
+		
+		private function ShowCursorCorner(postion:Point,rotation:Number):void
+		{
+			CursorManager.hideCursor();
+			
+			_cursorSprite.rotation=rotation+90;
+			_cursorSprite.visible=true;
+			_cursorSprite.x=postion.x;
+			_cursorSprite.y=postion.y;
+		}
+		
+		private function HideCursorCorner():void
+		{
+			CursorManager.showCursor();
+			_cursorSprite.visible=false;
+		}
+		
+				
+		private function OnDeleteWall(e:Event):void
+		{
+			trace("OnDeleteWall");
+			this.visible=false;
+		}
+		
+		private function OnSplitWall(e:Event):void
+		{
+			trace("OnSplitWall");
+		}
+		
+		private function OnHoleWall(e:Event):void
+		{
+			trace("OnHoleWall");
 		}
 		
 		
